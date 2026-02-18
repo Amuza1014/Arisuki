@@ -15,6 +15,10 @@ public class BookController {
     @Autowired
     private BookRepository repository; // 追加
 
+	@GetMapping("/login")
+	public String loginForm() {
+		return "login";
+	}
     // 1. 入力画面を表示する
     @GetMapping("/") 
     public String input() {
