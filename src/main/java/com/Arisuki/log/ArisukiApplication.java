@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ArisukiApplication {
 
 	
-	
 	public static void main(String[] args) {
 		SpringApplication.run(ArisukiApplication.class, args);
 	}
