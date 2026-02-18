@@ -32,7 +32,7 @@ body {
 
 	<div class="container">
 		<div class="form-container">
-			<h2 class="text-center mb-4">✨ ArrayList&lt;Suki&gt; ✨</h2>
+			<h2 class="text-center mb-4">ArrayList&lt;Suki&gt;</h2>
 			<p class="text-center text-muted">お気に入りの作品を記録しよう</p>
 
 			<form th:action="@{/complete}" method="post">
@@ -40,7 +40,7 @@ body {
 				<div class="mb-3">
 					<label for="title" class="form-label">名前（作品名）</label> <input
 						type="text" class="form-control" id="title" name="title"
-						placeholder="例：あの映画、このキャラ" required>
+						placeholder="例：最近見たおススメの本、映画、ゲームなど" required>
 				</div>
 
 				<div class="mb-3">
@@ -58,7 +58,7 @@ body {
 
 				<div class="d-grid gap-2">
 					<button type="submit" class="btn btn-primary">保存する</button>
-					<a th:href="@{/}" class="btn btn-outline-secondary">マイページに戻る</a>
+					<a th:href="@{/mypage}" class="btn btn-outline-secondary">マイページに戻る</a>
 				</div>
 
 			</form>
