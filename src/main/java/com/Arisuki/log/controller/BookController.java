@@ -15,7 +15,7 @@ public class BookController {
 	// 1. 入力画面を表示する
 	@GetMapping("new")
 	public String input() {
-		return "HTML"; // templates/insert-input.html を探す
+		return "form"; // templates/insert-input.html を探す
 	}
 
 	// 2. 送信されたデータを受け取って結果画面を表示する
