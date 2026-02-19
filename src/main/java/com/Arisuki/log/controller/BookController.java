@@ -65,17 +65,18 @@ public class BookController {
 		// 2. 削除後は一覧画面などにリダイレクト
 		return "redirect:/mypage";
 	}
+
 	@PostMapping("edit/{id}")
-	public String editBook(@PathVariable("id") Integer id,Model model) {
+	public String editBook(@PathVariable("id") Integer id, Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
-	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
-	    BookEntity book = repository.findById(id).orElseThrow();
-	    
-	    // 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
-	    model.addAttribute("book", book);
-	    //ダミーコメント
-	    // 3. 編集用のHTMLファイルを表示する
-	    return "edit";
+		// .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
+		BookEntity book = repository.findById(id).orElseThrow();
+
+		// 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
+		model.addAttribute("book", book);
+		//ダミーコメント
+		// 3. 編集用のHTMLファイルを表示する
+		return "edit";
 	}
 
 }
