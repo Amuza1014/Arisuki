@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.Arisuki.log.entity.BookEntity;
+import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.repository.BookRepository;
 
 @Controller
@@ -33,10 +33,16 @@ public class BookController {
 	public String input() {
 		return "login";
 	}
+	
+//	// ログイン画面からマイページへ遷移
+//	@PostMapping("/mypage")
+//	public String loginToMypage() {
+//		return "mypage";
+//	}
 
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
-	public String result(BookEntity book, Model model) {
+	public String result(InformationEntity book, Model model) {
 		repository.save(book); // H2 DBへ保存
 		model.addAttribute("book", book);
 		return "complete"; // complete.htmlを表示
@@ -45,7 +51,7 @@ public class BookController {
 	@GetMapping("/mypage")
 	public String mypage(Model model) {
 		// DBからすべてのデータを取得してリストに入れる
-		List<BookEntity> bookList = repository.findAll();
+		List<InformationEntity> bookList = repository.findAll();
 		// HTML（Thymeleaf）に "bookList" という名前でリストを渡す
 		model.addAttribute("bookList", bookList);
 		// mypage.html を呼び出す
@@ -55,7 +61,7 @@ public class BookController {
 	@GetMapping("/detail/{id}")
 	public String detail(@PathVariable("id") Integer id, Model model) {
 		// IDを元にデータを1件取得（なければマイページへリダイレクト）
-		BookEntity book = repository.findById(id).orElse(null);
+		InformationEntity book = repository.findById(id).orElse(null);
 		if (book == null) {
 			return "redirect:/mypage";
 		}
@@ -74,7 +80,7 @@ public class BookController {
 	public String editBook(@PathVariable("id") Integer id,Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
 	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
-	    BookEntity book = repository.findById(id).orElseThrow();
+	    InformationEntity book = repository.findById(id).orElseThrow();
 	    
 	    // 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
 	    model.addAttribute("book", book);
