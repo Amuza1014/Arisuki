@@ -76,7 +76,7 @@ public class BookController {
 		// 2. 削除後は一覧画面などにリダイレクト
 		return "redirect:/mypage";
 	}
-	@PostMapping("edit/{id}")
+	@GetMapping("/edit/{id}")
 	public String editBook(@PathVariable("id") Integer id,Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
 	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です

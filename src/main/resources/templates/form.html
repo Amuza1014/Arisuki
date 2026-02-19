@@ -26,44 +26,90 @@ body {
 .btn-primary:hover {
 	background-color: #f50057;
 }
+.sub-fields {
+	display: none; /* 最初は隠しておきます */
+}
 </style>
 </head>
 <body>
 
 	<div class="container">
 		<div class="form-container">
-			<h2 class="text-center mb-4">ArrayList&lt;Suki&gt;</h2>
+			<h2 class="text-center mb-4">✨ ArrayList&lt;Suki&gt; ✨</h2>
 			<p class="text-center text-muted">お気に入りの作品を記録しよう</p>
 
 			<form th:action="@{/complete}" method="post">
 
-				<div class="mb-3">
-					<label for="title" class="form-label">名前（作品名）</label> <input
-						type="text" class="form-control" id="title" name="title"
-						placeholder="例：最近見たおススメの本、映画、ゲームなど" required>
+				<div class="mb-4">
+					<label for="category" class="form-label fw-bold">ジャンル</label>
+					<select class="form-select border-primary" id="category" name="category" onchange="toggleFields()" required>
+						<option value="" disabled selected>選択してください</option>
+						<option value="1">ブック (Book)</option>
+						<option value="2">ムービー (Movie)</option>
+						<option value="3">ゲーム (Game)</option>
+					</select>
+				</div>
+
+				<div id="bookFields" class="sub-fields p-3 mb-3 border rounded bg-light">
+					<p class="small text-primary fw-bold">本の詳細情報</p>
+					<input type="text" name="creater" class="form-control mb-2" placeholder="著者名">
+					<input type="text" name="publisher" class="form-control mb-2" placeholder="出版社">
+					<input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（ミステリー等）">
+				</div>
+
+				<div id="movieFields" class="sub-fields p-3 mb-3 border rounded bg-light">
+					<p class="small text-warning fw-bold">映画の詳細情報</p>
+					<input type="text" name="creater" class="form-control mb-2" placeholder="監督名">
+					<input type="text" name="subAttribute" class="form-control mb-2" placeholder="ジャンル（SF等）">
+					<select name="publisher" class="form-select">
+						<option value="邦画">邦画</option>
+						<option value="洋画">洋画</option>
+						<option value="その他">その他</option>
+					</select>
+				</div>
+
+				<div id="gameFields" class="sub-fields p-3 mb-3 border rounded bg-light">
+					<p class="small text-success fw-bold">ゲームの詳細情報</p>
+					<input type="text" name="creater" class="form-control mb-2" placeholder="メーカー">
+					<input type="text" name="publisher" class="form-control mb-2" placeholder="ハード（Switch等）">
+					<input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（RPG等）">
 				</div>
 
 				<div class="mb-3">
-					<label for="thumbnailUrl" class="form-label">サムネイル画像URL</label> <input
-						type="url" class="form-control" id="thumbnailUrl"
+					<label for="title" class="form-label fw-bold">名前（作品名）</label> 
+					<input type="text" class="form-control" id="title" name="title"
+						placeholder="タイトルを入力" required>
+				</div>
+
+				<div class="mb-3">
+					<label for="thumbnailUrl" class="form-label fw-bold">サムネイル画像URL</label> 
+					<input type="url" class="form-control" id="thumbnailUrl"
 						name="thumbnailUrl" placeholder="https://example.com/image.jpg">
-					<div class="form-text">ネット上の画像リンクを貼ってください。</div>
 				</div>
 
 				<div class="mb-3">
-					<label for="reviewText" class="form-label">レビュー</label>
+					<label for="reviewText" class="form-label fw-bold">レビュー</label>
 					<textarea class="form-control" id="reviewText" name="reviewText"
-						rows="5" placeholder="ご自由にお書きください" required></textarea>
+						rows="4" placeholder="感想を教えてください" required></textarea>
 				</div>
 
-				<div class="d-grid gap-2">
-					<button type="submit" class="btn btn-primary">保存する</button>
+				<div class="d-grid gap-2 mt-4">
+					<button type="submit" class="btn btn-primary btn-lg">保存して次へ</button>
 					<a th:href="@{/mypage}" class="btn btn-outline-secondary">マイページに戻る</a>
 				</div>
 
 			</form>
 		</div>
 	</div>
+S
+	<script>
+	function toggleFields() {
+		const category = document.getElementById("category").value;
+		document.getElementById("bookFields").style.display = (category === "1") ? "block" : "none";
+		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
+		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
+	}
+	</script>
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
