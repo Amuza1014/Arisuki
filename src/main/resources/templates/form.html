@@ -32,6 +32,7 @@ body {
 
 	<div class="container">
 		<div class="form-container">
+<<<<<<< HEAD
 			<h2 class="text-center mb-4">✨ ArrayList&lt;Suki&gt; ✨</h2>
 			<p class="text-center text-muted">お気に入りの作品を記録しよう</p>
 
@@ -59,6 +60,35 @@ body {
 				<div class="d-grid gap-2">
 					<button type="submit" class="btn btn-primary">保存する</button>
 					<a th:href="@{/}" class="btn btn-outline-secondary">マイページに戻る</a>
+=======
+			<h2 class="text-center mb-4">ArrayList&lt;Suki&gt;</h2>
+			<p class="text-center text-muted">お気に入りの作品を記録しよう</p>
+
+			<form th:action="@{/complete}" method="post">
+
+				<div class="mb-3">
+					<label for="title" class="form-label">名前（作品名）</label> <input
+						type="text" class="form-control" id="title" name="title"
+						placeholder="例：最近見たおススメの本、映画、ゲームなど" required>
+				</div>
+
+				<div class="mb-3">
+					<label for="thumbnailUrl" class="form-label">サムネイル画像URL</label> <input
+						type="url" class="form-control" id="thumbnailUrl"
+						name="thumbnailUrl" placeholder="https://example.com/image.jpg">
+					<div class="form-text">ネット上の画像リンクを貼ってください。</div>
+				</div>
+
+				<div class="mb-3">
+					<label for="reviewText" class="form-label">レビュー</label>
+					<textarea class="form-control" id="reviewText" name="reviewText"
+						rows="5" placeholder="ご自由にお書きください" required></textarea>
+				</div>
+
+				<div class="d-grid gap-2">
+					<button type="submit" class="btn btn-primary">保存する</button>
+					<a th:href="@{/mypage}" class="btn btn-outline-secondary">マイページに戻る</a>
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 				</div>
 
 			</form>
