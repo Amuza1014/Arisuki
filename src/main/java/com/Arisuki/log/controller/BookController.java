@@ -74,7 +74,6 @@ public class BookController {
 
 		// 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
 		model.addAttribute("book", book);
-		//ダミーコメント
 		// 3. 編集用のHTMLファイルを表示する
 		return "edit";
 	}
