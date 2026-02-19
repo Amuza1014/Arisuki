@@ -25,7 +25,7 @@ public class InformationEntity {
 //	    private String publisher;
 //	    private String category;
 	    
-	    private String creater;
+	    private String creator;
 	    private String category;
 	    private String publisher;
 	    private String subAttribute;
