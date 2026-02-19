@@ -15,16 +15,9 @@ import com.Arisuki.log.repository.BookRepository;
 @Controller
 public class BookController {
 
-    @Autowired
-    private BookRepository repository;
+	@Autowired
+	private BookRepository repository; // 追加
 
-<<<<<<< HEAD
-    // ログイン画面を表示する
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login";
-    }
-=======
 	@GetMapping("/login")
 	public String loginForm() {
 		return "login";
@@ -34,33 +27,7 @@ public class BookController {
 	public String loginSuccess() {
 		return "form";
 	}
->>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
-<<<<<<< HEAD
-    // ログイン成功時、または直接フォームを開く
-    @PostMapping("/login")
-    public String loginSuccess() {
-        return "form";
-    }
-
-    // ルートパスにアクセスした時はログイン画面へ飛ばす
-    @GetMapping("/")
-    public String input() {
-        return "login";
-    }
-
-    // ★追加：新しく登録する画面（form.html）を直接開くための設定
-    @GetMapping("/form")
-    public String showForm() {
-        return "form";
-    }
-
-	//	// ログイン画面からマイページへ遷移
-	//	@PostMapping("/mypage")
-	//	public String loginToMypage() {
-	//		return "mypage";
-	//	}
-=======
 	// 1. 入力画面を表示する
 	@GetMapping("/")
 	public String input() {
@@ -72,28 +39,13 @@ public class BookController {
 //	public String loginToMypage() {
 //		return "mypage";
 //	}
->>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
 	public String result(InformationEntity book, Model model) {
-<<<<<<< HEAD
-		repository.save(book);
-=======
 		repository.save(book); // H2 DBへ保存
->>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 		model.addAttribute("book", book);
-
-		// 遷移先の判定ロジックを復活
-		String cat = book.getCategory();
-		if ("1".equals(cat))
-			return "bookform";
-		if ("2".equals(cat))
-			return "movieform";
-		if ("3".equals(cat))
-			return "gameform";
-
-		return "complete";
+		return "complete"; // complete.htmlを表示
 	}
 
 	@GetMapping("/mypage")
@@ -130,20 +82,9 @@ public class BookController {
 		// 2. 削除後は一覧画面などにリダイレクト
 		return "redirect:/mypage";
 	}
-
 	@PostMapping("edit/{id}")
-	public String editBook(@PathVariable("id") Integer id, Model model) {
+	public String editBook(@PathVariable("id") Integer id,Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
-<<<<<<< HEAD
-		// .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
-		InformationEntity book = repository.findById(id).orElseThrow();
-
-		// 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
-		model.addAttribute("book", book);
-		//ダミーコメント
-		// 3. 編集用のHTMLファイルを表示する
-		return "edit";
-=======
 	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
 	    InformationEntity book = repository.findById(id).orElseThrow();
 	    
@@ -152,7 +93,6 @@ public class BookController {
 	    //ダミーコメント
 	    // 3. 編集用のHTMLファイルを表示する
 	    return "edit";
->>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 	}
 
 }
