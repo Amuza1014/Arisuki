@@ -18,12 +18,25 @@ public class BookController {
     @Autowired
     private BookRepository repository;
 
+<<<<<<< HEAD
     // ログイン画面を表示する
     @GetMapping("/login")
     public String loginForm() {
         return "login";
     }
+=======
+	@GetMapping("/login")
+	public String loginForm() {
+		return "login";
+	}
+	
+	@PostMapping("login")
+	public String loginSuccess() {
+		return "form";
+	}
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
+<<<<<<< HEAD
     // ログイン成功時、または直接フォームを開く
     @PostMapping("/login")
     public String loginSuccess() {
@@ -47,11 +60,28 @@ public class BookController {
 	//	public String loginToMypage() {
 	//		return "mypage";
 	//	}
+=======
+	// 1. 入力画面を表示する
+	@GetMapping("/")
+	public String input() {
+		return "login";
+	}
+	
+//	// ログイン画面からマイページへ遷移
+//	@PostMapping("/mypage")
+//	public String loginToMypage() {
+//		return "mypage";
+//	}
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
 	public String result(InformationEntity book, Model model) {
+<<<<<<< HEAD
 		repository.save(book);
+=======
+		repository.save(book); // H2 DBへ保存
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 		model.addAttribute("book", book);
 
 		// 遷移先の判定ロジックを復活
@@ -98,6 +128,7 @@ public class BookController {
 	@PostMapping("edit/{id}")
 	public String editBook(@PathVariable("id") Integer id, Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
+<<<<<<< HEAD
 		// .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
 		InformationEntity book = repository.findById(id).orElseThrow();
 
@@ -106,6 +137,16 @@ public class BookController {
 		//ダミーコメント
 		// 3. 編集用のHTMLファイルを表示する
 		return "edit";
+=======
+	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
+	    InformationEntity book = repository.findById(id).orElseThrow();
+	    
+	    // 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
+	    model.addAttribute("book", book);
+	    //ダミーコメント
+	    // 3. 編集用のHTMLファイルを表示する
+	    return "edit";
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 	}
 
 }
