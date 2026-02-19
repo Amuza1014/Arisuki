@@ -40,14 +40,14 @@ body { background-color: #fff5f8; }
 
 				<div id="bookFields" class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-primary fw-bold">本の詳細情報</p>
-					<input type="text" name="creater" class="form-control mb-2" placeholder="著者名" th:value="${book.creator}">
+					<input type="text" name="creator" class="form-control mb-2" placeholder="著者名" th:value="${book.creator}">
 					<input type="text" name="publisher" class="form-control mb-2" placeholder="出版社" th:value="${book.publisher}">
 					<input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（ミステリー等）" th:value="${book.subAttribute}">
 				</div>
 
 				<div id="movieFields" class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-warning fw-bold">映画の詳細情報</p>
-					<input type="text" name="creater" class="form-control mb-2" placeholder="監督名" th:value="${book.creator}">
+					<input type="text" name="creator" class="form-control mb-2" placeholder="監督名" th:value="${book.creator}">
 					<input type="text" name="subAttribute" class="form-control mb-2" placeholder="ジャンル（SF等）" th:value="${book.subAttribute}">
 					<select name="publisher" class="form-select">
 						<option value="邦画" th:selected="${book.publisher == '邦画'}">邦画</option>
@@ -58,7 +58,7 @@ body { background-color: #fff5f8; }
 
 				<div id="gameFields" class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-success fw-bold">ゲームの詳細情報</p>
-					<input type="text" name="creater" class="form-control mb-2" placeholder="メーカー" th:value="${book.creator}">
+					<input type="text" name="creator" class="form-control mb-2" placeholder="メーカー" th:value="${book.creator}">
 					<input type="text" name="publisher" class="form-control mb-2" placeholder="ハード（Switch等）" th:value="${book.publisher}">
 					<input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（RPG等）" th:value="${book.subAttribute}">
 				</div>
