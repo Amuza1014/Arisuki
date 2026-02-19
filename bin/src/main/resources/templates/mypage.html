@@ -25,15 +25,20 @@
 </head>
 <body>
     <div class="container mt-5">
+<<<<<<< HEAD
         <!-- <div class="d-flex justify-content-between align-items-center mb-4"> -->
             <h2 class="fw-bold">✨ マイページ ✨</h2>
              <div class="d-flex flex-column align-items-end">
             <a th:href="@{/form}" class="btn btn-primary mb-1" style="background-color: #ff4081; border: none;">新しく登録する</a>
              <a th:href="@{/login}" class="btn btn-primary" style="background-color: #ff4081; border: none;">ログアウト</a>
         </div>
+=======
         <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <h2 class="fw-bold">✨ マイページ ✨</h2>
+    <a th:href="@{/form}" class="btn btn-primary" style="background-color: #ff4081; border: none;">新しく登録する</a>
 </div>
+>>>>>>> refs/remotes/origin/master
+
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="book : ${bookList}">
                 <a th:href="@{/detail/{id}(id=${book.id})}" class="card-link">
@@ -51,8 +56,8 @@
                             <h5 class="card-title fw-bold" th:text="${book.title}">作品名</h5>
                             
                             <div class="small mb-2 fw-bold text-secondary">
-                                <span th:if="${book.category == '1'}" th:text="'著者: ' + ${book.creator}"></span>
-                                <span th:if="${book.category == '2'}" th:text="'監督: ' + ${book.creator}"></span>
+                                <span th:if="${book.category == '1'}" th:text="'著者: ' + ${book.creater}"></span>
+                                <span th:if="${book.category == '2'}" th:text="'監督: ' + ${book.creater}"></span>
                                 <span th:if="${book.category == '3'}" th:text="'ハード: ' + ${book.publisher}"></span>
                             </div>
                             

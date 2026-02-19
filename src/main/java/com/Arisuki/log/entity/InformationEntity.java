@@ -25,12 +25,9 @@ public class InformationEntity {
 //	    private String publisher;
 //	    private String category;
 	    
-	    private String creater;
+	    private String creator;
 	    private String category;
 	    private String publisher;
 	    private String subAttribute;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
+
