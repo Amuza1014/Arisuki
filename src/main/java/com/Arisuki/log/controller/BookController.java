@@ -57,6 +57,12 @@ public class BookController {
 		// mypage.html を呼び出す
 		return "mypage";
 	}
+	
+	@GetMapping("/form")
+	public String form() {
+		return "form";
+	}
+	
 
 	@GetMapping("/detail/{id}")
 	public String detail(@PathVariable("id") Integer id, Model model) {
