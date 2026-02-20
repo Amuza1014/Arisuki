@@ -71,26 +71,30 @@ body {
 					<div class="card h-100">
 
 						<!-- サムネイル -->
-						<img th:if="${item.thumbnailUrl != null}"
-							th:src="${item.thumbnailUrl}" class="card-img-top" alt="サムネイル">
+						<img
+							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
+							class="card-img-top" alt="thumbnail">
 
 						<div class="card-body">
 
 							<!-- カテゴリバッジ -->
-							<span th:if="${item.category == 1}" class="badge badge-book">Book</span>
-
-							<span th:if="${item.category == 2}" class="badge badge-movie">Movie</span>
-
-							<span th:if="${item.category == 3}" class="badge badge-game">Game</span>
-
+						<div class="card-body">
+		                            <div class="mb-2">
+                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 ブック</span>
+                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 ムービー</span>
+                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 ゲーム</span>
+                            </div>
 							<!-- タイトル -->
 							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
-
-							<!-- 作成者 -->
-							<p class="text-light-gray mb-1" th:text="${item.creator}"></p>
-
-							<!-- レビュー -->
-							<p class="card-text" th:text="${item.reviewText}"></p>
+							<div class="small mb-2 fw-bold text-secondary">
+								<span th:if="${item.category == '1'}"
+									th:text="'著者: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'監督: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
+									th:text="'ハード: ' + ${item.publisher}"></span>
+							</div>
+							<p class="text-light-gray mb-1" th:text="${item.reviewText}"></p>
 
 						</div>
 

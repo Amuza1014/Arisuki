@@ -77,15 +77,12 @@ refs /remotes /origin /dai-table
 						<img
 							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
-
 						<div class="card-body">
-							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-item">📖
-									ブック</span> <span th:if="${item.category == '2'}"
-									class="badge badge-movie">🎬 ムービー</span> <span
-									th:if="${item.category == '3'}" class="badge badge-game">🎮
-									ゲーム</span>
-							</div>
+		                            <div class="mb-2">
+                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 ブック</span>
+                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 ムービー</span>
+                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 ゲーム</span>
+                            </div>
 
 							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
 

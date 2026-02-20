@@ -79,7 +79,7 @@ body {
 			</div>
 
 			<img
-				th:src="${book.thumbnailUrl != null && !book.thumbnailUrl.isEmpty()} ? ${book.thumbnailUrl} : 'https://placehold.jp/800x450.png?text=No%20Image'"
+				th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/800x450.png?text=No%20Image'"
 				class="main-img mb-4 shadow-sm" alt="thumbnail"
 				style="width: 100%; border-radius: 15px; object-fit: cover; max-height: 450px;">
 
