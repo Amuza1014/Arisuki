@@ -56,8 +56,8 @@
                             <h5 class="card-title fw-bold" th:text="${book.title}">作品名</h5>
                             
                             <div class="small mb-2 fw-bold text-secondary">
-                                <span th:if="${book.category == '1'}" th:text="'著者: ' + ${book.creater}"></span>
-                                <span th:if="${book.category == '2'}" th:text="'監督: ' + ${book.creater}"></span>
+                                <span th:if="${book.category == '1'}" th:text="'著者: ' + ${book.creator}"></span>
+                                <span th:if="${book.category == '2'}" th:text="'監督: ' + ${book.creator}"></span>
                                 <span th:if="${book.category == '3'}" th:text="'ハード: ' + ${book.publisher}"></span>
                             </div>
                             
