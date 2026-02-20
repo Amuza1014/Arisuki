@@ -39,7 +39,13 @@ public class AllController {
 //	public String loginToMypage() {
 //		return "mypage";
 //	}
-
+	
+	@GetMapping("/timeline")
+	public String timeline(Model model) {
+	    List<InformationEntity> list = repository.findAll();
+	    model.addAttribute("sukiList", list);
+	    return "timeline";
+	}
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
 	public String result(InformationEntity book, Model model) {
@@ -122,5 +128,7 @@ public class AllController {
 		}
 		return "";
 	}
+	
+	
 
 }
