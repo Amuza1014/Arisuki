@@ -89,16 +89,46 @@ body { background-color: #fff5f8; }
 			</form>
 		</div>
 	</div>
-
-	<script>
-	function toggleFields() {
+	<script th:inline="javascript">
+/* 	function toggleFields() {
 		const category = document.getElementById("category").value;
 		document.getElementById("bookFields").style.display = (category === "1") ? "block" : "none";
 		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
 		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
-	}
-	</script>
+	} */
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	function toggleFields() {
+	    // 選択されたカテゴリーの値 (1, 2, or 3)
+	    const category = document.getElementById('category').value;
+	    
+	    // 各フィールドグループのID
+	    const fieldGroups = [
+	        { id: 'bookFields', value: '1' },
+	        { id: 'movieFields', value: '2' },
+	        { id: 'gameFields', value: '3' }
+	    ];
+
+	    fieldGroups.forEach(group => {
+	        const element = document.getElementById(group.id);
+	        if (element) {
+	            // 中にあるすべての input と select を取得
+	            const inputs = element.querySelectorAll('input, select');
+	            
+	            if (group.value === category) {
+	                // 選択されているジャンル：表示して有効化（送信される）
+	                element.style.display = 'block';
+	                inputs.forEach(input => input.disabled = false);
+	            } else {
+	                // 選択されていないジャンル：非表示にして無効化（送信されない！）
+	                element.style.display = 'none';
+	                inputs.forEach(input => input.disabled = true);
+	            }
+	        }
+	    });
+	}
+
+	// ページが読み込まれた瞬間に一度実行して、初期状態を正しくセットする
+	document.addEventListener('DOMContentLoaded', toggleFields);
+	</script>
 </body>
 </html>
