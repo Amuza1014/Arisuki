@@ -35,7 +35,6 @@ body {
 }
 
 /* カテゴリごとのバッジ（ラベル） */
-
 .badge-book {
 	background-color: #0d6efd;
 }
@@ -81,11 +80,11 @@ refs /remotes /origin /dai-table
 
 						<div class="card-body">
 							<div class="mb-2">
-								<<<<<<< HEAD <span th:if="${item.category == '1'}"
-									class="badge badge-item">📖 ブック</span> <span
-									th:if="${item.category == '2'}" class="badge badge-movie">🎬
-									ムービー</span> <span th:if="${item.category == '3'}"
-									class="badge badge-game">🎮 ゲーム</span>
+								<span th:if="${item.category == '1'}" class="badge badge-item">📖
+									ブック</span> <span th:if="${item.category == '2'}"
+									class="badge badge-movie">🎬 ムービー</span> <span
+									th:if="${item.category == '3'}" class="badge badge-game">🎮
+									ゲーム</span>
 							</div>
 
 							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
@@ -98,24 +97,11 @@ refs /remotes /origin /dai-table
 									th:if="${item.category == '3'}"
 									th:text="'ハード: ' + ${item.publisher}"></span>
 							</div>
-
-
-							<div class="small mb-2 fw-bold text-secondary">
-								<span th:if="${book.category == '1'}"
-									th:text="'著者: ' + ${book.creator}"></span> <span
-									th:if="${book.category == '2'}"
-									th:text="'監督: ' + ${book.creator}"></span> <span
-									th:if="${book.category == '3'}"
-									th:text="'ハード: ' + ${book.publisher}"></span>
-							</div>
-
 							<p class="card-text text-light-gray"
 								th:text="${#strings.length(item.reviewText) > 20} 
                                         ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
                                         : ${item.reviewText}">
-								======= th:text="${#strings.length(book.reviewText) > 20} ?
-								${#strings.substring(book.reviewText, 0, 20)} + '…' :
-								${book.reviewText}"> >>>>>>> refs/remotes/origin/dai-table
+
 								レビュー内容</p>
 						</div>
 					</div>

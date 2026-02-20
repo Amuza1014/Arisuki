@@ -132,7 +132,7 @@ function toggleFields() {
                 target.style.display = "block";
                 target.querySelectorAll("input, select").forEach(i => i.disabled = false);
             } else {
-                target.style.
+                target.style.display = "none";
                 target.querySelectorAll("input, select").forEach(i => i.disabled = true);
             }
         }
