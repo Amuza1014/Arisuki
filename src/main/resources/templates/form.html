@@ -43,18 +43,19 @@ body {
 
 			<form th:action="@{/complete}" method="post">
 
+				<div class="mb-4">
+					<label for="category" class="form-label fw-bold">ジャンル</label> <select
+						class="form-select border-primary" id="category" name="category"
+						onchange="toggleFields()" required>
+						<option value="" disabled selected>選択してください</option>
+						<option value="1">ブック (Book)</option>
+						<option value="2">ムービー (Movie)</option>
+						<option value="3">ゲーム (Game)</option>
+					</select>
+				</div>
 
-                <div class="mb-4">
-                    <label for="category" class="form-label fw-bold">ジャンル</label>
-                    <select class="form-select border-primary" id="category" name="category" onchange="toggleFields()" required>
-                        <option value="" disabled selected>選択してください</option>
-                        <option value="1">ブック (item)</option>
-                        <option value="2">ムービー (Movie)</option>
-                        <option value="3">ゲーム (Game)</option>
-                    </select>
-                </div>
-
-				<div id="itemFields" class="sub-fields p-3 mb-3 border rounded bg-light">
+				<div id="itemFields"
+					class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-primary fw-bold">本の詳細情報</p>
 					<input type="text" name="creator" class="form-control mb-2"
 						placeholder="著者名"> <input type="text" name="publisher"
@@ -113,47 +114,30 @@ body {
 			</form>
 		</div>
 	</div>
-	<!-- 	<script>
-	function toggleFields() {
-		const category = document.getElementById("category").value;
-		document.getElementById("itemFields").style.display = (category === "1") ? "block" : "none";
-		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
-		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
-	}
-	</script> -->
+
 	<script>
 function toggleFields() {
-    // 1. 現在選ばれているカテゴリーを取得
     const category = document.getElementById("category").value;
     
-    // 2. 各グループの要素を取得
     const groups = {
         "1": document.getElementById("itemFields"),
         "2": document.getElementById("movieFields"),
         "3": document.getElementById("gameFields")
     };
 
-    // 3. 全てのグループを一度チェック
     Object.keys(groups).forEach(key => {
         const target = groups[key];
         if (target) {
             if (key === category) {
-                // 選ばれたジャンル：表示して、中身を有効にする
                 target.style.display = "block";
-                const inputs = target.querySelectorAll("input, select");
-                inputs.forEach(i => i.disabled = false);
+                target.querySelectorAll("input, select").forEach(i => i.disabled = false);
             } else {
-                // 選ばれていないジャンル：隠して、中身を無効にする
                 target.style.display = "none";
-                const inputs = target.querySelectorAll("input, select");
-                inputs.forEach(i => i.disabled = true);
+                target.querySelectorAll("input, select").forEach(i => i.disabled = true);
             }
         }
     });
 }
-
-// 画面が表示されたときに、今の選択状態に合わせて初期化する
-window.onload = toggleFields;
 </script>
 </body>
 </html>

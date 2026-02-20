@@ -9,28 +9,27 @@ import jakarta.persistence.ManyToOne;
 
 import lombok.Data;
 
-@Entity 
+@Entity
 @Data
 public class InformationEntity {
-	   @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Integer id;
-	    
-	    private String title;
-	  
-	    private String thumbnailUrl;
-	   
-	    private String reviewText;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-	    
-	    private String creator;
-	    private String category;
-	    private String publisher;
-	    private String subAttribute;
-	    
+	private String title;
+
+	private String thumbnailUrl;
+
+	private String reviewText;
+
+	private String creator;
+	private String category;
+	private String publisher;
+	private String subAttribute;
+	
+	
 	 // 【追加】投稿したユーザーとの紐付け
-	    @ManyToOne
-	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
-	    private UserEntity user;
+    @ManyToOne
+    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+    private UserEntity user;
 }
-
