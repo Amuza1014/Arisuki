@@ -32,13 +32,13 @@ body { background-color: #fff5f8; }
                     <label for="category" class="form-label fw-bold">ジャンル</label>
                     <select class="form-select border-primary" id="category" name="category" onchange="toggleFields()" required>
                         <option value="" disabled selected>選択してください</option>
-                        <option value="1">ブック (Book)</option>
+                        <option value="1">ブック (item)</option>
                         <option value="2">ムービー (Movie)</option>
                         <option value="3">ゲーム (Game)</option>
                     </select>
                 </div>
 
-				<div id="bookFields" class="sub-fields p-3 mb-3 border rounded bg-light">
+				<div id="itemFields" class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-primary fw-bold">本の詳細情報</p>
 					<input type="text" name="creator" class="form-control mb-2" placeholder="著者名">
 					<input type="text" name="publisher" class="form-control mb-2" placeholder="出版社">
@@ -91,7 +91,7 @@ body { background-color: #fff5f8; }
 <!-- 	<script>
 	function toggleFields() {
 		const category = document.getElementById("category").value;
-		document.getElementById("bookFields").style.display = (category === "1") ? "block" : "none";
+		document.getElementById("itemFields").style.display = (category === "1") ? "block" : "none";
 		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
 		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
 	}
@@ -103,7 +103,7 @@ function toggleFields() {
     
     // 2. 各グループの要素を取得
     const groups = {
-        "1": document.getElementById("bookFields"),
+        "1": document.getElementById("itemFields"),
         "2": document.getElementById("movieFields"),
         "3": document.getElementById("gameFields")
     };
