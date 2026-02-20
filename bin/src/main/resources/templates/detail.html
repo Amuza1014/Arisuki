@@ -83,9 +83,21 @@ body {
 				class="main-img mb-4 shadow-sm" alt="thumbnail"
 				style="width: 100%; border-radius: 15px; object-fit: cover; max-height: 450px;">
 
+<<<<<<< HEAD
 			<div class="card bg-light p-4 mb-4 border-0">
 				<h5 class="fw-bold mb-3 border-bottom pb-2">📋 基本情報</h5>
+=======
+            <div class="card bg-light p-4 mb-4 border-0">
+    <h5 class="fw-bold mb-3 border-bottom pb-2">📋 基本情報</h5>
+    
+    <div th:if="${book.category == '1'}">
+        <p><span class="label-text">著者：</span><span th:text="${book.creator}"></span></p>
+        <p><span class="label-text">出版社：</span><span th:text="${book.publisher}"></span></p>
+        <p><span class="label-text">ジャンル：</span><span th:text="${book.subAttribute}"></span></p>
+    </div>
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
+<<<<<<< HEAD
 				<div th:if="${book.category == '1'}">
 					<p>
 						<span class="label-text">著者：</span><span th:text="${book.creator}"></span>
@@ -99,7 +111,15 @@ body {
 							th:text="${book.subAttribute}"></span>
 					</p>
 				</div>
+=======
+    <div th:if="${book.category == '2'}">
+        <p><span class="label-text">監督：</span><span th:text="${book.creator}"></span></p>
+        <p><span class="label-text">タイプ：</span><span th:text="${book.publisher}"></span></p>
+        <p><span class="label-text">ジャンル：</span><span th:text="${book.subAttribute}"></span></p>
+    </div>
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
+<<<<<<< HEAD
 				<div th:if="${book.category == '2'}">
 					<p>
 						<span class="label-text">監督：</span><span th:text="${book.creator}"></span>
@@ -113,6 +133,14 @@ body {
 							th:text="${book.subAttribute}"></span>
 					</p>
 				</div>
+=======
+    <div th:if="${book.category == '3'}">
+        <p><span class="label-text">メーカー：</span><span th:text="${book.creator}"></span></p>
+        <p><span class="label-text">ハード：</span><span th:text="${book.publisher}"></span></p>
+        <p><span class="label-text">ジャンル：</span><span th:text="${book.subAttribute}"></span></p>
+    </div>
+</div>
+>>>>>>> branch 'master' of https://github.com/Amuza1014/Arisuki.git
 
 				<div th:if="${book.category == '3'}">
 					<p>
