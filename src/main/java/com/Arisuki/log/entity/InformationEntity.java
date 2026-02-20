@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 
 import lombok.Data;
 
-@Entity // これを忘れるとDBのテーブルになりません
+@Entity 
 @Data
 public class InformationEntity {
 	   @Id
@@ -15,15 +15,11 @@ public class InformationEntity {
 	    private Integer id;
 	    
 	    private String title;
-	    // HTMLの name="thumbnailUrl" と合わせる
+	  
 	    private String thumbnailUrl;
-	    // HTMLの name="reviewText" と合わせる
+	   
 	    private String reviewText;
 
-	    // 以下、将来的に使う項目として残してOK
-//	    private String author;
-//	    private String publisher;
-//	    private String category;
 	    
 	    private String creator;
 	    private String category;
