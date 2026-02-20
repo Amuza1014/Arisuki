@@ -14,6 +14,11 @@
         /* リンクの装飾を消す */
         .card-link { text-decoration: none; color: inherit; }
         
+        /* カテゴリごとのバッジ（ラベル） */
+        .badge-book { background-color: #0d6efd; }
+        .badge-movie { background-color: #ff8c00; }
+        .badge-game { background-color: #198754; }
+        
         /* カスタムの薄い色 */
         .text-light-gray { color: #adb5bd; }
     </style>
@@ -26,7 +31,9 @@
             <a th:href="@{/form}" class="btn btn-primary mb-1" style="background-color: #ff4081; border: none;">新しく登録する</a>
              <a th:href="@{/login}" class="btn btn-primary" style="background-color: #ff4081; border: none;">ログアウト</a>
         </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
+</div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="book : ${bookList}">
                 <a th:href="@{/detail/{id}(id=${book.id})}" class="card-link">
@@ -35,11 +42,23 @@
                              class="card-img-top" alt="thumbnail">
                         
                         <div class="card-body">
+                            <div class="mb-2">
+                                <span th:if="${book.category == '1'}" class="badge badge-book">📖 ブック</span>
+                                <span th:if="${book.category == '2'}" class="badge badge-movie">🎬 ムービー</span>
+                                <span th:if="${book.category == '3'}" class="badge badge-game">🎮 ゲーム</span>
+                            </div>
+
                             <h5 class="card-title fw-bold" th:text="${book.title}">作品名</h5>
                             
+                            <div class="small mb-2 fw-bold text-secondary">
+                                <span th:if="${book.category == '1'}" th:text="'著者: ' + ${book.creator}"></span>
+                                <span th:if="${book.category == '2'}" th:text="'監督: ' + ${book.creator}"></span>
+                                <span th:if="${book.category == '3'}" th:text="'ハード: ' + ${book.publisher}"></span>
+                            </div>
+                            
                             <p class="card-text text-light-gray" 
-                               th:text="${#strings.length(book.reviewText) > 7} 
-                                        ? ${#strings.substring(book.reviewText, 0, 7)} + '…' 
+                               th:text="${#strings.length(book.reviewText) > 20} 
+                                        ? ${#strings.substring(book.reviewText, 0, 20)} + '…' 
                                         : ${book.reviewText}">
                                レビュー内容
                             </p>

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.Arisuki.log.entity.InformationEntity;
-import com.Arisuki.log.repository.BookRepository;
+import com.Arisuki.log.repository.AllRepository;
 
 @Controller
-public class BookController {
+public class AllController {
 
 	@Autowired
-	private BookRepository repository; // 追加
+	private AllRepository repository; // 追加
 
 	@GetMapping("/login")
 	public String loginForm() {
@@ -43,6 +43,14 @@ public class BookController {
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
 	public String result(InformationEntity book, Model model) {
+		
+		// --- 追加: カンマ連結を防ぐクレンジング処理 ---
+		book.setCreator(cleanComma(book.getCreator()));
+		book.setCategory(cleanComma(book.getCategory()));
+		book.setPublisher(cleanComma(book.getPublisher()));
+		book.setSubAttribute(cleanComma(book.getSubAttribute()));
+		// ------------------------------------------
+
 		repository.save(book); // H2 DBへ保存
 		model.addAttribute("book", book);
 		return "complete"; // complete.htmlを表示
@@ -82,17 +90,37 @@ public class BookController {
 		// 2. 削除後は一覧画面などにリダイレクト
 		return "redirect:/mypage";
 	}
-	@PostMapping("edit/{id}")
+	
+	@GetMapping("/edit/{id}")
 	public String editBook(@PathVariable("id") Integer id,Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(BookEntity)を取り出す
-	    // .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
-	    InformationEntity book = repository.findById(id).orElseThrow();
-	    
-	    // 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
-	    model.addAttribute("book", book);
-	    //ダミーコメント
-	    // 3. 編集用のHTMLファイルを表示する
-	    return "edit";
+		// .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
+		InformationEntity book = repository.findById(id).orElseThrow();
+		
+		// 2. 取り出したデータを、HTML（Thymeleaf）に「book」という名前で渡す
+		model.addAttribute("book", book);
+		//ダミーコメント
+		// 3. 編集用のHTMLファイルを表示する
+		return "edit";
+	}
+
+	/**
+	 * Spring MVCの仕様で同じ名前の入力項目が複数送られてきた際、
+	 * カンマ区切りで連結されてしまうのを防ぐための補助メソッドです。
+	 */
+	private String cleanComma(String str) {
+		if (str == null || str.isEmpty()) {
+			return "";
+		}
+		// カンマで分割し、最初に見つかった「空文字でない値」を返します
+		String[] parts = str.split(",");
+		for (String part : parts) {
+			String trimmed = part.trim();
+			if (!trimmed.isEmpty()) {
+				return trimmed;
+			}
+		}
+		return "";
 	}
 
 }

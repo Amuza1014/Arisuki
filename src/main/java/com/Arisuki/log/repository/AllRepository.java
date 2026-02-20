@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.Arisuki.log.entity.InformationEntity;
 
 @Repository
-public interface BookRepository extends JpaRepository<InformationEntity, Integer> {
+public interface AllRepository extends JpaRepository<InformationEntity, Integer> {
     
 }
