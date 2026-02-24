@@ -7,22 +7,23 @@ import jakarta.persistence.Id;
 
 import lombok.Data;
 
-@Entity 
+@Entity
 @Data
 public class InformationEntity {
-	   @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Integer id;
-	    
-	    private String title;
-	  
-	    private String thumbnailUrl;
-	   
-	    private String reviewText;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-	    
-	    private String creator;
-	    private String category;
-	    private String publisher;
-	    private String subAttribute;
+	private String title;
+
+	private String thumbnailUrl;
+
+	private String reviewText;
+
+	private String creator;
+	private String category;
+	private String publisher;
+	private String subAttribute;
+	
+	private Integer score;
 }
