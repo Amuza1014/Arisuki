@@ -1,13 +1,18 @@
 package com.Arisuki.log.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.repository.ItemRepository;
@@ -22,7 +27,7 @@ public class ItemController {
 	public String loginForm() {
 		return "login";
 	}
-	
+
 	@PostMapping("login")
 	public String loginSuccess() {
 		return "form";
@@ -33,32 +38,53 @@ public class ItemController {
 	public String input() {
 		return "login";
 	}
-	
-//	// ログイン画面からマイページへ遷移
-//	@PostMapping("/mypage")
-//	public String loginToMypage() {
-//		return "mypage";
-//	}
+
+	//	// ログイン画面からマイページへ遷移
+	//	@PostMapping("/mypage")
+	//	public String loginToMypage() {
+	//		return "mypage";
+	//	}
 	@GetMapping("/timeline")
 	public String timeline(Model model) {
-	    List<InformationEntity> list = repository.findAll();
-	    model.addAttribute("sukiList", list);
-	    return "timeline";
+		List<InformationEntity> list = repository.findAll();
+		model.addAttribute("sukiList", list);
+		return "timeline";
 	}
+
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
-	public String result(InformationEntity item, Model model) {
-		
-		// --- 追加: カンマ連結を防ぐクレンジング処理 ---
+	public String result(@ModelAttribute InformationEntity item,
+			@RequestParam("thumbnail") MultipartFile file,
+			Model model) {
+
+		if (!file.isEmpty()) {
+			// ここが今回の書き換え箇所
+			String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
+			new File(uploadDir).mkdirs(); // フォルダ作成
+			File dest = new File(uploadDir, file.getOriginalFilename());
+			try {
+				file.transferTo(dest);
+			} catch (IllegalStateException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+
+			// DB に保存する URL
+			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+		}
+		// その他のフィールド処理
 		item.setCreator(cleanComma(item.getCreator()));
 		item.setCategory(cleanComma(item.getCategory()));
 		item.setPublisher(cleanComma(item.getPublisher()));
 		item.setSubAttribute(cleanComma(item.getSubAttribute()));
-		// ------------------------------------------
 
-		repository.save(item); // H2 DBへ保存
+		repository.save(item);
 		model.addAttribute("item", item);
-		return "complete"; // complete.htmlを表示
+
+		return "complete";
 	}
 
 	@GetMapping("/mypage")
@@ -70,12 +96,11 @@ public class ItemController {
 		// mypage.html を呼び出す
 		return "mypage";
 	}
-	
+
 	@GetMapping("/form")
 	public String form() {
 		return "form";
 	}
-	
 
 	@GetMapping("/detail/{id}")
 	public String detail(@PathVariable("id") Integer id, Model model) {
@@ -95,13 +120,13 @@ public class ItemController {
 		// 2. 削除後は一覧画面などにリダイレクト
 		return "redirect:/mypage";
 	}
-	
+
 	@GetMapping("/edit/{id}")
-	public String editItem(@PathVariable("id") Integer id,Model model) {
+	public String editItem(@PathVariable("id") Integer id, Model model) {
 		// 1. URLのIDを使って、データベースから1件だけ作品(InformationEntity)を取り出す
 		// .orElseThrow() は「もしデータがなかったらエラーにするよ」という指示です
 		InformationEntity item = repository.findById(id).orElseThrow();
-		
+
 		// 2. 取り出したデータを、HTML（Thymeleaf）に「item」という名前で渡す
 		model.addAttribute("item", item);
 		//ダミーコメント

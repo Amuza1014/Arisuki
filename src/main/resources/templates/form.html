@@ -41,8 +41,8 @@ body {
 			<h2 class="text-center mb-4">✨ ArrayList&lt;Suki&gt; ✨</h2>
 			<p class="text-center text-muted">お気に入りの作品を記録しよう</p>
 
-			<form th:action="@{/complete}" method="post">
-
+			<!-- 修正：form タグを追加 -->
+			<form th:action="@{/complete}" method="post" enctype="multipart/form-data">
 				<div class="mb-4">
 					<label for="category" class="form-label fw-bold">ジャンル</label> <select
 						class="form-select border-primary" id="category" name="category"
@@ -94,10 +94,11 @@ body {
 						placeholder="タイトルを入力" required>
 				</div>
 
+				<!-- 修正：ファイル選択はここ1つに統合 -->
 				<div class="mb-3">
-					<label for="thumbnailUrl" class="form-label fw-bold">サムネイル画像URL</label>
-					<input type="url" class="form-control" id="thumbnailUrl"
-						name="thumbnailUrl" placeholder="https://example.com/image.jpg">
+					<label for="thumbnail" class="form-label fw-bold">サムネイル画像</label> <input
+						type="file" class="form-control" id="thumbnail" name="thumbnail"
+						accept="image/*">
 				</div>
 
 				<div class="mb-3">
@@ -114,6 +115,7 @@ body {
 			</form>
 		</div>
 	</div>
+
 
 	<script>
 function toggleFields() {
