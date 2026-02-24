@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>タイムライン - ArrayList&lt;Suki&gt;</title>
@@ -24,8 +24,14 @@ body {
 }
 
 .card-img-top {
+<<<<<<< HEAD
 	height: 200px;
 	object-fit: cover;
+=======
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+>>>>>>> refs/remotes/origin/dai-table
 }
 
 /* リンクの装飾を消す */
@@ -63,11 +69,20 @@ body {
 				style="background-color: #ff4081; border: none;"> マイページに戻る </a>
 		</div>
 
+<<<<<<< HEAD
 		<div class="row">
+=======
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+>>>>>>> refs/remotes/origin/dai-table
 
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
+<<<<<<< HEAD
 			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
 				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+=======
+			<div class="col" th:each="item : ${sukiList}">
+				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
+>>>>>>> refs/remotes/origin/dai-table
 					<div class="card h-100">
 
 						<!-- サムネイル -->
@@ -75,7 +90,11 @@ body {
 							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
 
+<<<<<<< HEAD
 						<div class="card-body">
+=======
+					
+>>>>>>> refs/remotes/origin/dai-table
 
 							<!-- カテゴリバッジ -->
 						<div class="card-body">
