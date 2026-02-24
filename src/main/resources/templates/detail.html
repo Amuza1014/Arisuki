@@ -79,12 +79,13 @@ body {
 			</div>
 
 			<img
-				th:src="${book.thumbnailUrl != null && !book.thumbnailUrl.isEmpty()} ? ${book.thumbnailUrl} : 'https://placehold.jp/800x450.png?text=No%20Image'"
+				th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/800x450.png?text=No%20Image'"
 				class="main-img mb-4 shadow-sm" alt="thumbnail"
 				style="width: 100%; border-radius: 15px; object-fit: cover; max-height: 450px;">
 
 			<div class="card bg-light p-4 mb-4 border-0">
 				<h5 class="fw-bold mb-3 border-bottom pb-2">📋 基本情報</h5>
+				
 				<div th:if="${item.category == '1'}">
 					<p>
 						<span class="label-text">著者：</span><span th:text="${item.creator}"></span>
@@ -138,13 +139,20 @@ body {
 			<div class="d-flex justify-content-center gap-3">
 				<a th:href="@{/mypage}" class="btn btn-outline-secondary px-4">戻る</a>
 
-				<a th:href="@{/edit/{id}(id=${item.id})}"
-					class="btn btn-warning px-4">編集する</a>
+				<th:block th:with="isOwner=${session.user != null && item.user != null && session.user.id == item.user.id}">
+					
+					<a th:href="@{/edit/{id}(id=${item.id})}"
+						class="btn btn-warning px-4"
+						th:classappend="${!isOwner} ? 'disabled'"
+						th:aria-disabled="${!isOwner}">編集する</a>
 
-				<form th:action="@{/delete/{id}(id=${item.id})}" method="post"
-					onsubmit="return confirm('本当に削除しますか？')">
-					<button type="submit" class="btn btn-danger px-4">削除する</button>
-				</form>
+					<form th:action="@{/delete/{id}(id=${item.id})}" method="post"
+						onsubmit="return confirm('本当に削除しますか？')">
+						<button type="submit" class="btn btn-danger px-4"
+							th:disabled="${!isOwner}">削除する</button>
+					</form>
+					
+				</th:block>
 			</div>
 		</div>
 	</div>
