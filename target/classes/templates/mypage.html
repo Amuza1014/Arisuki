@@ -1,57 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>マイページ - ArrayList&lt;Suki&gt;</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #fff5f8; }
-        /* カード全体のスタイル */
-        .card { border-radius: 15px; border: none; transition: 0.3s; overflow: hidden; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-img-top { height: 200px; object-fit: cover; }
-        
-        /* リンクの装飾を消す */
-        .card-link { text-decoration: none; color: inherit; }
-        
-        /* カスタムの薄い色 */
-        .text-light-gray { color: #adb5bd; }
-    </style>
+<meta charset="UTF-8">
+<title>マイページ - ArrayList&lt;Suki&gt;</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+body {
+	background-color: #fff5f8;
+}
+/* カード全体のスタイル */
+.card {
+	border-radius: 15px;
+	border: none;
+	transition: 0.3s;
+	overflow: hidden;
+}
+
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+	height: 200px;
+	object-fit: cover;
+}
+
+/* リンクの装飾を消す */
+.card-link {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* カテゴリごとのバッジ（ラベル） */
+.badge-book {
+	background-color: #0d6efd;
+}
+
+refs /remotes /origin /dai-table
+        .badge-movie {
+	background-color: #ff8c00;
+}
+
+.badge-game {
+	background-color: #198754;
+}
+
+/* カスタムの薄い色 */
+.text-light-gray {
+	color: #adb5bd;
+}
+</style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">✨ マイページ ✨</h2>
-            <a th:href="@{/}" class="btn btn-primary" style="background-color: #ff4081; border: none;">新しく登録する</a>
-        </div>
+	<div class="container mt-5">
+		<!-- <div class="d-flex justify-content-between align-items-center mb-4"> -->
+		<h2 class="fw-bold">✨ マイページ ✨</h2>
+		<div class="d-flex flex-column align-items-end">
+			<a th:href="@{/form}" class="btn btn-primary mb-1"
+				style="background-color: #ff4081; border: none;">新しく登録する</a> <a
+				th:href="@{/timeline}" class="btn btn-primary mb-1"
+				style="background-color: #ff4081; border: none;">タイムライン</a> <a
+				th:href="@{/login}" class="btn btn-primary"
+				style="background-color: #ff4081; border: none;">ログアウト</a>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col" th:each="book : ${bookList}">
-                <a th:href="@{/detail/{id}(id=${book.id})}" class="card-link">
-                    <div class="card h-100 shadow-sm">
-                        <img th:src="${book.thumbnailUrl != null && !book.thumbnailUrl.isEmpty()} ? ${book.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'" 
-                             class="card-img-top" alt="thumbnail">
-                        
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold" th:text="${book.title}">作品名</h5>
-                            
-                            <p class="card-text text-light-gray" 
-                               th:text="${#strings.length(book.reviewText) > 7} 
-                                        ? ${#strings.substring(book.reviewText, 0, 7)} + '…' 
-                                        : ${book.reviewText}">
-                               レビュー内容
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-        
-        <div th:if="${#lists.isEmpty(bookList)}" class="text-center mt-5">
-            <p class="text-muted">まだ登録された作品はありません。上のボタンから好きなものを登録してね！</p>
-        </div>
-    </div>
+		</div>
+		<div class="d-flex justify-content-between align-items-center mb-4">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+		</div>
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div class="col" th:each="item : ${itemList}">
+				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+					<div class="card h-100 shadow-sm">
+						<!-- サムネイル表示 -->
+						<img
+							th:src="${item.thumbnailUrl != null ? item.thumbnailUrl : '/images/noimage.png'}"
+							alt="thumbnail">
+
+						<div class="card-body">
+							<!-- カテゴリバッジ -->
+							<div class="mb-2">
+								<span th:if="${item.category == '1'}" class="badge badge-book">📖
+									ブック</span> <span th:if="${item.category == '2'}"
+									class="badge badge-movie">🎬 ムービー</span> <span
+									th:if="${item.category == '3'}" class="badge badge-game">🎮
+									ゲーム</span>
+							</div>
+
+							<!-- 作品名 -->
+							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
+
+							<!-- 作者/監督/メーカー表示 -->
+							<div class="small mb-2 fw-bold text-secondary">
+								<span th:if="${item.category == '1'}"
+									th:text="'著者: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'監督: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
+									th:text="'ハード: ' + ${item.publisher}"></span>
+							</div>
+
+							<!-- レビュー内容（20文字で省略） -->
+							<p class="card-text text-light-gray"
+								th:text="${#strings.length(item.reviewText) > 20} 
+                                ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
+                                : ${item.reviewText}">
+								レビュー内容</p>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+
+		<!-- 作品がない場合の表示 -->
+		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5">
+			<p class="text-muted">まだ登録された作品はありません。上のボタンから好きなものを登録してね！</p>
+		</div>
 </html>
