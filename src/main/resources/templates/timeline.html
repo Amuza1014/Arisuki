@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>タイムライン - ArrayList&lt;Suki&gt;</title>
@@ -24,8 +24,10 @@ body {
 }
 
 .card-img-top {
-	height: 200px;
-	object-fit: cover;
+
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
 /* リンクの装飾を消す */
@@ -63,34 +65,37 @@ body {
 				style="background-color: #ff4081; border: none;"> マイページに戻る </a>
 		</div>
 
-		<div class="row">
-
+		<div class="row row-cols-1 row-cols-md-3 g-4">
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
-			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
-				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+
+			<div class="col" th:each="item : ${sukiList}">
+				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
 
 						<!-- サムネイル -->
-						<img th:if="${item.thumbnailUrl != null}"
-							th:src="${item.thumbnailUrl}" class="card-img-top" alt="サムネイル">
+						<img
+							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
+							class="card-img-top" alt="thumbnail">
 
-						<div class="card-body">
 
 							<!-- カテゴリバッジ -->
-							<span th:if="${item.category == 1}" class="badge badge-book">Book</span>
-
-							<span th:if="${item.category == 2}" class="badge badge-movie">Movie</span>
-
-							<span th:if="${item.category == 3}" class="badge badge-game">Game</span>
-
+						<div class="card-body">
+		                            <div class="mb-2">
+                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 ブック</span>
+                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 ムービー</span>
+                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 ゲーム</span>
+                            </div>
 							<!-- タイトル -->
 							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
-
-							<!-- 作成者 -->
-							<p class="text-light-gray mb-1" th:text="${item.creator}"></p>
-
-							<!-- レビュー -->
-							<p class="card-text" th:text="${item.reviewText}"></p>
+							<div class="small mb-2 fw-bold text-secondary">
+								<span th:if="${item.category == '1'}"
+									th:text="'著者: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'監督: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
+									th:text="'ハード: ' + ${item.publisher}"></span>
+							</div>
+							<p class="text-light-gray mb-1" th:text="${item.reviewText}"></p>
 
 						</div>
 
