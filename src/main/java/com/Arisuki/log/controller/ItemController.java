@@ -1,6 +1,7 @@
 package com.Arisuki.log.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -66,32 +67,33 @@ public class ItemController {
 		// ===== 既存データ取得（editのときだけ）=====
 		InformationEntity dbItem = null;
 		if (item.getId() != null) {
-		    dbItem = repository.findById(item.getId()).orElse(null);
+			dbItem = repository.findById(item.getId()).orElse(null);
 		}
 
 		// ===== 既存データ取得（edit対応の核心）=====
-//		InformationEntity dbItem = repository.findById(item.getId()).orElse(null);
+		//		InformationEntity dbItem = repository.findById(item.getId()).orElse(null);
 
-		// ===== 画像処理 =====
-		// ===== 画像処理 =====
+		// ===== 画像アップロード =====
 		if (!file.isEmpty()) {
-		    String uploadDir = new File("/uploads/images").getAbsolutePath();
-		    new File(uploadDir).mkdirs();
+			String uploadDir = new File("uploads/images").getAbsolutePath();
+			new File(uploadDir).mkdirs();
 
-		    File dest = new File(uploadDir, file.getOriginalFilename());
-		    try {
-		        file.transferTo(dest);
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    }
+			File dest = new File(uploadDir, file.getOriginalFilename());
+			try {
+				file.transferTo(dest);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-		    item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-
-		} else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
-		    // URLも空なら既存を保持（edit時のみ）
-		    if (dbItem != null) {
-		        item.setThumbnailUrl(dbItem.getThumbnailUrl());
-		    }
+			// 無条件でセット
+			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+		}
+		// ファイル未選択なら URL をそのまま使用
+		// URL が空なら既存データ（編集用）を反映
+		else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+			if (dbItem != null) {
+				item.setThumbnailUrl(dbItem.getThumbnailUrl());
+			}
 		}
 
 		// ===== 共通処理 =====

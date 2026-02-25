@@ -9,9 +9,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// /images/** でアクセスされたら static/images フォルダを参照
+		// 既存の static/images
 		registry.addResourceHandler("/images/**")
 				.addResourceLocations("classpath:/static/images/");
+
+		// アップロード画像用
+		registry.addResourceHandler("/uploads/images/**")
+				.addResourceLocations("file:uploads/images/"); // 実際のアップロード先ディレクトリ
 	}
 
 }
