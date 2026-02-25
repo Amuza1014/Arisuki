@@ -39,13 +39,7 @@ body {
 	background-color: #0d6efd;
 }
 
-<<<<<<< HEAD
-refs /remotes /origin /dai-table
-        .badge-movie {
-=======
-
 .badge-movie {
->>>>>>> refs/remotes/origin/dai-table
 	background-color: #ff8c00;
 }
 
@@ -73,54 +67,34 @@ refs /remotes /origin /dai-table
 
 		</div>
 		<div class="d-flex justify-content-between align-items-center mb-4">
-<<<<<<< HEAD
-=======
-
 		</div>
 		<div class="row row-cols-1 row-cols-md-3 g-4">
 			<div class="col" th:each="item : ${itemList}">
 				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100 shadow-sm">
+
+						<!-- サムネイル -->
 						<img
-							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
+							th:src="${item.thumbnailUrl != null and !item.thumbnailUrl.isEmpty()} 
+        ? @{${item.thumbnailUrl}} 
+        : 'https://placehold.jp/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
-						<div class="card-body">
-		                            <div class="mb-2">
-                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 ブック</span>
-                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 ムービー</span>
-                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 ゲーム</span>
-                            </div>
->>>>>>> refs/remotes/origin/dai-table
 
-<<<<<<< HEAD
-		</div>
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<div class="col" th:each="item : ${itemList}">
-				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
-					<div class="card h-100 shadow-sm">
-						<!-- サムネイル表示 -->
-						<img
-							th:src="${item.thumbnailUrl != null ? item.thumbnailUrl : '/images/noimage.png'}"
-							alt="thumbnail">
-=======
-							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
->>>>>>> refs/remotes/origin/dai-table
-
-<<<<<<< HEAD
 						<div class="card-body">
-							<!-- カテゴリバッジ -->
+
+							<!-- カテゴリ -->
 							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-book">📖
-									ブック</span> <span th:if="${item.category == '2'}"
-									class="badge badge-movie">🎬 ムービー</span> <span
-									th:if="${item.category == '3'}" class="badge badge-game">🎮
-									ゲーム</span>
+								<span th:if="${item != null and item.category == '1'}"
+									class="badge badge-book">📖 ブック</span> <span
+									th:if="${item.category == '2'}" class="badge badge-movie">🎬
+									ムービー</span> <span th:if="${item.category == '3'}"
+									class="badge badge-game">🎮 ゲーム</span>
 							</div>
 
-							<!-- 作品名 -->
+							<!-- タイトル -->
 							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
 
-							<!-- 作者/監督/メーカー表示 -->
+							<!-- 作成者など -->
 							<div class="small mb-2 fw-bold text-secondary">
 								<span th:if="${item.category == '1'}"
 									th:text="'著者: ' + ${item.creator}"></span> <span
@@ -130,37 +104,13 @@ refs /remotes /origin /dai-table
 									th:text="'ハード: ' + ${item.publisher}"></span>
 							</div>
 
-							<!-- レビュー内容（20文字で省略） -->
+							<!-- レビュー -->
 							<p class="card-text text-light-gray"
 								th:text="${#strings.length(item.reviewText) > 20} 
-                                ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
-                                : ${item.reviewText}">
+                       ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
+                       : ${item.reviewText}">
 								レビュー内容</p>
-						</div>
-					</div>
-				</a>
-			</div>
-		</div>
 
-		<!-- 作品がない場合の表示 -->
-		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5">
-			<p class="text-muted">まだ登録された作品はありません。上のボタンから好きなものを登録してね！</p>
-		</div>
-=======
-							<div class="small mb-2 fw-bold text-secondary">
-								<span th:if="${item.category == '1'}"
-									th:text="'著者: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '2'}"
-									th:text="'監督: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '3'}"
-									th:text="'ハード: ' + ${item.publisher}"></span>
-							</div>
-							<p class="card-text text-light-gray"
-								th:text="${#strings.length(item.reviewText) > 20} 
-                                        ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
-                                        : ${item.reviewText}">
-
-								レビュー内容</p>
 						</div>
 					</div>
 				</a>
@@ -171,9 +121,7 @@ refs /remotes /origin /dai-table
 			<p class="text-muted">まだ登録された作品はありません。上のボタンから好きなものを登録してね！</p>
 		</div>
 	</div>
-
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
->>>>>>> refs/remotes/origin/dai-table
 </html>

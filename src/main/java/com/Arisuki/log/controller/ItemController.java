@@ -1,7 +1,6 @@
 package com.Arisuki.log.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -58,26 +57,41 @@ public class ItemController {
 			HttpSession session,
 			Model model) {
 
-		// ===== ログインユーザー取得（他の人の機能）=====
+		// ===== ログインユーザー =====
 		UserEntity loginUser = (UserEntity) session.getAttribute("user");
 		if (loginUser == null) {
 			return "redirect:/login";
 		}
 		item.setUser(loginUser);
+		// ===== 既存データ取得（editのときだけ）=====
+		InformationEntity dbItem = null;
+		if (item.getId() != null) {
+		    dbItem = repository.findById(item.getId()).orElse(null);
+		}
 
-		// ===== 画像アップロード（あなたの機能）=====
+		// ===== 既存データ取得（edit対応の核心）=====
+//		InformationEntity dbItem = repository.findById(item.getId()).orElse(null);
+
+		// ===== 画像処理 =====
+		// ===== 画像処理 =====
 		if (!file.isEmpty()) {
-			String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
-			new File(uploadDir).mkdirs();
+		    String uploadDir = new File("/uploads/images").getAbsolutePath();
+		    new File(uploadDir).mkdirs();
 
-			File dest = new File(uploadDir, file.getOriginalFilename());
-			try {
-				file.transferTo(dest);
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
+		    File dest = new File(uploadDir, file.getOriginalFilename());
+		    try {
+		        file.transferTo(dest);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
 
-			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+		    item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+
+		} else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+		    // URLも空なら既存を保持（edit時のみ）
+		    if (dbItem != null) {
+		        item.setThumbnailUrl(dbItem.getThumbnailUrl());
+		    }
 		}
 
 		// ===== 共通処理 =====
@@ -165,54 +179,11 @@ public class ItemController {
 		return "timeline";
 	}
 
-	// ------------------- 画像アップロード対応 -------------------
-	@PostMapping("/complete")
-	public String result(@ModelAttribute InformationEntity item,
-			@RequestParam(value = "thumbnail", required = false) MultipartFile file,
-			Model model) {
-
-		if (file != null && !file.isEmpty()) {
-			String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
-			new File(uploadDir).mkdirs();
-			File dest = new File(uploadDir, file.getOriginalFilename());
-			try {
-				file.transferTo(dest);
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
-			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-		}
-
-		// カンマ処理
-		item.setCreator(cleanComma(item.getCreator()));
-		item.setCategory(cleanComma(item.getCategory()));
-		item.setPublisher(cleanComma(item.getPublisher()));
-		item.setSubAttribute(cleanComma(item.getSubAttribute()));
-
-		repository.save(item);
-		model.addAttribute("item", item);
-
-		return "complete";
-	}
-	// -----------------------------------------------------------
-
-	@GetMapping("/mypage")
-	public String mypage(Model model) {
-		List<InformationEntity> itemList = repository.findAll();
-		model.addAttribute("itemList", itemList);
-		return "mypage";
-	}
-
 	@GetMapping("/view/{id}")
 	public String view(@PathVariable Integer id, Model model) {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		model.addAttribute("item", item);
 		return "view";
-	}
-
-	@GetMapping("/form")
-	public String form() {
-		return "form";
 	}
 
 	@GetMapping("/detail/{id}")

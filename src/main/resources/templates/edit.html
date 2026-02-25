@@ -59,22 +59,14 @@ img.thumbnail-preview {
 						onchange="toggleFields()" required>
 						<option value="" disabled>選択してください</option>
 						<option value="1" th:selected="${item.category == '1'}">ブック
-<<<<<<< HEAD
 							(Book)</option>
-=======
-							(item)</option>
->>>>>>> refs/remotes/origin/dai-table
 						<option value="2" th:selected="${item.category == '2'}">ムービー
 							(Movie)</option>
 						<option value="3" th:selected="${item.category == '3'}">ゲーム
 							(Game)</option>
 					</select>
 				</div>
-
-<<<<<<< HEAD
 				<!-- 本用フィールド -->
-=======
->>>>>>> refs/remotes/origin/dai-table
 				<div id="itemFields"
 					class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-primary fw-bold">本の詳細情報</p>
@@ -138,7 +130,7 @@ img.thumbnail-preview {
 					<label class="form-label fw-bold">現在のサムネイル</label>
 					<div>
 						<img
-							th:src="${item.thumbnailUrl != null ? item.thumbnailUrl : '/images/noimage.png'}"
+							th:src="${item.thumbnailUrl != null and !#strings.isEmpty(item.thumbnailUrl) ? item.thumbnailUrl : '/images/noimage.png'}"
 							alt="thumbnail" class="thumbnail-preview">
 					</div>
 				</div>
@@ -179,52 +171,28 @@ img.thumbnail-preview {
 	</div>
 
 	<script th:inline="javascript">
-<<<<<<< HEAD
-function toggleFields() {
-    const category = document.getElementById('category').value;
-    const fieldGroups = [
-        { id: 'itemFields', value: '1' },
-        { id: 'movieFields', value: '2' },
-        { id: 'gameFields', value: '3' }
-    ];
-=======
-/* 	function toggleFields() {
-		const category = document.getElementById("category").value;
-		document.getElementById("itemFields").style.display = (category === "1") ? "block" : "none";
-		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
-		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
-	} */
->>>>>>> refs/remotes/origin/dai-table
-
-<<<<<<< HEAD
-    fieldGroups.forEach(group => {
-        const element = document.getElementById(group.id);
-        if (element) {
-            const inputs = element.querySelectorAll('input, select');
-            if (group.value === category) {
-                element.style.display = 'block';
-                inputs.forEach(input => input.disabled = false);
-            } else {
-                element.style.display = 'none';
-                inputs.forEach(input => input.disabled = true);
-            }
-        }
-    });
-}
-=======
 	function toggleFields() {
-	    // 選択されたカテゴリーの値 (1, 2, or 3)
 	    const category = document.getElementById('category').value;
-	    
-	    // 各フィールドグループのID
 	    const fieldGroups = [
 	        { id: 'itemFields', value: '1' },
 	        { id: 'movieFields', value: '2' },
 	        { id: 'gameFields', value: '3' }
 	    ];
->>>>>>> refs/remotes/origin/dai-table
 
-document.addEventListener('DOMContentLoaded', toggleFields);
+	    fieldGroups.forEach(group => {
+	        const element = document.getElementById(group.id);
+	        if (element) {
+	            const inputs = element.querySelectorAll('input, select');
+	            if (group.value === category) {
+	                element.style.display = 'block';
+	                inputs.forEach(input => input.disabled = false);
+	            } else {
+	                element.style.display = 'none';
+	                inputs.forEach(input => input.disabled = true);
+	            }
+	        }
+	    });
+	}
 </script>
 
 </body>
