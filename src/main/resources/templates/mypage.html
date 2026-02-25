@@ -155,7 +155,6 @@ body {
         ? @{${item.thumbnailUrl}} 
         : 'https://placehold.jp/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
-
 						<div class="card-body">
 
 							<!-- カテゴリ -->
@@ -166,6 +165,7 @@ body {
 									ムービー</span> <span th:if="${item.category == '3'}"
 									class="badge badge-game">🎮 ゲーム</span>
 							</div>
+
 
 							<!-- タイトル -->
 							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
