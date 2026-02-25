@@ -39,13 +39,17 @@ public class ItemController {
 	}
 
 
+<<<<<<< HEAD
 
 	// 初期アクセス（/）もログイン画面へ
+=======
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 	@GetMapping("/")
 	public String input() {
 		return "redirect:/login";
 	}
 
+<<<<<<< HEAD
 	//	// ログイン画面からマイページへ遷移
 	//	@PostMapping("/mypage")
 	//	public String loginToMypage() {
@@ -156,6 +160,8 @@ public class ItemController {
 		return "form";
 	}
 
+=======
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 	@GetMapping("/timeline")
 	public String timeline(HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
@@ -167,12 +173,68 @@ public class ItemController {
 		return "timeline";
 	}
 
+<<<<<<< HEAD
+=======
+	// ------------------- 画像アップロード対応 -------------------
+	@PostMapping("/complete")
+	public String result(@ModelAttribute InformationEntity item,
+			@RequestParam(value = "thumbnail", required = false) MultipartFile file,
+			Model model) {
+
+		if (file != null && !file.isEmpty()) {
+			String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
+			new File(uploadDir).mkdirs();
+			File dest = new File(uploadDir, file.getOriginalFilename());
+			try {
+				file.transferTo(dest);
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+		}
+
+		// カンマ処理
+		item.setCreator(cleanComma(item.getCreator()));
+		item.setCategory(cleanComma(item.getCategory()));
+		item.setPublisher(cleanComma(item.getPublisher()));
+		item.setSubAttribute(cleanComma(item.getSubAttribute()));
+
+		repository.save(item);
+		model.addAttribute("item", item);
+
+		return "complete";
+	}
+	// -----------------------------------------------------------
+
+	@GetMapping("/mypage")
+	public String mypage(Model model) {
+		List<InformationEntity> itemList = repository.findAll();
+		model.addAttribute("itemList", itemList);
+		return "mypage";
+	}
+
+	@GetMapping("/view/{id}")
+	public String view(@PathVariable Integer id, Model model) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+		model.addAttribute("item", item);
+		return "view";
+	}
+
+	@GetMapping("/form")
+	public String form() {
+		return "form";
+	}
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 
 	@GetMapping("/detail/{id}")
+<<<<<<< HEAD
 	public String detail(@PathVariable("id") Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
 
+=======
+	public String detail(@PathVariable("id") Integer id, Model model) {
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		InformationEntity item = repository.findById(id).orElse(null);
 		if (item == null) {
 			return "redirect:/mypage";
@@ -182,15 +244,20 @@ public class ItemController {
 	}
 
 	@PostMapping("/delete/{id}")
+<<<<<<< HEAD
 	public String deleteItem(@PathVariable("id") Integer id, HttpSession session) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
 
+=======
+	public String deleteItem(@PathVariable("id") Integer id) {
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		repository.deleteById(id);
 		return "redirect:/mypage";
 	}
 
 	@GetMapping("/edit/{id}")
+<<<<<<< HEAD
 
 	public String editItem(@PathVariable("id") Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
@@ -199,25 +266,45 @@ public class ItemController {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		// 2. 取り出したデータを、HTML（Thymeleaf）に「item」という名前で渡す
 
+=======
+	public String editItem(@PathVariable("id") Integer id, Model model) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		model.addAttribute("item", item);
 		return "edit";
 	}
 
+<<<<<<< HEAD
 	// --- 共通補助メソッド ---
 
+=======
+	@PostMapping("/rate/{id}")
+	public String rate(@PathVariable Integer id,
+			@RequestParam("score") Integer score) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+		item.setScore(score);
+		repository.save(item);
+		return "redirect:/view/" + id;
+	}
+
+	// ------------------- ヘルパーメソッド -------------------
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 	private String cleanComma(String str) {
-		if (str == null || str.isEmpty()) {
+		if (str == null || str.isEmpty())
 			return "";
+<<<<<<< HEAD
 		}
+=======
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		String[] parts = str.split(",");
 		for (String part : parts) {
 			String trimmed = part.trim();
-			if (!trimmed.isEmpty()) {
+			if (!trimmed.isEmpty())
 				return trimmed;
-			}
 		}
 		return "";
 	}
+<<<<<<< HEAD
 
 	// 登録画面の表示
 	@GetMapping("/signup")
@@ -241,4 +328,6 @@ public class ItemController {
 		return "redirect:/login";
 	}
 
+=======
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 }

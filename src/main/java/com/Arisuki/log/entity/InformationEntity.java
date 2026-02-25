@@ -26,6 +26,7 @@ public class InformationEntity {
 	private String category;
 	private String publisher;
 	private String subAttribute;
+<<<<<<< HEAD
 
 	//	 // 【追加】投稿したユーザーとの紐付け
 	//	    @ManyToOne
@@ -37,4 +38,13 @@ public class InformationEntity {
 	@ManyToOne
 	@JoinColumn(name = "user_id") // DB内では user_id というカラムになります
 	private UserEntity user;
+=======
+	private Integer score;
+	    
+	 // 【追加】投稿したユーザーとの紐付け
+	    @ManyToOne
+	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+	    private InformationEntity user;
+>>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 }
+	
