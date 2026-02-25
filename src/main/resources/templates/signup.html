@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - ArrayList&lt;Suki&gt;</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* ダークテーマの共通設定 */
+    body { 
+        background-color: #121212; 
+        color: #e0e0e0;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        height: 100vh;
+        margin: 0;
+    }
+
+    /* 左上のアプリタイトル（login.htmlと統一） */
+    .brand-logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #2ecc71; 
+        text-decoration: none;
+        letter-spacing: 1px;
+        line-height: 1.2;
+    }
+
+    .signup-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .signup-container {
+        width: 100%;
+        max-width: 400px;
+        background:#696969; 
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+    }
+
+    /* 入力フォームのカスタマイズ */
+    .form-control {
+        background-color: #252525;
+        border: 1px solid #444;
+        color: #fff;
+    }
+
+    .form-control:focus {
+        background-color: #2a2a2a;
+        border-color: #2ecc71;
+        color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+    }
+
+    /* ★ Username / Password ラベルの色を緑に変更 */
+    .form-label {
+        font-weight: 500;
+        color: #2ecc71;
+    }
+
+    /* メインの緑ボタン */
+    .btn-custom-green { 
+        background-color: #2ecc71; 
+        border: none; 
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        transition: 0.3s;
+    }
+
+    .btn-custom-green:hover { 
+        background-color: #27ae60; 
+        color: white;
+        box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .divider {
+        border-top: 1px solid #333;
+        margin: 25px 0;
+    }
+
+    /* ★ 補足テキストの色を緑に変更 */
+    .text-secondary-muted {
+        color: #2ecc71;
+    }
+
+    /* 戻るリンクのスタイル */
+    .back-to-login {
+        color: #2ecc71;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .back-to-login:hover {
+        color: #27ae60;
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+    <a href="/" class="brand-logo">
+        <div>ArrayList&lt;Suki&gt;</div>
+        <div style="font-size: 0.9rem; font-weight: normal; opacity: 0.8; margin-top: -5px;">　　　-Arisuki-</div>
+    </a>
+
+    <div class="signup-wrapper">
+        <div class="signup-container text-center">
+            <h3 class="fw-bold mb-3 text-white">Create Account</h3>
+            
+            <p class="small text-secondary-muted mb-4">
+                新しくアカウントを作成して、<br>あなたの「好き」を記録しましょう。
+            </p>
+
+            <form th:action="@{/signup}" method="post" class="text-start">
+                <div class="mb-3">
+                    <label for="username" class="form-label small">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" 
+                           placeholder="ユーザー名を入力" required autofocus>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label small">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" 
+                           placeholder="パスワードを入力" required>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-custom-green">アカウントを登録する</button>
+                </div>
+            </form>
+
+            <div class="divider"></div>
+
+            <div class="text-center">
+                <p class="small text-secondary-muted mb-2">既にアカウントをお持ちの方</p>
+                <a th:href="@{/login}" class="back-to-login small">ログイン画面へ戻る</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
