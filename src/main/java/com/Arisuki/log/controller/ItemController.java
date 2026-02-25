@@ -38,64 +38,58 @@ public class ItemController {
 		return "login";
 	}
 
-
-<<<<<<< HEAD
-
 	// 初期アクセス（/）もログイン画面へ
-=======
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
+
 	@GetMapping("/")
 	public String input() {
 		return "redirect:/login";
 	}
 
-<<<<<<< HEAD
 	//	// ログイン画面からマイページへ遷移
 	//	@PostMapping("/mypage")
 	//	public String loginToMypage() {
 	//		return "mypage";
 	//	}
 
-
 	// 2. データを保存して完了画面を表示する
 	@PostMapping("/complete")
 	public String result(@ModelAttribute InformationEntity item,
-	                     @RequestParam("thumbnail") MultipartFile file,
-	                     HttpSession session,
-	                     Model model) {
+			@RequestParam("thumbnail") MultipartFile file,
+			HttpSession session,
+			Model model) {
 
-	    // ===== ログインユーザー取得（他の人の機能）=====
-	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
-	    if (loginUser == null) {
-	        return "redirect:/login";
-	    }
-	    item.setUser(loginUser);
+		// ===== ログインユーザー取得（他の人の機能）=====
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null) {
+			return "redirect:/login";
+		}
+		item.setUser(loginUser);
 
-	    // ===== 画像アップロード（あなたの機能）=====
-	    if (!file.isEmpty()) {
-	        String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
-	        new File(uploadDir).mkdirs();
+		// ===== 画像アップロード（あなたの機能）=====
+		if (!file.isEmpty()) {
+			String uploadDir = new File("src/main/resources/static/uploads/images").getAbsolutePath();
+			new File(uploadDir).mkdirs();
 
-	        File dest = new File(uploadDir, file.getOriginalFilename());
-	        try {
-	            file.transferTo(dest);
-	        } catch (IllegalStateException | IOException e) {
-	            e.printStackTrace();
-	        }
+			File dest = new File(uploadDir, file.getOriginalFilename());
+			try {
+				file.transferTo(dest);
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
 
-	        item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-	    }
+			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+		}
 
-	    // ===== 共通処理 =====
-	    item.setCreator(cleanComma(item.getCreator()));
-	    item.setCategory(cleanComma(item.getCategory()));
-	    item.setPublisher(cleanComma(item.getPublisher()));
-	    item.setSubAttribute(cleanComma(item.getSubAttribute()));
+		// ===== 共通処理 =====
+		item.setCreator(cleanComma(item.getCreator()));
+		item.setCategory(cleanComma(item.getCategory()));
+		item.setPublisher(cleanComma(item.getPublisher()));
+		item.setSubAttribute(cleanComma(item.getSubAttribute()));
 
-	    repository.save(item);
-	    model.addAttribute("item", item);
+		repository.save(item);
+		model.addAttribute("item", item);
 
-	    return "complete";
+		return "complete";
 	}
 
 	// ログイン実行処理
@@ -160,8 +154,6 @@ public class ItemController {
 		return "form";
 	}
 
-=======
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 	@GetMapping("/timeline")
 	public String timeline(HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
@@ -173,8 +165,6 @@ public class ItemController {
 		return "timeline";
 	}
 
-<<<<<<< HEAD
-=======
 	// ------------------- 画像アップロード対応 -------------------
 	@PostMapping("/complete")
 	public String result(@ModelAttribute InformationEntity item,
@@ -224,17 +214,11 @@ public class ItemController {
 	public String form() {
 		return "form";
 	}
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 
 	@GetMapping("/detail/{id}")
-<<<<<<< HEAD
 	public String detail(@PathVariable("id") Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
-
-=======
-	public String detail(@PathVariable("id") Integer id, Model model) {
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		InformationEntity item = repository.findById(id).orElse(null);
 		if (item == null) {
 			return "redirect:/mypage";
@@ -244,21 +228,14 @@ public class ItemController {
 	}
 
 	@PostMapping("/delete/{id}")
-<<<<<<< HEAD
 	public String deleteItem(@PathVariable("id") Integer id, HttpSession session) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
-
-=======
-	public String deleteItem(@PathVariable("id") Integer id) {
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		repository.deleteById(id);
 		return "redirect:/mypage";
 	}
 
 	@GetMapping("/edit/{id}")
-<<<<<<< HEAD
-
 	public String editItem(@PathVariable("id") Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
@@ -266,18 +243,10 @@ public class ItemController {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		// 2. 取り出したデータを、HTML（Thymeleaf）に「item」という名前で渡す
 
-=======
-	public String editItem(@PathVariable("id") Integer id, Model model) {
-		InformationEntity item = repository.findById(id).orElseThrow();
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 		model.addAttribute("item", item);
 		return "edit";
 	}
 
-<<<<<<< HEAD
-	// --- 共通補助メソッド ---
-
-=======
 	@PostMapping("/rate/{id}")
 	public String rate(@PathVariable Integer id,
 			@RequestParam("score") Integer score) {
@@ -288,14 +257,11 @@ public class ItemController {
 	}
 
 	// ------------------- ヘルパーメソッド -------------------
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
+
 	private String cleanComma(String str) {
 		if (str == null || str.isEmpty())
 			return "";
-<<<<<<< HEAD
-		}
-=======
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
+
 		String[] parts = str.split(",");
 		for (String part : parts) {
 			String trimmed = part.trim();
@@ -304,10 +270,10 @@ public class ItemController {
 		}
 		return "";
 	}
-<<<<<<< HEAD
 
 	// 登録画面の表示
 	@GetMapping("/signup")
+
 	public String signupForm() {
 		return "signup";
 	}
@@ -328,6 +294,4 @@ public class ItemController {
 		return "redirect:/login";
 	}
 
-=======
->>>>>>> branch 'Azuma' of https://github.com/Amuza1014/Arisuki.git
 }
