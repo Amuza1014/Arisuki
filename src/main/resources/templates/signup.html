@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arisuki - ログイン</title>
+<title>Arisuki - 新規登録</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     body { 
@@ -11,9 +11,9 @@
         color: #333;
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
-    .login-container {
+    .signup-container {
         max-width: 420px;
-        margin: 100px auto;
+        margin: 80px auto;
         background: #ffffff;
         padding: 40px;
         border-radius: 8px;
@@ -44,39 +44,36 @@
 <body>
 
     <div class="container">
-        <div class="login-container">
-            <h3 class="text-center mb-4">Login</h3>
+        <div class="signup-container">
+            <h3 class="text-center mb-4">Create Account</h3>
             
-            <div th:if="${param.error}" class="alert alert-danger py-2 small mb-3">
-                ユーザー名またはパスワードが正しくありません。
-            </div>
+            <p class="text-center small text-secondary-custom mb-4">
+                新しくアカウントを作成して、あなたの「好き」を記録しましょう。
+            </p>
 
-            <div th:if="${param.logout}" class="alert alert-info py-2 small mb-3">
-                ログアウトしました。
-            </div>
-
-            <form th:action="@{/login}" method="post">
+            <form th:action="@{/signup}" method="post">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" required autofocus>
+                    <input type="text" id="username" name="username" class="form-control" 
+                           placeholder="ユーザー名を入力" required autofocus>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <input type="password" id="password" name="password" class="form-control" 
+                           placeholder="パスワードを入力" required>
                 </div>
                 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-dark-custom">ログイン</button>
+                    <button type="submit" class="btn btn-dark-custom">アカウントを登録する</button>
                 </div>
             </form>
 
             <div class="divider"></div>
 
             <div class="text-center">
-                <p class="small text-secondary-custom mb-2">初めてご利用の方</p>
-                <a th:href="@{/signup}" class="btn btn-outline-secondary btn-sm px-4">新規アカウント登録</a>
-            </div>      
-           
+                <p class="small text-secondary-custom mb-2">既にアカウントをお持ちの方</p>
+                <a th:href="@{/login}" class="text-decoration-none small" style="color: #2c3e50; font-weight: bold;">ログイン画面へ戻る</a>
+            </div>
         </div>
     </div>
 

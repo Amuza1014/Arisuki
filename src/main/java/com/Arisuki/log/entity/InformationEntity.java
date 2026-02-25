@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import lombok.Data;
 
@@ -24,4 +26,18 @@ public class InformationEntity {
 	private String category;
 	private String publisher;
 	private String subAttribute;
+
+	//	 // 【追加】投稿したユーザーとの紐付け
+	//	    @ManyToOne
+	//	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+	//	    private InformationEntity user;
+	//	
+
+	private Integer score;
+	    
+	 // 【追加】投稿したユーザーとの紐付け
+	    @ManyToOne
+	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+	    private UserEntity user;
 }
+	
