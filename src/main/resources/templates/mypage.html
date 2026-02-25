@@ -7,112 +7,190 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 <style>
+/* ダークテーマの基本設定 */
 body {
-	background-color: #fff5f8;
+	background-color: #121212;
+	color: #e0e0e0;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
+	padding-bottom: 80px;
 }
-/* カード全体のスタイル */
+
+/* カードスタイル */
 .card {
-	border-radius: 15px;
-	border: none;
-	transition: 0.3s;
+	background-color: #1e1e1e;
+	border-radius: 12px;
+	border: 1px solid #333;
+	transition: all 0.3s ease;
 	overflow: hidden;
 }
 
 .card:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+	transform: translateY(-8px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	border-color: #2ecc71;
 }
 
 .card-img-top {
 	height: 200px;
 	object-fit: cover;
+	filter: brightness(0.8);
+	transition: 0.3s;
 }
 
-/* リンクの装飾を消す */
+.card:hover .card-img-top {
+	filter: brightness(1.0);
+}
+
 .card-link {
 	text-decoration: none;
 	color: inherit;
 }
 
-/* カテゴリごとのバッジ（ラベル） */
-.badge-book {
-	background-color: #0d6efd;
+/* 緑ボタン */
+.btn-custom-green {
+	background-color: #2ecc71;
+	color: #fff;
+	border: none;
+	font-weight: bold;
+	padding: 8px 20px;
+	border-radius: 8px;
+	transition: 0.3s;
 }
 
-refs /remotes /origin /dai-table
-        .badge-movie {
-	background-color: #ff8c00;
+.btn-custom-green:hover {
+	background-color: #27ae60;
+	color: #fff;
 }
 
-.badge-game {
-	background-color: #198754;
+/* カテゴリバッジ */
+.badge-item { background-color: #2c3e50; }
+.badge-movie { background-color: #d35400; }
+.badge-game { background-color: #27ae60; }
+
+.text-secondary-muted {
+	color: #9e9e9e !important;
 }
 
-/* カスタムの薄い色 */
-.text-light-gray {
-	color: #adb5bd;
+/* --- 下部固定メニューバーのスタイル --- */
+.navbar-mobile {
+	background-color: rgba(30, 30, 30, 0.85) !important;
+	backdrop-filter: blur(10px); /* 背後をぼかす高級感 */
+	border-top: 1px solid #333;
 }
+
+.nav-icon-link {
+	text-decoration: none;
+	color: #9e9e9e;
+	font-size: 0.75rem;
+	transition: 0.2s;
+}
+
+.nav-icon-link:active {
+	transform: scale(0.9);
+}
+
+.center-add-btn {
+	background-color: #2ecc71;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	color: white;
+	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+	margin-top: -30px; /* 中央ボタンを少し浮かせる */
+	border: 4px solid #121212;
+}
+
+/* PC（md以上）では下部バーを隠す */
+/**@media (min-width: 768px) {
+	.navbar-mobile {
+		display: none !important;
+	}
+	body {
+		padding-bottom: 0;
+	}
+}　**/
 </style>
 </head>
 <body>
-	<div class="container mt-5">
-		<!-- <div class="d-flex justify-content-between align-items-center mb-4"> -->
-		<h2 class="fw-bold">✨ マイページ ✨</h2>
-		<div class="d-flex flex-column align-items-end">
-			<a th:href="@{/form}" class="btn btn-primary mb-1"
-				style="background-color: #ff4081; border: none;">新しく登録する</a> <a
-				th:href="@{/timeline}" class="btn btn-primary mb-1"
-				style="background-color: #ff4081; border: none;">タイムライン</a> <a
-				th:href="@{/login}" class="btn btn-primary"
-				style="background-color: #ff4081; border: none;">ログアウト</a>
-
+	<div class="container mt-5 mb-5">
+		<div class="d-flex justify-content-between align-items-end mb-5">
+			<div>
+				<h2 class="fw-bold mb-0 text-white">Collections</h2>
+				<p class="text-secondary-muted mb-0">お気に入りのアーカイブ</p>
+			</div>
+			<div class="d-none d-md-flex flex-column gap-2">
+				<a th:href="@{/form}" class="btn btn-custom-green">＋ 新しく登録する</a>
+				<div class="d-flex gap-2">
+					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">タイムライン</a>
+					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">ログアウト</a>
+				</div>
+			</div>
 		</div>
-		<div class="d-flex justify-content-between align-items-center mb-4">
 
-		</div>
 		<div class="row row-cols-1 row-cols-md-3 g-4">
 			<div class="col" th:each="item : ${itemList}">
 				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
-					<div class="card h-100 shadow-sm">
+					<div class="card h-100">
 						<img
-							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
+							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
 
 						<div class="card-body">
 							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-item">📖
-									ブック</span> <span th:if="${item.category == '2'}"
-									class="badge badge-movie">🎬 ムービー</span> <span
-									th:if="${item.category == '3'}" class="badge badge-game">🎮
-									ゲーム</span>
+								<span th:if="${item.category == '1'}" class="badge badge-item">📖 Book</span>
+								<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
+								<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
 							</div>
 
 							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
 
-							<div class="small mb-2 fw-bold text-secondary">
-								<span th:if="${item.category == '1'}"
-									th:text="'著者: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '2'}"
-									th:text="'監督: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '3'}"
-									th:text="'ハード: ' + ${item.publisher}"></span>
+							<div class="small mb-2 fw-bold text-secondary-muted">
+								<span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span>
+								<span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span>
+								<span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
 							</div>
-							<p class="card-text text-light-gray"
+							
+							<p class="card-text text-secondary-muted small"
 								th:text="${#strings.length(item.reviewText) > 20} 
                                         ? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
                                         : ${item.reviewText}">
-
-								レビュー内容</p>
+								レビュー内容
+							</p>
 						</div>
 					</div>
 				</a>
 			</div>
 		</div>
 
-		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5">
-			<p class="text-muted">まだ登録された作品はありません。上のボタンから好きなものを登録してね！</p>
+		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5 py-5">
+			<p class="text-secondary-muted fs-5">まだ登録された作品はありません。</p>
 		</div>
 	</div>
+
+	<nav class="navbar navbar-mobile fixed-bottom py-0">
+		<div class="container-fluid">
+			<div class="d-flex justify-content-around align-items-center w-100">
+				<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
+					<div class="fs-4">🌐</div>
+					<div>Timeline</div>
+				</a>
+
+				<a th:href="@{/form}" class="text-decoration-none">
+					<div class="center-add-btn">＋</div>
+				</a>
+
+				<a th:href="@{/login}" class="nav-icon-link text-center py-2">
+					<div class="fs-4">🚪</div>
+					<div>Logout</div>
+				</a>
+			</div>
+		</div>
+	</nav>
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
