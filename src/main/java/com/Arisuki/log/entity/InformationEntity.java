@@ -34,10 +34,11 @@ public class InformationEntity {
 	//	
 
 	private Integer score;
-	    
-	 // 【追加】投稿したユーザーとの紐付け
-	    @ManyToOne
-	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
-	    private UserEntity user;
-}
+
 	
+	 // 【追加】投稿したユーザーとの紐付け
+    @ManyToOne
+    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+    private UserEntity user;
+
+}

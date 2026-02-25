@@ -8,13 +8,18 @@
 	rel="stylesheet">
 <style>
 body {
-	background-color: #fff5f8;
+	background-color: #121212;
+	color: #e0e0e0;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
+	padding-bottom: 80px;
 }
 
 .form-container {
 	max-width: 600px;
 	margin: 50px auto;
-	background: white;
+	/* background: white; */
+	background-color: #1e1e1e;
 	padding: 30px;
 	border-radius: 15px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -161,9 +166,12 @@ img.thumbnail-preview {
 
 				<!-- ボタン -->
 				<div class="d-grid gap-2 mt-4">
-					<button type="submit" class="btn btn-primary btn-lg">変更を保存する</button>
-					<a th:href="@{/detail/{id}(id=${item.id})}"
-						class="btn btn-outline-secondary">キャンセルして戻る</a>
+					<button type="submit" class="btn btn-primary btn-lg">
+					変更を保存する
+					</button>
+					<a th:href="@{/detail/{id}(id=${item.id})}" class="btn btn-outline-secondary">
+					キャンセルして戻る
+					</a>
 				</div>
 
 			</form>

@@ -30,50 +30,83 @@ public class ItemController {
 	@Autowired
 	private UserRepository userRepository;
 
-	// --- ログイン関連の処理 ---
-
-	// ログイン画面を表示する
+	// --- ログイン関連 ---
 	@GetMapping("/login")
 	public String loginForm() {
 		return "login";
 	}
 
-	// 初期アクセス（/）もログイン画面へ
+	@PostMapping("/login")
+	public String loginSuccess(@RequestParam String username,
+			@RequestParam String password,
+			HttpSession session,
+			Model model) {
+		return userRepository.findByUsername(username)
+				.map(user -> {
+					if (user.getPassword().equals(password)) {
+						session.setAttribute("user", user);
+						return "redirect:/mypage";
+					} else {
+						model.addAttribute("error", "パスワードが違います");
+						return "login";
+					}
+				})
+				.orElseGet(() -> {
+					model.addAttribute("error", "ユーザーが見つかりません");
+					return "login";
+				});
+	}
 
-	@GetMapping("/")
-	public String input() {
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
 		return "redirect:/login";
 	}
 
-	//	// ログイン画面からマイページへ遷移
-	//	@PostMapping("/mypage")
-	//	public String loginToMypage() {
-	//		return "mypage";
-	//	}
+	@GetMapping("/")
+	public String root() {
+		return "redirect:/login";
+	}
 
-	// 2. データを保存して完了画面を表示する
+	// --- マイページ ---
+	@GetMapping("/mypage")
+	public String mypage(HttpSession session, Model model) {
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null)
+			return "redirect:/login";
+
+		List<InformationEntity> itemList = repository.findByUserId(loginUser.getId());
+		model.addAttribute("itemList", itemList);
+		return "mypage";
+	}
+
+	// --- 投稿関連 ---
+	@GetMapping("/form")
+	public String form(HttpSession session) {
+		if (session.getAttribute("user") == null)
+			return "redirect:/login";
+		return "form";
+	}
+
 	@PostMapping("/complete")
-	public String result(@ModelAttribute InformationEntity item,
+	public String complete(@ModelAttribute InformationEntity item,
 			@RequestParam("thumbnail") MultipartFile file,
 			HttpSession session,
 			Model model) {
 
-		// ===== ログインユーザー =====
 		UserEntity loginUser = (UserEntity) session.getAttribute("user");
-		if (loginUser == null) {
+		if (loginUser == null)
 			return "redirect:/login";
-		}
+
 		item.setUser(loginUser);
-		// ===== 既存データ取得（editのときだけ）=====
+
+		// 編集時の既存データ
 		InformationEntity dbItem = null;
 		if (item.getId() != null) {
 			dbItem = repository.findById(item.getId()).orElse(null);
 		}
 
-		// ===== 既存データ取得（edit対応の核心）=====
-		//		InformationEntity dbItem = repository.findById(item.getId()).orElse(null);
-
-		// ===== 画像アップロード =====
+		// 画像アップロード処理
 		if (!file.isEmpty()) {
 			String uploadDir = new File("uploads/images").getAbsolutePath();
 			new File(uploadDir).mkdirs();
@@ -84,19 +117,12 @@ public class ItemController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-			// 無条件でセット
 			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-		}
-		// ファイル未選択なら URL をそのまま使用
-		// URL が空なら既存データ（編集用）を反映
-		else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
-			if (dbItem != null) {
-				item.setThumbnailUrl(dbItem.getThumbnailUrl());
-			}
+		} else if ((item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) && dbItem != null) {
+			item.setThumbnailUrl(dbItem.getThumbnailUrl());
 		}
 
-		// ===== 共通処理 =====
+		// 共通クレンジング
 		item.setCreator(cleanComma(item.getCreator()));
 		item.setCategory(cleanComma(item.getCategory()));
 		item.setPublisher(cleanComma(item.getPublisher()));
@@ -108,74 +134,11 @@ public class ItemController {
 		return "complete";
 	}
 
-	// ログイン実行処理
-	@PostMapping("/login")
-	public String loginSuccess(
-			@RequestParam String username,
-			@RequestParam String password,
-			HttpSession session,
-			Model model) {
-
-		// 1. DBからユーザー名をキーに検索
-		return userRepository.findByUsername(username)
-				.map(user -> {
-					// 2. パスワードの照合
-					if (user.getPassword().equals(password)) {
-						// 3. 成功：セッションにユーザー「Entityまるごと」を保存
-						session.setAttribute("user", user);
-						return "redirect:/mypage";
-					} else {
-						model.addAttribute("error", "パスワードが違います");
-						return "login";
-					}
-				})
-				.orElseGet(() -> {
-					// ユーザーが見つからない場合
-					model.addAttribute("error", "ユーザーが見つかりません");
-					return "login";
-				});
-	}
-
-	// ログアウト処理
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate(); // セッション破棄
-		return "redirect:/login";
-	}
-
-	// --- マイページ・データ操作関連（要ログインチェック） ---
-
-	@GetMapping("/mypage")
-	public String mypage(HttpSession session, Model model) {
-		// 1. セッションからログインユーザー(UserEntity)を取得
-		UserEntity loginUser = (UserEntity) session.getAttribute("user");
-
-		// 【門番】ログインチェック
-		if (loginUser == null) {
-			return "redirect:/login";
-		}
-
-		// 2. ログインユーザーのIDに紐づく投稿だけをリポジトリから取得
-		// ※ repository は ItemRepository を指していると想定しています
-		List<InformationEntity> itemList = repository.findByUserId(loginUser.getId());
-
-		model.addAttribute("itemList", itemList);
-		return "mypage";
-	}
-
-	@GetMapping("/form")
-	public String form(HttpSession session) {
-		if (session.getAttribute("user") == null)
-			return "redirect:/login";
-		return "form";
-	}
-
 	@GetMapping("/timeline")
 	public String timeline(HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
 
-		// タイムラインは「全員の投稿」が見える場所なので findAll() のままでOK！
 		List<InformationEntity> list = repository.findAll();
 		model.addAttribute("sukiList", list);
 		return "timeline";
@@ -189,48 +152,78 @@ public class ItemController {
 	}
 
 	@GetMapping("/detail/{id}")
-	public String detail(@PathVariable("id") Integer id, HttpSession session, Model model) {
+	public String detail(@PathVariable Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
+
 		InformationEntity item = repository.findById(id).orElse(null);
-		if (item == null) {
+		if (item == null)
 			return "redirect:/mypage";
-		}
+
 		model.addAttribute("item", item);
 		return "detail";
 	}
 
 	@PostMapping("/delete/{id}")
-	public String deleteItem(@PathVariable("id") Integer id, HttpSession session) {
+	public String deleteItem(@PathVariable Integer id, HttpSession session) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
+
 		repository.deleteById(id);
 		return "redirect:/mypage";
 	}
 
 	@GetMapping("/edit/{id}")
-	public String editItem(@PathVariable("id") Integer id, HttpSession session, Model model) {
+	public String editItem(@PathVariable Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
 
 		InformationEntity item = repository.findById(id).orElseThrow();
-		// 2. 取り出したデータを、HTML（Thymeleaf）に「item」という名前で渡す
-
 		model.addAttribute("item", item);
 		return "edit";
 	}
 
+	// --- 評価関連 ---
 	@PostMapping("/rate/{id}")
-	public String rate(@PathVariable Integer id,
-			@RequestParam("score") Integer score) {
+	public String rate(@PathVariable Integer id, @RequestParam("score") Integer score) {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		item.setScore(score);
 		repository.save(item);
 		return "redirect:/view/" + id;
 	}
 
-	// ------------------- ヘルパーメソッド -------------------
+	@PostMapping("/ratesuccess/{id}")
+	public String ratesuccess(@PathVariable Integer id, @RequestParam("score") Integer score) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+		item.setScore(score);
+		repository.save(item);
+		return "ratesuccess";
+	}
 
+	@PostMapping("/ratesuccess")
+	public String ratesuccessfull() {
+		return "ratesuccess";
+	}
+
+	// --- サインアップ ---
+	@GetMapping("/signup")
+	public String signupForm() {
+		return "signup";
+	}
+
+	@PostMapping("/signup")
+	public String signup(@RequestParam String username, @RequestParam String password) {
+		UserEntity newUser = new UserEntity();
+		newUser.setUsername(username);
+		newUser.setPassword(password); // 後で暗号化予定
+		newUser.setRole("ROLE_USER");
+		newUser.setDisplayName(username);
+
+		userRepository.save(newUser);
+		return "redirect:/login";
+	}
+
+	// --- 共通補助メソッド ---
 	private String cleanComma(String str) {
 		if (str == null || str.isEmpty())
 			return "";
@@ -243,28 +236,4 @@ public class ItemController {
 		}
 		return "";
 	}
-
-	// 登録画面の表示
-	@GetMapping("/signup")
-
-	public String signupForm() {
-		return "signup";
-	}
-
-	// 登録実行（今はまだDB保存処理がないため、ログ出力だけ行いログイン画面へ飛ばします）
-	@PostMapping("/signup")
-	public String signup(@RequestParam String username, @RequestParam String password) {
-		UserEntity newUser = new UserEntity();
-		newUser.setUsername(username);
-		newUser.setPassword(password); // ※現在は生パスワード。後で暗号化します。
-		newUser.setRole("ROLE_USER");
-		newUser.setDisplayName(username); // Usernameを初期値としてセット
-
-		// 2. DBへ保存
-		userRepository.save(newUser);
-
-		// 3. ログイン画面へリダイレクト
-		return "redirect:/login";
-	}
-
 }
