@@ -5,7 +5,11 @@
 <title>評価完了</title>
 <style>
 body {
-	background-color: #fff5f8;
+	background-color: #121212;
+	color: #e0e0e0;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
+	padding-bottom: 80px;
 }
 /* カード全体のスタイル */
 .card {
@@ -45,6 +49,16 @@ body {
 	background-color: #198754;
 }
 
+.btn-custom-green {
+	background-color: #2ecc71;
+	color: #fff;
+	border: none;
+	font-weight: bold;
+	padding: 8px 20px;
+	border-radius: 8px;
+	transition: 0.3s;
+}
+
 /* カスタムの薄い色 */
 .text-light-gray {
 	color: #adb5bd;
@@ -54,9 +68,9 @@ body {
 <body>
 	
 	<div class="container mt-5">
-		<h2>✨評価完了しました✨</h2>
+		<h2>評価完了しました</h2>
 		<div class="d-flex flex-column align-items-end">
-			<a th:href="@{/timeline}" class="btn btn-primary" style="background-color: #ff4081; border: none;">タイムラインに戻る</a>
+			<a th:href="@{/timeline}" class="btn btn-custom-green">タイムラインに戻る</a>
 		</div>
 	</div>
 </body>

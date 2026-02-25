@@ -51,8 +51,17 @@ public class ItemController {
 
 	    InformationEntity item =
 	       repository.findById(id).orElseThrow();
-
-	    item.setScore(score);
+	    
+	    if(item.getScoreSum() == null) {
+	    	item.setScoreSum(0);
+	    }
+	    if(item.getScoreCount() == null) {
+	    	item.setScoreCount(0);
+	    }
+	    item.setScoreSum(item.getScoreSum() + score);
+	    item.setScoreCount(item.getScoreCount() + 1);
+	    
+	   // item.setScore(score);
 
 	    repository.save(item);
 		

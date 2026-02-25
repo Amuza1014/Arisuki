@@ -156,11 +156,14 @@ body {
 							</div>
 							<div class="mb-2">
     <span class="text-warning fw-bold"
-          th:if="${item.score != null}"
-          th:text="'★ ' + ${item.score} + ' / 5'">
+          th:if="${item.scoreCount != null and item.scoreCount > 0}"
+          th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
+          / 5
+          (<span th:text="${item.scoreCount}"></span>件)
     </span>
+    
 
-    <span class="text-color" th:if="${item.score == null}">
+    <span class="text-color" th:if="${item.scoreCount == null or item.scoreCount == 0}">
         未評価
     </span>
 </div>
