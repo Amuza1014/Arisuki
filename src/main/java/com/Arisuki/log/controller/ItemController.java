@@ -30,7 +30,13 @@ public class ItemController {
 	@Autowired
 	private UserRepository userRepository;
 
-	// --- ログイン関連 ---
+	// --- ルート ---
+	@GetMapping("/")
+	public String root() {
+		return "redirect:/login";
+	}
+
+	// --- ログイン・ログアウト ---
 	@GetMapping("/login")
 	public String loginForm() {
 		return "login";
@@ -43,7 +49,7 @@ public class ItemController {
 			Model model) {
 		return userRepository.findByUsername(username)
 				.map(user -> {
-					if (user.getPassword().equals(password)) {
+					if (user.getPassword().equals(password)) { // 後で暗号化予定
 						session.setAttribute("user", user);
 						return "redirect:/mypage";
 					} else {
@@ -63,8 +69,21 @@ public class ItemController {
 		return "redirect:/login";
 	}
 
-	@GetMapping("/")
-	public String root() {
+	// --- サインアップ ---
+	@GetMapping("/signup")
+	public String signupForm() {
+		return "signup";
+	}
+
+	@PostMapping("/signup")
+	public String signup(@RequestParam String username, @RequestParam String password) {
+		UserEntity newUser = new UserEntity();
+		newUser.setUsername(username);
+		newUser.setPassword(password); // 後で暗号化予定
+		newUser.setRole("ROLE_USER");
+		newUser.setDisplayName(username);
+
+		userRepository.save(newUser);
 		return "redirect:/login";
 	}
 
@@ -80,7 +99,7 @@ public class ItemController {
 		return "mypage";
 	}
 
-	// --- 投稿関連 ---
+	// --- 投稿 ---
 	@GetMapping("/form")
 	public String form(HttpSession session) {
 		if (session.getAttribute("user") == null)
@@ -100,7 +119,7 @@ public class ItemController {
 
 		item.setUser(loginUser);
 
-		// 編集時の既存データ
+		// 編集時の既存データ取得
 		InformationEntity dbItem = null;
 		if (item.getId() != null) {
 			dbItem = repository.findById(item.getId()).orElse(null);
@@ -134,6 +153,7 @@ public class ItemController {
 		return "complete";
 	}
 
+	// --- タイムライン ---
 	@GetMapping("/timeline")
 	public String timeline(HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
@@ -144,6 +164,7 @@ public class ItemController {
 		return "timeline";
 	}
 
+	// --- 詳細表示 ---
 	@GetMapping("/view/{id}")
 	public String view(@PathVariable Integer id, Model model) {
 		InformationEntity item = repository.findById(id).orElseThrow();
@@ -164,15 +185,7 @@ public class ItemController {
 		return "detail";
 	}
 
-	@PostMapping("/delete/{id}")
-	public String deleteItem(@PathVariable Integer id, HttpSession session) {
-		if (session.getAttribute("user") == null)
-			return "redirect:/login";
-
-		repository.deleteById(id);
-		return "redirect:/mypage";
-	}
-
+	// --- 編集・削除 ---
 	@GetMapping("/edit/{id}")
 	public String editItem(@PathVariable Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
@@ -183,19 +196,28 @@ public class ItemController {
 		return "edit";
 	}
 
-	// --- 評価関連 ---
-	@PostMapping("/rate/{id}")
-	public String rate(@PathVariable Integer id, @RequestParam("score") Integer score) {
-		InformationEntity item = repository.findById(id).orElseThrow();
-		item.setScore(score);
-		repository.save(item);
-		return "redirect:/view/" + id;
+	@PostMapping("/delete/{id}")
+	public String deleteItem(@PathVariable Integer id, HttpSession session) {
+		if (session.getAttribute("user") == null)
+			return "redirect:/login";
+
+		repository.deleteById(id);
+		return "redirect:/mypage";
 	}
 
+	// --- 評価（スコア集計） ---
 	@PostMapping("/ratesuccess/{id}")
 	public String ratesuccess(@PathVariable Integer id, @RequestParam("score") Integer score) {
 		InformationEntity item = repository.findById(id).orElseThrow();
-		item.setScore(score);
+
+		if (item.getScoreSum() == null)
+			item.setScoreSum(0);
+		if (item.getScoreCount() == null)
+			item.setScoreCount(0);
+
+		item.setScoreSum(item.getScoreSum() + score);
+		item.setScoreCount(item.getScoreCount() + 1);
+
 		repository.save(item);
 		return "ratesuccess";
 	}
@@ -205,35 +227,21 @@ public class ItemController {
 		return "ratesuccess";
 	}
 
-	// --- サインアップ ---
-	@GetMapping("/signup")
-	public String signupForm() {
-		return "signup";
-	}
-
-	@PostMapping("/signup")
-	public String signup(@RequestParam String username, @RequestParam String password) {
-		UserEntity newUser = new UserEntity();
-		newUser.setUsername(username);
-		newUser.setPassword(password); // 後で暗号化予定
-		newUser.setRole("ROLE_USER");
-		newUser.setDisplayName(username);
-
-		userRepository.save(newUser);
-		return "redirect:/login";
-	}
-
-	// --- 共通補助メソッド ---
+	// --- 共通メソッド ---
 	private String cleanComma(String str) {
 		if (str == null || str.isEmpty())
 			return "";
 
 		String[] parts = str.split(",");
+		StringBuilder sb = new StringBuilder();
 		for (String part : parts) {
 			String trimmed = part.trim();
-			if (!trimmed.isEmpty())
-				return trimmed;
+			if (!trimmed.isEmpty()) {
+				if (sb.length() > 0)
+					sb.append(","); // 複数ある場合も維持
+				sb.append(trimmed);
+			}
 		}
-		return "";
+		return sb.toString();
 	}
 }
