@@ -37,12 +37,13 @@
 
     .signup-container {
         width: 100%;
-        max-width: 400px;
+        max-width: 420px; /* 元の HEAD のサイズを少し大きめに */
         background:#696969; 
         padding: 40px;
         border-radius: 15px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         border: 1px solid #333;
+        text-align: center;
     }
 
     /* 入力フォームのカスタマイズ */
@@ -86,18 +87,17 @@
         margin: 25px 0;
     }
 
-    /* ★ 補足テキストの色を緑に変更 */
     .text-secondary-muted {
         color: #2ecc71;
     }
 
-    /* 戻るリンクのスタイル */
     .back-to-login {
         color: #2ecc71;
         text-decoration: none;
         font-weight: bold;
         transition: 0.3s;
     }
+
     .back-to-login:hover {
         color: #27ae60;
         text-decoration: underline;
@@ -112,7 +112,8 @@
     </a>
 
     <div class="signup-wrapper">
-        <div class="signup-container text-center">
+        <div class="signup-container">
+<!--        <div class="signup-container text-center">-->
             <h3 class="fw-bold mb-3 text-white">Create Account</h3>
             
             <p class="small text-secondary-muted mb-4">

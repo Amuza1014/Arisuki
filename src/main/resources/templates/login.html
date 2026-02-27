@@ -39,7 +39,7 @@ body {
 .login-container {
 	width: 100%;
 	max-width: 400px;
-	background:#696969;
+	background: #696969;
 	padding: 40px;
 	border-radius: 15px;
 	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
@@ -63,7 +63,7 @@ body {
 /* ★ Username / Password ラベルの色を緑に変更 */
 .form-label {
 	font-weight: 500;
-	color: #2ecc71; 
+	color: #2ecc71;
 }
 
 /* メインの緑ボタン */
@@ -104,33 +104,35 @@ body {
 }
 /* 蛍光緑のテキストスタイル */
 .text-neon-green {
-    color: #39ff14 !important; /* 典型的な蛍光グリーン */
-    text-shadow: 0 0 5px rgba(57, 255, 20, 0.5); /* ほんのり光らせる */
-    font-weight: bold;
+	color: #39ff14 !important; /* 典型的な蛍光グリーン */
+	text-shadow: 0 0 5px rgba(57, 255, 20, 0.5); /* ほんのり光らせる */
+	font-weight: bold;
 }
 </style>
 </head>
 <body>
-
 	<a href="/" class="brand-logo">
-    <div>ArrayList&lt;Suki&gt;</div>
-    <div style="font-size: 0.9rem; font-weight: normal; opacity: 0.8; margin-top: -5px;">　　　-Arisuki-</div>
-</a>
+		<div>ArrayList&lt;Suki&gt;</div>
+		<div
+			style="font-size: 0.9rem; font-weight: normal; opacity: 0.8; margin-top: -5px;">
+			-Arisuki-</div>
+	</a>
 
 	<div class="login-wrapper">
 		<div class="login-container text-center">
 			<h3 class="fw-bold mb-4 text-white">Login</h3>
+
 
 			<div th:if="${param.error}"
 				class="alert alert-danger py-2 small mb-3 border-0"
 				style="background-color: #4a1a1a; color: #ffb3b3;">
 				ユーザー名またはパスワードが正しくありません。</div>
 
+
 			<div th:if="${param.logout}"
 				class="alert alert-info py-2 small mb-3 border-0"
 				style="background-color: #1a3a4a; color: #b3e0ff;">ログアウトしました。
 			</div>
-
 			<form th:action="@{/login}" method="post" class="text-start">
 				<div class="mb-3">
 					<label for="username" class="form-label small">Username</label> <input
@@ -157,6 +159,5 @@ body {
 
 		</div>
 	</div>
-
 </body>
 </html>

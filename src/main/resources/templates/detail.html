@@ -158,12 +158,19 @@ body {
 
 			<div class="d-flex justify-content-center gap-3">
 				<a th:href="@{/mypage}" class="btn btn-outline-light px-4">戻る</a>
-
-				<a th:href="@{/edit/{id}(id=${item.id})}" class="btn btn-warning px-4">編集する</a>
-
-				<form th:action="@{/delete/{id}(id=${item.id})}" method="post" onsubmit="return confirm('本当に削除しますか？')">
-					<button type="submit" class="btn btn-danger px-4">削除する</button>
-				</form>
+				<th:block th:with="isOwner=${session.user != null && item.user != null && session.user.id == item.user.id}">
+					
+					<a th:href="@{/edit/{id}(id=${item.id})}"
+						class="btn btn-warning px-4"
+						th:classappend="${!isOwner} ? 'disabled'"
+						th:aria-disabled="${!isOwner}">編集する</a>
+					<form th:action="@{/delete/{id}(id=${item.id})}" method="post"
+						onsubmit="return confirm('本当に削除しますか？')">
+						<button type="submit" class="btn btn-danger px-4"
+							th:disabled="${!isOwner}">削除する</button>
+					</form>
+					
+				</th:block>
 			</div>
 		</div>
 	</div>
