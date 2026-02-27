@@ -139,7 +139,7 @@ body {
 
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
 			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
-				<a th:href="@{//{id}(id=${item.id})}" class="card-link">
+				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
 
 						<!-- サムネイル -->
