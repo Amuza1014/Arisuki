@@ -84,6 +84,9 @@ body {
 	color: white;
 }
 
+.text-color-pink{
+	color: pink;}
+
 /* --- 下部固定メニューバーのスタイル --- */
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.85) !important;
@@ -146,6 +149,9 @@ body {
                                 <span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
                                 <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
                                 <span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+                                <p class="text-color-pink">
+                               		posted:<span th:text="${item.user.username}" class="text-color-pink"></span>
+                            	</p>
                             </div>
 							<!-- タイトル -->
 							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
