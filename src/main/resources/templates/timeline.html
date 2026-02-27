@@ -31,6 +31,7 @@ body {
 }
 
 .card-img-top {
+
 	height: 200px;
 	object-fit: cover;
 	filter: brightness(0.8);
@@ -127,8 +128,8 @@ body {
 		</div>
 
 		<div class="row row-cols-1 row-cols-md-3 g-4">
-
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
+
 			<div class="col" th:each="item : ${sukiList}">
 				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
@@ -138,7 +139,6 @@ body {
 							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
 							class="card-img-top" alt="thumbnail">
 
-					
 
 							<!-- カテゴリバッジ -->
 						<div class="card-body">

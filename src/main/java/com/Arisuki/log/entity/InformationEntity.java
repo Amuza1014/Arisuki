@@ -26,8 +26,15 @@ public class InformationEntity {
 	private String category;
 	private String publisher;
 	private String subAttribute;
-	
+
+	//	 // 【追加】投稿したユーザーとの紐付け
+	//	    @ManyToOne
+	//	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+	//	    private InformationEntity user;
+	//	
+
 	private Integer score;
+
 	private Integer scoreSum;
 	private Integer scoreCount;
 	

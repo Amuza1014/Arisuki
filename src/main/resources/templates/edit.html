@@ -37,32 +37,41 @@ body {
 .sub-fields {
 	display: none;
 }
+
+img.thumbnail-preview {
+	max-width: 200px;
+	max-height: 200px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
 </style>
 </head>
-<body onload="toggleFields()">
+<body>
 	<div class="container">
 		<div class="form-container">
 			<h2 class="text-center mb-4">✨ 作品の編集 ✨</h2>
 			<p class="text-center text-muted">内容を書き換えて保存してください</p>
 
-			<form th:action="@{/complete}" method="post" id="editForm">
+			<form th:action="@{/complete}" method="post" id="editForm"
+				enctype="multipart/form-data">
 
 				<input type="hidden" name="id" th:value="${item.id}">
 
+				<!-- カテゴリ選択 -->
 				<div class="mb-4">
 					<label for="category" class="form-label fw-bold">ジャンル</label> <select
 						class="form-select border-primary" id="category" name="category"
 						onchange="toggleFields()" required>
 						<option value="" disabled>選択してください</option>
 						<option value="1" th:selected="${item.category == '1'}">ブック
-							(item)</option>
+							(Book)</option>
 						<option value="2" th:selected="${item.category == '2'}">ムービー
 							(Movie)</option>
 						<option value="3" th:selected="${item.category == '3'}">ゲーム
 							(Game)</option>
 					</select>
 				</div>
-
+				<!-- 本用フィールド -->
 				<div id="itemFields"
 					class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-primary fw-bold">本の詳細情報</p>
@@ -77,6 +86,7 @@ body {
 						th:value="${item.category == '1' ? item.subAttribute : ''}">
 				</div>
 
+				<!-- 映画用フィールド -->
 				<div id="movieFields"
 					class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-warning fw-bold">映画の詳細情報</p>
@@ -98,6 +108,7 @@ body {
 					</select>
 				</div>
 
+				<!-- ゲーム用フィールド -->
 				<div id="gameFields"
 					class="sub-fields p-3 mb-3 border rounded bg-light">
 					<p class="small text-success fw-bold">ゲームの詳細情報</p>
@@ -112,12 +123,32 @@ body {
 						th:value="${item.category == '3' ? item.subAttribute : ''}">
 				</div>
 
+				<!-- タイトル -->
 				<div class="mb-3">
 					<label for="title" class="form-label fw-bold">名前（作品名）</label> <input
 						type="text" class="form-control" id="title" name="title"
 						placeholder="タイトルを入力" th:value="${item.title}" required>
 				</div>
 
+				<!-- 現在のサムネイル表示 -->
+				<div class="mb-3">
+					<label class="form-label fw-bold">現在のサムネイル</label>
+					<div>
+						<img
+							th:src="${item.thumbnailUrl != null and !#strings.isEmpty(item.thumbnailUrl) ? item.thumbnailUrl : '/images/noimage.png'}"
+							alt="thumbnail" class="thumbnail-preview">
+					</div>
+				</div>
+
+				<!-- サムネイルアップロード -->
+				<div class="mb-3">
+					<label for="thumbnail" class="form-label fw-bold">サムネイル画像アップロード</label>
+					<input type="file" class="form-control" id="thumbnail"
+						name="thumbnail" accept="image/*"> <small
+						class="text-muted">※アップロードすると URL より優先されます</small>
+				</div>
+
+				<!-- URL入力 -->
 				<div class="mb-3">
 					<label for="thumbnailUrl" class="form-label fw-bold">サムネイル画像URL</label>
 					<input type="url" class="form-control" id="thumbnailUrl"
@@ -125,6 +156,7 @@ body {
 						th:value="${item.thumbnailUrl}">
 				</div>
 
+				<!-- レビュー -->
 				<div class="mb-3">
 					<label for="reviewText" class="form-label fw-bold">レビュー</label>
 					<textarea class="form-control" id="reviewText" name="reviewText"
@@ -132,6 +164,7 @@ body {
 						required></textarea>
 				</div>
 
+				<!-- ボタン -->
 				<div class="d-grid gap-2 mt-4">
 					<button type="submit" class="btn btn-primary btn-lg">
 					変更を保存する
@@ -144,19 +177,10 @@ body {
 			</form>
 		</div>
 	</div>
-	<script th:inline="javascript">
-/* 	function toggleFields() {
-		const category = document.getElementById("category").value;
-		document.getElementById("itemFields").style.display = (category === "1") ? "block" : "none";
-		document.getElementById("movieFields").style.display = (category === "2") ? "block" : "none";
-		document.getElementById("gameFields").style.display = (category === "3") ? "block" : "none";
-	} */
 
+	<script th:inline="javascript">
 	function toggleFields() {
-	    // 選択されたカテゴリーの値 (1, 2, or 3)
 	    const category = document.getElementById('category').value;
-	    
-	    // 各フィールドグループのID
 	    const fieldGroups = [
 	        { id: 'itemFields', value: '1' },
 	        { id: 'movieFields', value: '2' },
@@ -166,26 +190,18 @@ body {
 	    fieldGroups.forEach(group => {
 	        const element = document.getElementById(group.id);
 	        if (element) {
-	            // 中にあるすべての input と select を取得
 	            const inputs = element.querySelectorAll('input, select');
-	            
 	            if (group.value === category) {
-	                // 選択されているジャンル：表示して有効化（送信される）
 	                element.style.display = 'block';
 	                inputs.forEach(input => input.disabled = false);
 	            } else {
-	                // 選択されていないジャンル：非表示にして無効化（送信されない！）
 	                element.style.display = 'none';
 	                inputs.forEach(input => input.disabled = true);
 	            }
 	        }
 	    });
 	}
-
-
-	// ページが読み込まれた瞬間に一度実行して、初期状態を正しくセットする
-	document.addEventListener('DOMContentLoaded', toggleFields);
-	</script>
+</script>
 
 </body>
 </html>
