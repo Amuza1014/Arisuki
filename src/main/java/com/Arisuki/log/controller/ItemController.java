@@ -1,6 +1,5 @@
 package com.Arisuki.log.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.UserEntity;
 import com.Arisuki.log.repository.ItemRepository;
 import com.Arisuki.log.repository.UserRepository;
+import com.Arisuki.log.service.CloudinaryService; // 追加
 
 @Controller
 public class ItemController {
@@ -31,10 +31,20 @@ public class ItemController {
 	private UserRepository userRepository;
 
 	// --- ルート ---
+	//	@GetMapping("/")
+	//	public String root() {
+	//		return "redirect:/login";
+	//	}
+	// --- ルート ---
 	@GetMapping("/")
-	public String root() {
+	public String input() {
 		return "redirect:/login";
 	}
+
+	@Autowired
+	private CloudinaryService cloudinaryService; // 追加
+
+	// --- ログイン関連の処理 ---
 
 	// --- ログイン・ログアウト ---
 	@GetMapping("/login")
@@ -109,7 +119,7 @@ public class ItemController {
 
 	@PostMapping("/complete")
 	public String complete(@ModelAttribute InformationEntity item,
-			@RequestParam("thumbnail") MultipartFile file,
+			@RequestParam(value = "thumbnail",required = false) MultipartFile file,
 			HttpSession session,
 			Model model) {
 
@@ -118,27 +128,35 @@ public class ItemController {
 			return "redirect:/login";
 
 		item.setUser(loginUser);
-
-		// 編集時の既存データ取得
+		// ===== 既存データ取得（editのときだけ）=====
 		InformationEntity dbItem = null;
 		if (item.getId() != null) {
 			dbItem = repository.findById(item.getId()).orElse(null);
 		}
-
-		// 画像アップロード処理
-		if (!file.isEmpty()) {
-			String uploadDir = new File("uploads/images").getAbsolutePath();
-			new File(uploadDir).mkdirs();
-
-			File dest = new File(uploadDir, file.getOriginalFilename());
+		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
+		if (file != null &&!file.isEmpty()) {
 			try {
-				file.transferTo(dest);
+				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
+				String imageUrl = cloudinaryService.uploadImage(file);
+				item.setThumbnailUrl(imageUrl);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-		} else if ((item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) && dbItem != null) {
-			item.setThumbnailUrl(dbItem.getThumbnailUrl());
+
+			// ===== ローカル保存版（旧仕様：一応残す）=====
+			// item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+
+		} else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+
+			// ===== ローカル版の旧分岐（参考用）=====
+			// else if ((item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) && dbItem != null) {
+			//     item.setThumbnailUrl(dbItem.getThumbnailUrl());
+			// }
+
+			// 現在の編集対応処理
+			if (dbItem != null) {
+				item.setThumbnailUrl(dbItem.getThumbnailUrl());
+			}
 		}
 
 		// 共通クレンジング

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>タイムライン - ArrayList&lt;Suki&gt;</title>
@@ -31,7 +31,6 @@ body {
 }
 
 .card-img-top {
-
 	height: 200px;
 	object-fit: cover;
 	filter: brightness(0.8);
@@ -48,11 +47,11 @@ body {
 }
 
 .card-title {
-  color: #9e9e9e;
+	color: #9e9e9e;
 }
 
-.card-body{
- color: #9e9e9e;
+.card-body {
+	color: #9e9e9e;
 }
 
 /* 緑ボタン */
@@ -72,15 +71,23 @@ body {
 }
 
 /* カテゴリバッジ */
-.badge-item { background-color: #2c3e50; }
-.badge-movie { background-color: #d35400; }
-.badge-game { background-color: #27ae60; }
+.badge-item {
+	background-color: #2c3e50;
+}
+
+.badge-movie {
+	background-color: #d35400;
+}
+
+.badge-game {
+	background-color: #27ae60;
+}
 
 .text-secondary-muted {
 	color: #9e9e9e !important;
 }
 
-.text-color{
+.text-color {
 	color: white;
 }
 
@@ -124,54 +131,63 @@ body {
 		<h2 class="fw-bold mb-4">🌐Timeline</h2>
 
 		<div class="d-flex justify-content-end mb-4">
-			<a th:href="@{/mypage}" class="btn btn-outline-light btn-sm px-3"> Collectionsに戻る </a>
+			<a th:href="@{/mypage}" class="btn btn-outline-light btn-sm px-3">
+				Collectionsに戻る </a>
 		</div>
 
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<!-- ★ここが重要：カードを丸ごとリンクにする -->
+		<div class="row">
 
-			<div class="col" th:each="item : ${sukiList}">
-				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
+			<!-- ★ここが重要：カードを丸ごとリンクにする -->
+			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
+				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
 
 						<!-- サムネイル -->
-						<img
-							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/400x300.png?text=No%20Image'"
-							class="card-img-top" alt="thumbnail">
+						<img th:if="${item.thumbnailUrl != null}"
+							th:src="${item.thumbnailUrl}" class="card-img-top" alt="サムネイル">
 
+						<div class="card-body">
 
 							<!-- カテゴリバッジ -->
-						<div class="card-body">
-		                            <div class="mb-2">
-                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
-                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
-                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
-                            </div>
-							<!-- タイトル -->
-							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
-							<div class="small mb-2 fw-bold text-secondary">
-								     <span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span>
-									 <span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span> 
-									 <span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
-							</div>
-							<div class="mb-2">
-    <span class="text-warning fw-bold"
-          th:if="${item.scoreCount != null and item.scoreCount > 0}"
-          th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
-          / 5
-          (<span th:text="${item.scoreCount}"></span>件)
-    </span>
-    
+							<div class="card-body">
+								<div class="mb-2">
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${item.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${item.category == '3'}" class="badge badge-game">🎮
+										Game</span>
+								</div>
 
-    <span class="text-color" th:if="${item.scoreCount == null or item.scoreCount == 0}">
-        未評価
-    </span>
-</div>
-							<p class="text-light-gray mb-1" th:text="${item.reviewText}"></p>
+								<!-- タイトル -->
+								<h5 class="card-title mt-2" th:text="${item.title}"></h5>
+								<div class="small mb-2 fw-bold text-secondary">
+									<span th:if="${item.category == '1'}"
+										th:text="'Author: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '2'}"
+										th:text="'Director: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '3'}"
+										th:text="'Hardware: ' + ${item.publisher}"></span>
+								</div>
+								<div class="mb-2">
+									<span class="text-warning fw-bold"
+										th:if="${item.scoreCount != null and item.scoreCount > 0}"
+										th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
+										/ 5 (<span th:text="${item.scoreCount}"></span>件)
+									</span> <span class="text-color"
+										th:if="${item.scoreCount == null or item.scoreCount == 0}">
+										未評価 </span>
+								</div>
+								<p class="text-light-gray mb-1" th:text="${item.reviewText}"></p>
+
+								<!-- 作成者 -->
+								<p class="text-light-gray mb-1" th:text="${item.creator}"></p>
+
+								<!-- レビュー -->
+								<p class="card-text" th:text="${item.reviewText}"></p>
+
+							</div>
 
 						</div>
-
-					</div>
 				</a>
 			</div>
 

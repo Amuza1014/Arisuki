@@ -14,8 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.addResourceLocations("classpath:/static/images/");
 
 		// アップロード画像用
-		registry.addResourceHandler("/uploads/images/**")
-				.addResourceLocations("file:uploads/images/"); // 実際のアップロード先ディレクトリ
+//		registry.addResourceHandler("/uploads/images/**")
+//				.addResourceLocations("file:uploads/images/"); // 実際のアップロード先ディレクトリ
 	}
 
 }
