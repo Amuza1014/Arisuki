@@ -31,7 +31,7 @@ body {
 
 .label-text {
 	font-weight: bold;
-	color: #ff4081;
+	color: #2ecc71;
 	min-width: 100px;
 	display: inline-block;
 }
@@ -43,13 +43,19 @@ body {
 	rel="stylesheet">
 <style>
 body {
-	background-color: #fff5f8;
+	background-color: #121212;
+	 color: #e0e0e0; 
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
+	padding-bottom: 80px;
 }
 
+
 .detail-container {
+	background-color: #1e1e1e;
 	max-width: 800px;
 	margin: 50px auto;
-	background: white;
+	/* background: white; */
 	padding: 30px;
 	border-radius: 15px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -60,7 +66,15 @@ body {
 	max-height: 400px;
 	object-fit: contain;
 	border-radius: 10px;
-	background: #f8f9fa;
+	 background: #f8f9fa; 
+}
+
+.custom-card {
+    background-color: #121212;
+}
+
+.custom-text{
+	color: white;
 }
 </style>
 </head>
@@ -70,11 +84,15 @@ body {
 			<div class="d-flex justify-content-between align-items-center mb-4">
 				<h2 class="fw-bold" th:text="${item.title}">作品名</h2>
 				<div>
-					<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">📖
-						ブック</span> <span th:if="${item.category == '2'}"
-						class="badge bg-warning text-dark fs-6">🎬 ムービー</span> <span
-						th:if="${item.category == '3'}" class="badge bg-success fs-6">🎮
-						ゲーム</span>
+					<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">
+					📖Book
+					</span>
+					 <span th:if="${item.category == '2'}"class="badge bg-warning text-dark fs-6">
+					 🎬 Movie
+					 </span> 
+					 <span th:if="${item.category == '3'}" class="badge bg-success fs-6">
+					 🎮 Game
+					 </span>
 				</div>
 			</div>
 
@@ -83,69 +101,69 @@ body {
 				class="main-img mb-4 shadow-sm" alt="thumbnail"
 				style="width: 100%; border-radius: 15px; object-fit: cover; max-height: 450px;">
 
-			<div class="card bg-light p-4 mb-4 border-0">
-				<h5 class="fw-bold mb-3 border-bottom pb-2">📋 基本情報</h5>
-				
+			<div class="card custom-card p-4 mb-4 border-0">
+				<h5 class="fw-bold mb-3 border-bottom pb-2 custom-text">📋 基本情報</h5>
 				<div th:if="${item.category == '1'}">
 					<p>
-						<span class="label-text">著者：</span><span th:text="${item.creator}"></span>
+						<span class="label-text">著者：</span>
+						<span th:text="${item.creator}" class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">出版社：</span><span
-							th:text="${item.publisher}"></span>
+						<span class="label-text">出版社：</span>
+						<span th:text="${item.publisher}" class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">ジャンル：</span><span
-							th:text="${item.subAttribute}"></span>
+						<span class="label-text">ジャンル：</span>
+						<span th:text="${item.subAttribute}" class="custom-text"></span>
 					</p>
 				</div>
 
 				<div th:if="${item.category == '2'}">
 					<p>
-						<span class="label-text">監督：</span><span th:text="${item.creator}"></span>
+						<span class="label-text">監督：</span>
+						<span th:text="${item.creator}"  class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">タイプ：</span><span
-							th:text="${item.publisher}"></span>
+						<span class="label-text">タイプ：</span>
+						<span th:text="${item.publisher}"  class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">ジャンル：</span><span
-							th:text="${item.subAttribute}"></span>
+						<span class="label-text">ジャンル：</span>
+						<span th:text="${item.subAttribute}"  class="custom-text"></span>
 					</p>
 				</div>
 
 				<div th:if="${item.category == '3'}">
 					<p>
-						<span class="label-text">メーカー：</span><span
-							th:text="${item.creator}"></span>
+						<span class="label-text">メーカー：</span>
+						<span th:text="${item.creator}"  class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">ハード：</span><span
-							th:text="${item.publisher}"></span>
+						<span class="label-text">ハード：</span>
+						<span th:text="${item.publisher}"  class="custom-text"></span>
 					</p>
 					<p>
-						<span class="label-text">ジャンル：</span><span
-							th:text="${item.subAttribute}"></span>
+						<span class="label-text">ジャンル：</span>
+						<span th:text="${item.subAttribute}"  class="custom-text"></span>
 					</p>
 				</div>
 			</div>
 
 			<div class="mb-5">
 				<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
-				<p class="fs-5 p-3 bg-white rounded border"
-					style="white-space: pre-wrap;" th:text="${item.reviewText}">レビュー内容がここに入ります。</p>
+				<p class="fs-5 p-3 custom-card"style="white-space: pre-wrap;" th:text="${item.reviewText}">
+				レビュー内容がここに入ります。
+				</p>
 			</div>
 
 			<div class="d-flex justify-content-center gap-3">
-				<a th:href="@{/mypage}" class="btn btn-outline-secondary px-4">戻る</a>
-
+				<a th:href="@{/mypage}" class="btn btn-outline-light px-4">戻る</a>
 				<th:block th:with="isOwner=${session.user != null && item.user != null && session.user.id == item.user.id}">
 					
 					<a th:href="@{/edit/{id}(id=${item.id})}"
 						class="btn btn-warning px-4"
 						th:classappend="${!isOwner} ? 'disabled'"
 						th:aria-disabled="${!isOwner}">編集する</a>
-
 					<form th:action="@{/delete/{id}(id=${item.id})}" method="post"
 						onsubmit="return confirm('本当に削除しますか？')">
 						<button type="submit" class="btn btn-danger px-4"

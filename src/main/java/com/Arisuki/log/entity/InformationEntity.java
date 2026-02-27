@@ -34,10 +34,21 @@ public class InformationEntity {
 	//	
 
 	private Integer score;
-	    
-	 // 【追加】投稿したユーザーとの紐付け
-	    @ManyToOne
-	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
-	    private UserEntity user;
-}
+
+	private Integer scoreSum;
+	private Integer scoreCount;
 	
+	 // 【追加】投稿したユーザーとの紐付け
+    @ManyToOne
+    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+    private UserEntity user;
+    
+   // 平均を求めるメソッド
+    public double getAverageScore() {
+        if (scoreCount == null || scoreCount == 0) {
+            return 0.0;
+        }
+        return (double) scoreSum / scoreCount;
+    }
+
+}
