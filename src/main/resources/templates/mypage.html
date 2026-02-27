@@ -12,7 +12,6 @@ body {
 	background-color: #121212;
 	color: #e0e0e0;
 	font-family: 'Helvetica Neue', Arial, sans-serif;
-	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
 	padding-bottom: 80px;
 }
 
@@ -64,7 +63,7 @@ body {
 }
 
 /* カテゴリバッジ */
-.badge-item { background-color: #2c3e50; }
+.badge-book { background-color: #2c3e50; }
 .badge-movie { background-color: #d35400; }
 .badge-game { background-color: #27ae60; }
 
@@ -75,7 +74,7 @@ body {
 /* --- 下部固定メニューバーのスタイル --- */
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.85) !important;
-	backdrop-filter: blur(10px); /* 背後をぼかす高級感 */
+	backdrop-filter: blur(10px);
 	border-top: 1px solid #333;
 }
 
@@ -84,10 +83,6 @@ body {
 	color: #9e9e9e;
 	font-size: 0.75rem;
 	transition: 0.2s;
-}
-
-.nav-icon-link:active {
-	transform: scale(0.9);
 }
 
 .center-add-btn {
@@ -101,19 +96,9 @@ body {
 	font-size: 24px;
 	color: white;
 	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-	margin-top: -30px; /* 中央ボタンを少し浮かせる */
+	margin-top: -30px;
 	border: 4px solid #121212;
 }
-
-/* PC（md以上）では下部バーを隠す */
-/**@media (min-width: 768px) {
-	.navbar-mobile {
-		display: none !important;
-	}
-	body {
-		padding-bottom: 0;
-	}
-}　**/
 </style>
 </head>
 <body>
@@ -135,19 +120,20 @@ body {
 		<div class="row row-cols-1 row-cols-md-3 g-4">
 			<div class="col" th:each="item : ${itemList}">
 				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
-					<div class="card h-100">
-						<img
-							th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} ? ${item.thumbnailUrl} : 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image'"
-							class="card-img-top" alt="thumbnail">
-
+					<div class="card h-100 shadow-sm">
+						<img th:src="${item.thumbnailUrl != null && !item.thumbnailUrl.isEmpty()} 
+									? ${item.thumbnailUrl} 
+									: 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image'"
+							 class="card-img-top" alt="thumbnail">
+						
 						<div class="card-body">
 							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-item">📖 Book</span>
+								<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
 								<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
 								<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
 							</div>
 
-							<h5 class="card-title fw-bold" th:text="${item.title}">作品名</h5>
+							<h5 class="card-title fw-bold text-white" th:text="${item.title}">作品名</h5>
 
 							<div class="small mb-2 fw-bold text-secondary-muted">
 								<span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span>
@@ -192,7 +178,6 @@ body {
 		</div>
 	</nav>
 
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

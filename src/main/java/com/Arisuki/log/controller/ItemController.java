@@ -1,5 +1,6 @@
 package com.Arisuki.log.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -8,14 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.UserEntity;
 import com.Arisuki.log.repository.ItemRepository;
 import com.Arisuki.log.repository.UserRepository;
+import com.Arisuki.log.service.CloudinaryService; // 追加
 
 @Controller
 public class ItemController {
@@ -26,6 +30,9 @@ public class ItemController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private CloudinaryService cloudinaryService; // 追加
+
 	// --- ログイン関連の処理 ---
 
 	// ログイン画面を表示する
@@ -35,9 +42,69 @@ public class ItemController {
 	}
 
 	// 初期アクセス（/）もログイン画面へ
+
 	@GetMapping("/")
 	public String input() {
 		return "redirect:/login";
+	}
+
+	//	// ログイン画面からマイページへ遷移
+	//	@PostMapping("/mypage")
+	//	public String loginToMypage() {
+	//		return "mypage";
+	//	}
+
+	// 2. データを保存して完了画面を表示する
+	@PostMapping("/complete")
+	public String result(@ModelAttribute InformationEntity item,
+			@RequestParam("thumbnail") MultipartFile file,
+			HttpSession session,
+			Model model) {
+
+		// ===== ログインユーザー =====
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null) {
+			return "redirect:/login";
+		}
+		item.setUser(loginUser);
+		// ===== 既存データ取得（editのときだけ）=====
+		InformationEntity dbItem = null;
+		if (item.getId() != null) {
+			dbItem = repository.findById(item.getId()).orElse(null);
+		}
+
+		// ===== 既存データ取得（edit対応の核心）=====
+		//		InformationEntity dbItem = repository.findById(item.getId()).orElse(null);
+
+		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
+		if (!file.isEmpty()) {
+			try {
+				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
+				String imageUrl = cloudinaryService.uploadImage(file);
+				item.setThumbnailUrl(imageUrl);
+			} catch (IOException e) {
+				// セキュリティやエラーを一旦無視する方針のため、スタックトレースのみ出力
+				e.printStackTrace();
+			}
+		}
+		// ファイル未選択なら URL をそのまま使用
+		// URL が空なら既存データ（編集用）を反映
+		else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+			if (dbItem != null) {
+				item.setThumbnailUrl(dbItem.getThumbnailUrl());
+			}
+		}
+
+		// ===== 共通処理 =====
+		item.setCreator(cleanComma(item.getCreator()));
+		item.setCategory(cleanComma(item.getCategory()));
+		item.setPublisher(cleanComma(item.getPublisher()));
+		item.setSubAttribute(cleanComma(item.getSubAttribute()));
+
+		repository.save(item);
+		model.addAttribute("item", item);
+
+		return "complete";
 	}
 
 	// ログイン実行処理
@@ -113,30 +180,17 @@ public class ItemController {
 		return "timeline";
 	}
 
-	@PostMapping("/complete")
-	public String result(InformationEntity item, HttpSession session, Model model) {
-		// セッションからログイン中のユーザーを取得
-		UserEntity loginUser = (UserEntity) session.getAttribute("user");
-		if (loginUser == null)
-			return "redirect:/login";
-
-		// 投稿データにユーザーをセット（ここがリレーションの肝！）
-		item.setUser(loginUser);
-
-		// カンマ除去などの既存処理
-		item.setCreator(cleanComma(item.getCreator()));
-		// ... 他の項目も同様 ...
-
-		repository.save(item);
+	@GetMapping("/view/{id}")
+	public String view(@PathVariable Integer id, Model model) {
+		InformationEntity item = repository.findById(id).orElseThrow();
 		model.addAttribute("item", item);
-		return "complete";
+		return "view";
 	}
 
 	@GetMapping("/detail/{id}")
 	public String detail(@PathVariable("id") Integer id, HttpSession session, Model model) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
-
 		InformationEntity item = repository.findById(id).orElse(null);
 		if (item == null) {
 			return "redirect:/mypage";
@@ -149,7 +203,6 @@ public class ItemController {
 	public String deleteItem(@PathVariable("id") Integer id, HttpSession session) {
 		if (session.getAttribute("user") == null)
 			return "redirect:/login";
-
 		repository.deleteById(id);
 		return "redirect:/mypage";
 	}
@@ -160,28 +213,39 @@ public class ItemController {
 			return "redirect:/login";
 
 		InformationEntity item = repository.findById(id).orElseThrow();
+		// 2. 取り出したデータを、HTML（Thymeleaf）に「item」という名前で渡す
+
 		model.addAttribute("item", item);
 		return "edit";
 	}
 
-	// --- 共通補助メソッド ---
+	@PostMapping("/rate/{id}")
+	public String rate(@PathVariable Integer id,
+			@RequestParam("score") Integer score) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+		item.setScore(score);
+		repository.save(item);
+		return "redirect:/view/" + id;
+	}
+
+	// ------------------- ヘルパーメソッド -------------------
 
 	private String cleanComma(String str) {
-		if (str == null || str.isEmpty()) {
+		if (str == null || str.isEmpty())
 			return "";
-		}
+
 		String[] parts = str.split(",");
 		for (String part : parts) {
 			String trimmed = part.trim();
-			if (!trimmed.isEmpty()) {
+			if (!trimmed.isEmpty())
 				return trimmed;
-			}
 		}
 		return "";
 	}
 
 	// 登録画面の表示
 	@GetMapping("/signup")
+
 	public String signupForm() {
 		return "signup";
 	}
