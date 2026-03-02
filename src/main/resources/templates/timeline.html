@@ -31,6 +31,7 @@ body {
 }
 
 .card-img-top {
+
 	height: 200px;
 	object-fit: cover;
 	filter: brightness(0.8);
@@ -91,6 +92,9 @@ body {
 	color: white;
 }
 
+.text-color-pink{
+	color: pink;}
+
 /* --- 下部固定メニューバーのスタイル --- */
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.85) !important;
@@ -135,10 +139,19 @@ body {
 				Collectionsに戻る </a>
 		</div>
 
+<<<<<<< HEAD
 		<div class="row">
 
+=======
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+>>>>>>> refs/remotes/origin/dai-table
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
+<<<<<<< HEAD
 			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
+=======
+
+			<div class="col" th:each="item : ${sukiList}">
+>>>>>>> refs/remotes/origin/dai-table
 				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
 
@@ -148,7 +161,34 @@ body {
 
 
 							<!-- カテゴリバッジ -->
+<<<<<<< HEAD
 <div class="card-body">
+=======
+						<div class="card-body">
+		                            <div class="mb-2">
+                                <span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
+                                <span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
+                                <span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+                                <p class="text-color-pink">
+                               		posted:<span th:text="${item.user.username}" class="text-color-pink"></span>
+                            	</p>
+                            </div>
+							<!-- タイトル -->
+							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
+							<div class="small mb-2 fw-bold text-secondary">
+								     <span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span>
+									 <span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span> 
+									 <span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
+							</div>
+							<div class="mb-2">
+    <span class="text-warning fw-bold"
+          th:if="${item.scoreCount != null and item.scoreCount > 0}"
+          th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
+          / 5
+          (<span th:text="${item.scoreCount}"></span>件)
+    </span>
+    
+>>>>>>> refs/remotes/origin/dai-table
 
     <div class="mb-2">
         <span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>

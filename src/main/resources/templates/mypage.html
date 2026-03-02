@@ -129,7 +129,11 @@ body {
 				<div class="d-flex gap-2">
 					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">タイムライン</a>
 					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">ログアウト</a>
+					
 				</div>
+				<p>
+						username:<span th:text="${session.user.username}"></span>
+					</p>
 			</div>
 		</div>
 

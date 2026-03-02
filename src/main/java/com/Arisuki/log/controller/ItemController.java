@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Arisuki.log.entity.CommentEntity;
 import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.UserEntity;
+import com.Arisuki.log.repository.CommentRepository;
 import com.Arisuki.log.repository.ItemRepository;
 import com.Arisuki.log.repository.UserRepository;
 import com.Arisuki.log.service.CloudinaryService; // 追加
@@ -30,9 +32,12 @@ public class ItemController {
 	@Autowired
 	private UserRepository userRepository;
 
+<<<<<<< HEAD
 //	@Autowired
 //	private RatingRepository ratingRepository;
 
+=======
+>>>>>>> refs/remotes/origin/dai-table
 	// --- ルート ---
 	//	@GetMapping("/")
 	//	public String root() {
@@ -46,6 +51,12 @@ public class ItemController {
 
 	@Autowired
 	private CloudinaryService cloudinaryService; // 追加
+<<<<<<< HEAD
+=======
+	
+	@Autowired
+	private CommentRepository commentRepository;
+>>>>>>> refs/remotes/origin/dai-table
 
 	// --- ログイン関連の処理 ---
 
@@ -122,6 +133,7 @@ public class ItemController {
 
 	@PostMapping("/complete")
 	public String complete(@ModelAttribute InformationEntity item,
+<<<<<<< HEAD
 			@RequestParam(value = "thumbnail", required = false) MultipartFile file,
 			HttpSession session,
 			Model model) {
@@ -138,6 +150,24 @@ public class ItemController {
 		}
 		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
 		if (file != null && !file.isEmpty()) {
+=======
+			@RequestParam(value = "thumbnail",required = false) MultipartFile file,
+			HttpSession session,
+			Model model) {
+
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null)
+			return "redirect:/login";
+
+		item.setUser(loginUser);
+		// ===== 既存データ取得（editのときだけ）=====
+		InformationEntity dbItem = null;
+		if (item.getId() != null) {
+			dbItem = repository.findById(item.getId()).orElse(null);
+		}
+		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
+		if (file != null &&!file.isEmpty()) {
+>>>>>>> refs/remotes/origin/dai-table
 			try {
 				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
 				String imageUrl = cloudinaryService.uploadImage(file);
@@ -190,6 +220,10 @@ public class ItemController {
 	public String view(@PathVariable Integer id, Model model) {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		model.addAttribute("item", item);
+<<<<<<< HEAD
+=======
+		model.addAttribute("comments", item.getComments());
+>>>>>>> refs/remotes/origin/dai-table
 		return "view";
 	}
 
@@ -205,7 +239,35 @@ public class ItemController {
 		model.addAttribute("item", item);
 		return "detail";
 	}
+	
+	// コメント機能
+	@PostMapping("/view/{id}")
+	public String postComment(@PathVariable Integer id,
+	                          @RequestParam String comment,
+	                          HttpSession session) {
 
+<<<<<<< HEAD
+=======
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login"; // ログインしていなければログイン画面へ
+	    }
+
+	    InformationEntity item = repository.findById(id).orElseThrow();
+
+	    CommentEntity newComment = new CommentEntity();
+	    newComment.setContent(comment);
+	    newComment.setUser(user);
+	    newComment.setInformation(item);
+
+	    commentRepository.save(newComment);
+
+	    return "commentsuccess";
+	}
+	
+	
+
+>>>>>>> refs/remotes/origin/dai-table
 	// --- 編集・削除 ---
 	@GetMapping("/edit/{id}")
 	public String editItem(@PathVariable Integer id, HttpSession session, Model model) {
@@ -228,6 +290,7 @@ public class ItemController {
 
 	// --- 評価（スコア集計） ---
 	@PostMapping("/ratesuccess/{id}")
+<<<<<<< HEAD
 	public String ratesuccess(
 	        @PathVariable Integer id,
 	        @RequestParam("score") Integer score,
@@ -288,6 +351,28 @@ public class ItemController {
 	public String ratesuccessfull() {
 		return "ratesuccess";
 	}
+=======
+	public String ratesuccess(@PathVariable Integer id, @RequestParam("score") Integer score) {
+		InformationEntity item = repository.findById(id).orElseThrow();
+
+		if (item.getScoreSum() == null)
+			item.setScoreSum(0);
+		if (item.getScoreCount() == null)
+			item.setScoreCount(0);
+
+		item.setScoreSum(item.getScoreSum() + score);
+		item.setScoreCount(item.getScoreCount() + 1);
+
+		repository.save(item);
+		return "ratesuccess";
+	}
+
+	@PostMapping("/ratesuccess")
+	public String ratesuccessfull() {
+		return "ratesuccess";
+	}
+	
+>>>>>>> refs/remotes/origin/dai-table
 
 	// --- 共通メソッド ---
 	private String cleanComma(String str) {
@@ -306,5 +391,8 @@ public class ItemController {
 		}
 		return sb.toString();
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/dai-table
 }

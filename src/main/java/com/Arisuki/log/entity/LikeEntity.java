@@ -33,4 +33,8 @@ public class LikeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> refs/remotes/origin/dai-table

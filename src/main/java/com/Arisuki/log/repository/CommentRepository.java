@@ -34,4 +34,8 @@ public interface CommentRepository extends JpaRepository<CommentEntity , Integer
     long countByInformation(
             InformationEntity information
     );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> refs/remotes/origin/dai-table

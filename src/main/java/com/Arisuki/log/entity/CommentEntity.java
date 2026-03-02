@@ -41,4 +41,8 @@ public class CommentEntity {
 	public void onCreate() {
 		this.createdAt = LocalDateTime.now();
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> refs/remotes/origin/dai-table
