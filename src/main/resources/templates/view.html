@@ -126,26 +126,34 @@
             <a th:href="@{/timeline}"  class="btn btn-custom-green">
                タイムラインに戻る
             </a>
-<!--            <form th:action="@{/rate/{id}(id=${item.id})}" method="post" class="mt-4">-->
-             <form th:action="@{/ratesuccess/{id}(id=${item.id})}" method="post" class="mt-4">
 
-<!--    <label class="form-label fw-bold">評価する</label>-->
-     <label class="text-secondary-muted mb-0">評価する</label>
 
-    <div class="rating mb-3">
-        <input type="radio" name="score" value="5" id="star5"><label for="star5">★</label>
-        <input type="radio" name="score" value="4" id="star4"><label for="star4">★</label>
-        <input type="radio" name="score" value="3" id="star3"><label for="star3">★</label>
-        <input type="radio" name="score" value="2" id="star2"><label for="star2">★</label>
-        <input type="radio" name="score" value="1" id="star1"><label for="star1">★</label>
-    </div>
+<hr>
 
-	
-    <button  type="submit" class="btn btn-warning">
-        評価を送信
-    </button>
+<div th:if="${#lists.isEmpty(comments)}" class="text-color-pink">
+    <p>まだコメントはありません</p>
+</div>
 
-</form>
+<div class="text-color-pink">
+<p>コメント一覧：</p>
+<div th:each="c : ${comments}">
+<p>
+	<span>username:</span>
+    <strong th:text="${c.user.username}" class="text-color-pink"></strong>
+</p>    
+<p>
+   <span>Comment:</span>
+    <span th:text="${c.content}"></span></p>
+    <hr>
+</div>
+</div>
+
+<div th:if="${session.user != null}">
+    <form action="#" th:action="@{/view/{id}(id=${item.id})}" method="post">
+        <input type="text" name="comment" />
+        <button type="submit">コメント</button>
+    </form>
+</div>
             
           
 

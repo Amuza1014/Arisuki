@@ -1,11 +1,15 @@
 package com.Arisuki.log.entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 import lombok.Data;
 
@@ -42,6 +46,9 @@ public class InformationEntity {
     @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
     private UserEntity user;
     
+    @OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments;
+    
    // 平均を求めるメソッド
     public double getAverageScore() {
         if (scoreCount == null || scoreCount == 0) {
@@ -49,4 +56,5 @@ public class InformationEntity {
         }
         return (double) scoreSum / scoreCount;
     }
+    
 }

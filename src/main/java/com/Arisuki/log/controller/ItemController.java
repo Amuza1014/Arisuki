@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Arisuki.log.entity.CommentEntity;
 import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.UserEntity;
+import com.Arisuki.log.repository.CommentRepository;
 import com.Arisuki.log.repository.ItemRepository;
 import com.Arisuki.log.repository.UserRepository;
 import com.Arisuki.log.service.CloudinaryService; // 追加
@@ -43,6 +45,9 @@ public class ItemController {
 
 	@Autowired
 	private CloudinaryService cloudinaryService; // 追加
+	
+	@Autowired
+	private CommentRepository commentRepository;
 
 	// --- ログイン関連の処理 ---
 
@@ -187,6 +192,7 @@ public class ItemController {
 	public String view(@PathVariable Integer id, Model model) {
 		InformationEntity item = repository.findById(id).orElseThrow();
 		model.addAttribute("item", item);
+		model.addAttribute("comments", item.getComments());
 		return "view";
 	}
 
@@ -202,6 +208,31 @@ public class ItemController {
 		model.addAttribute("item", item);
 		return "detail";
 	}
+	
+	// コメント機能
+	@PostMapping("/view/{id}")
+	public String postComment(@PathVariable Integer id,
+	                          @RequestParam String comment,
+	                          HttpSession session) {
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login"; // ログインしていなければログイン画面へ
+	    }
+
+	    InformationEntity item = repository.findById(id).orElseThrow();
+
+	    CommentEntity newComment = new CommentEntity();
+	    newComment.setContent(comment);
+	    newComment.setUser(user);
+	    newComment.setInformation(item);
+
+	    commentRepository.save(newComment);
+
+	    return "commentsuccess";
+	}
+	
+	
 
 	// --- 編集・削除 ---
 	@GetMapping("/edit/{id}")
@@ -244,6 +275,7 @@ public class ItemController {
 	public String ratesuccessfull() {
 		return "ratesuccess";
 	}
+	
 
 	// --- 共通メソッド ---
 	private String cleanComma(String str) {
