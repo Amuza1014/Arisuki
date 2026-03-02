@@ -1,11 +1,13 @@
 package com.Arisuki.log.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 
 import lombok.Data;
 
@@ -31,22 +33,19 @@ public class InformationEntity {
 	//	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
 	//	    private InformationEntity user;
 	//	
-
-	private Integer score;
-
-	private Integer scoreSum;
-	private Integer scoreCount;
+	@Column(nullable = false)
+	private Integer score;//5点満点
 	
-	 // 【追加】投稿したユーザーとの紐付け
-    @ManyToOne
-    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
-    private UserEntity user;
-    
-   // 平均を求めるメソッド
-    public double getAverageScore() {
-        if (scoreCount == null || scoreCount == 0) {
-            return 0.0;
-        }
-        return (double) scoreSum / scoreCount;
-    }
+
+	// 【追加】投稿したユーザーとの紐付け
+	@ManyToOne
+	@JoinColumn(name = "user_id") // DB内では user_id というカラムになります
+	private UserEntity user;
+	
+	@Transient // DBのカラムには作らないという意味
+	private long likeCount;
+
+	@Transient
+	private long commentCount;
+
 }

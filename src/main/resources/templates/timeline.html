@@ -122,6 +122,11 @@ body {
 						</div>
 
 						<div class="card-body">
+						
+							<div class="stats-area mt-2">
+    <span class="me-3">❤️ <span th:text="${item.likeCount}">0</span></span>
+    <span>💬 <span th:text="${item.commentCount}">0</span></span>
+</div>
 
 							<div class="mb-2">
 								<span th:if="${item.category == '1'}" class="badge badge-book">📖
@@ -140,15 +145,7 @@ body {
 									th:text="'Director: ' + ${item.creator}"></span> <span
 									th:if="${item.category == '3'}"
 									th:text="'Hardware: ' + ${item.publisher}"></span>
-							</div>
-
-							<div class="mb-2">
-								<span class="text-warning fw-bold"
-									th:if="${item.scoreCount != null and item.scoreCount > 0}"
-									th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
-								</span> <span class="text-color"
-									th:if="${item.scoreCount == null or item.scoreCount == 0}">
-									未評価 </span>
+								
 							</div>
 
 							<p class="card-text" th:text="${item.reviewText}"></p>
