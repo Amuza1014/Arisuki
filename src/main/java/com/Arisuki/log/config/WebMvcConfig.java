@@ -18,8 +18,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //				.addResourceLocations("file:uploads/images/"); // 実際のアップロード先ディレクトリ
 	}
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> refs/remotes/origin/dai-table
+

@@ -14,8 +14,5 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Integer> {
 	boolean existsByInformationAndUser(InformationEntity information, UserEntity user);
 
 	void deleteByInformationAndUser(InformationEntity information, UserEntity user);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> refs/remotes/origin/dai-table
+
