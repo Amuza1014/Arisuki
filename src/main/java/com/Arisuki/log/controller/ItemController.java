@@ -259,4 +259,23 @@ public class ItemController {
 		}
 		return sb.toString();
 	}
+	
+	@GetMapping("/mylikes")
+	public String showMyLikes(HttpSession session, Model model) {
+	    // 1. セッションからログインユーザーを取得
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    
+	    if (user == null) {
+	        // ログインしていない場合はログイン画面などへ飛ばす
+	        return "redirect:/login";
+	    }
+
+	    // 2. 本来はここで「ユーザーがいいねしたリスト」をサービス経由で取得します
+	    // 現時点では、エラー回避のために空のリストか、全リストを渡しておきましょう
+	    // List<InformationEntity> likeList = itemService.getLikesByUser(user);
+	    // model.addAttribute("likeList", likeList);
+
+	    // 3. 先ほど作ったHTMLファイル名を返す（拡張子.htmlは不要）
+	    return "my_likepage"; 
+	}
 }
