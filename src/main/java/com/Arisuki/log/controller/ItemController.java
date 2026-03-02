@@ -30,6 +30,9 @@ public class ItemController {
 	@Autowired
 	private UserRepository userRepository;
 
+//	@Autowired
+//	private RatingRepository ratingRepository;
+
 	// --- ルート ---
 	//	@GetMapping("/")
 	//	public String root() {
@@ -119,7 +122,7 @@ public class ItemController {
 
 	@PostMapping("/complete")
 	public String complete(@ModelAttribute InformationEntity item,
-			@RequestParam(value = "thumbnail",required = false) MultipartFile file,
+			@RequestParam(value = "thumbnail", required = false) MultipartFile file,
 			HttpSession session,
 			Model model) {
 
@@ -134,7 +137,7 @@ public class ItemController {
 			dbItem = repository.findById(item.getId()).orElse(null);
 		}
 		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
-		if (file != null &&!file.isEmpty()) {
+		if (file != null && !file.isEmpty()) {
 			try {
 				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
 				String imageUrl = cloudinaryService.uploadImage(file);
@@ -225,19 +228,60 @@ public class ItemController {
 
 	// --- 評価（スコア集計） ---
 	@PostMapping("/ratesuccess/{id}")
-	public String ratesuccess(@PathVariable Integer id, @RequestParam("score") Integer score) {
-		InformationEntity item = repository.findById(id).orElseThrow();
+	public String ratesuccess(
+	        @PathVariable Integer id,
+	        @RequestParam("score") Integer score,
+	        HttpSession session) {
 
-		if (item.getScoreSum() == null)
-			item.setScoreSum(0);
-		if (item.getScoreCount() == null)
-			item.setScoreCount(0);
+	    UserEntity loginUser =
+	            (UserEntity) session.getAttribute("user");
 
-		item.setScoreSum(item.getScoreSum() + score);
-		item.setScoreCount(item.getScoreCount() + 1);
+	    if (loginUser == null)
+	        return "redirect:/login";
 
-		repository.save(item);
-		return "ratesuccess";
+	    Long userId = loginUser.getId();
+
+	    InformationEntity item =
+	            repository.findById(id).orElseThrow();
+
+//	    if (item.getScoreSum() == null) item.setScoreSum(0);
+//	    if (item.getScoreCount() == null) item.setScoreCount(0);
+//
+//	    RatingEntity existing =
+//	            ratingRepository.findByUserIdAndItemId(userId, id);
+//
+//	    if (existing == null) {
+//
+//	        // ===== 新規評価 =====
+//	        RatingEntity rating = new RatingEntity();
+//	        rating.setUserId(userId);
+//	        rating.setItemId(id);
+//	        rating.setScore(score);
+//	        ratingRepository.save(rating);
+//
+//	        item.setScoreSum(item.getScoreSum() + score);
+//	        item.setScoreCount(item.getScoreCount() + 1);
+//
+//	    } else {
+//
+//	        // ===== 更新 =====
+//	        int oldScore = existing.getScore();
+//
+//	        // 合計から古い点を引く
+//	        item.setScoreSum(item.getScoreSum() - oldScore);
+//
+//	        // 新しい点を足す
+//	        item.setScoreSum(item.getScoreSum() + score);
+//
+//	        // rating更新
+//	        existing.setScore(score);
+//	        ratingRepository.save(existing);
+//	    }
+
+	    repository.save(item);
+
+	    return "redirect:/timeline";
+//	    return "redirect:/reratecomplete";
 	}
 
 	@PostMapping("/ratesuccess")
@@ -262,4 +306,5 @@ public class ItemController {
 		}
 		return sb.toString();
 	}
+
 }
