@@ -139,53 +139,49 @@ body {
 
 			<!-- ★ここが重要：カードを丸ごとリンクにする -->
 			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
-				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100">
 
 						<!-- サムネイル -->
 						<img th:if="${item.thumbnailUrl != null}"
 							th:src="${item.thumbnailUrl}" class="card-img-top" alt="サムネイル">
 
-							<!-- カテゴリバッジ -->
-							<div class="card-body">
-								<div class="mb-2">
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖
-										Book</span> <span th:if="${item.category == '2'}"
-										class="badge badge-movie">🎬 Movie</span> <span
-										th:if="${item.category == '3'}" class="badge badge-game">🎮
-										Game</span>
-								</div>
+						<!-- カテゴリバッジ -->
+						<div class="card-body">
 
-								<!-- タイトル -->
-								<h5 class="card-title mt-2" th:text="${item.title}"></h5>
-								<div class="small mb-2 fw-bold text-secondary">
-									<span th:if="${item.category == '1'}"
-										th:text="'Author: ' + ${item.creator}"></span> <span
-										th:if="${item.category == '2'}"
-										th:text="'Director: ' + ${item.creator}"></span> <span
-										th:if="${item.category == '3'}"
-										th:text="'Hardware: ' + ${item.publisher}"></span>
-								</div>
-								<div class="mb-2">
-									<span class="text-warning fw-bold"
-										th:if="${item.scoreCount != null and item.scoreCount > 0}"
-										th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
-										/ 5 (<span th:text="${item.scoreCount}"></span>件)
-									</span> <span class="text-color"
-										th:if="${item.scoreCount == null or item.scoreCount == 0}">
-										未評価 </span>
-								</div>
-								<p class="text-light-gray mb-1" th:text="${item.reviewText}"></p>
-
-								<!-- 作成者 -->
-								<p class="text-light-gray mb-1" th:text="${item.creator}"></p>
-
-								<!-- レビュー -->
-								<p class="card-text" th:text="${item.reviewText}"></p>
-
+							<div class="mb-2">
+								<span th:if="${item.category == '1'}" class="badge badge-book">📖
+									Book</span> <span th:if="${item.category == '2'}"
+									class="badge badge-movie">🎬 Movie</span> <span
+									th:if="${item.category == '3'}" class="badge badge-game">🎮
+									Game</span>
 							</div>
 
+							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
+
+							<div class="small mb-2 fw-bold text-secondary">
+								<span th:if="${item.category == '1'}"
+									th:text="'Author: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'Director: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
+									th:text="'Hardware: ' + ${item.publisher}"></span>
+							</div>
+
+							<div class="mb-2">
+								<span class="text-warning fw-bold"
+									th:if="${item.scoreCount != null and item.scoreCount > 0}"
+									th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
+								</span> <span class="text-color"
+									th:if="${item.scoreCount == null or item.scoreCount == 0}">
+									未評価 </span>
+							</div>
+
+							<p class="card-text" th:text="${item.reviewText}"></p>
+
 						</div>
+
+					</div>
 				</a>
 			</div>
 

@@ -119,56 +119,53 @@ public class ItemController {
 
 	@PostMapping("/complete")
 	public String complete(@ModelAttribute InformationEntity item,
-			@RequestParam(value = "thumbnail",required = false) MultipartFile file,
-			HttpSession session,
-			Model model) {
+	        @RequestParam(value = "thumbnail",required = false) MultipartFile file,
+	        HttpSession session,
+	        Model model) {
 
-		UserEntity loginUser = (UserEntity) session.getAttribute("user");
-		if (loginUser == null)
-			return "redirect:/login";
+	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
+	    if (loginUser == null)
+	        return "redirect:/login";
 
-		item.setUser(loginUser);
-		// ===== 既存データ取得（editのときだけ）=====
-		InformationEntity dbItem = null;
-		if (item.getId() != null) {
-			dbItem = repository.findById(item.getId()).orElse(null);
-		}
-		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
-		if (file != null &&!file.isEmpty()) {
-			try {
-				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
-				String imageUrl = cloudinaryService.uploadImage(file);
-				item.setThumbnailUrl(imageUrl);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	    item.setUser(loginUser);
 
-			// ===== ローカル保存版（旧仕様：一応残す）=====
-			// item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
+	    //  判定：保存前に ID があるかどうかを確認しておく 
+	    boolean isEdit = (item.getId() != null);
 
-		} else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+	    // ===== 既存データ取得（editのときだけ）=====
+	    InformationEntity dbItem = null;
+	    if (isEdit) { 
+	        dbItem = repository.findById(item.getId()).orElse(null);
+	    }
 
-			// ===== ローカル版の旧分岐（参考用）=====
-			// else if ((item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) && dbItem != null) {
-			//     item.setThumbnailUrl(dbItem.getThumbnailUrl());
-			// }
+	    // ===== 画像アップロード (Cloudinary版へ差し替え) =====
+	    if (file != null && !file.isEmpty()) {
+	        try {
+	            String imageUrl = cloudinaryService.uploadImage(file);
+	            item.setThumbnailUrl(imageUrl);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    } else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
+	        if (dbItem != null) {
+	            item.setThumbnailUrl(dbItem.getThumbnailUrl());
+	        }
+	    }
 
-			// 現在の編集対応処理
-			if (dbItem != null) {
-				item.setThumbnailUrl(dbItem.getThumbnailUrl());
-			}
-		}
+	    // 共通クレンジング
+	    item.setCreator(cleanComma(item.getCreator()));
+	    item.setCategory(cleanComma(item.getCategory()));
+	    item.setPublisher(cleanComma(item.getPublisher()));
+	    item.setSubAttribute(cleanComma(item.getSubAttribute()));
 
-		// 共通クレンジング
-		item.setCreator(cleanComma(item.getCreator()));
-		item.setCategory(cleanComma(item.getCategory()));
-		item.setPublisher(cleanComma(item.getPublisher()));
-		item.setSubAttribute(cleanComma(item.getSubAttribute()));
+	    // DB保存（ここで新規登録の場合でも ID がセットされる）
+	    repository.save(item);
 
-		repository.save(item);
-		model.addAttribute("item", item);
+	    // HTMLに「保存前の判定結果」と「保存後のデータ」を渡す
+	    model.addAttribute("isEdit", isEdit); 
+	    model.addAttribute("item", item);
 
-		return "complete";
+	    return "complete";
 	}
 
 	// --- タイムライン ---
