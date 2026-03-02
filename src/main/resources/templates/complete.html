@@ -2,35 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>登録完了</title>
+<title th:text="${isEdit} ? '編集完了' : '登録完了'">完了画面</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 	body {
-	background-color: #121212;
+		background-color: #121212;
 		color: #e0e0e0;
-	font-family: 'Helvetica Neue', Arial, sans-serif;
-	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
-	padding-bottom: 80px;
+		font-family: 'Helvetica Neue', Arial, sans-serif;
+		/* 下部メニューの高さ分、余白を確保（スマホのみ） */
+		padding-bottom: 80px;
 	}
 	
-	.btn-custom{
+	.btn-custom {
 		background-color: #2ecc71;
-	color: #fff;
-	border: none;
-	font-weight: bold;
-	padding: 8px 20px;
-	border-radius: 8px;
-	transition: 0.3s;
+		color: #fff;
+		border: none;
+		font-weight: bold;
+		padding: 8px 20px;
+		border-radius: 8px;
+		transition: 0.3s;
+		text-decoration: none;
+		display: inline-block;
 	}
+
+	.btn-custom:hover {
+		background-color: #27ae60;
+		color: #fff;
+	}
+
+
+	.card {
+		background-color: #ffffff; 
+		color: #333333; /* 文字は暗い色に */
+		border-radius: 15px;
+	}
+
+	
 	
 </style>
 </head>
 <body>
     <div class="container mt-5">
         <div class="card p-5 shadow-sm text-center">
-            <h2 class="text-pink">登録しました</h2>
+            <h2 th:text="${isEdit} ? '編集しました' : '登録しました'">完了しました</h2>
+            
             <p class="mt-3">タイトル：<strong th:text="${item.title}"></strong></p>
             <p>レビュー：<span th:text="${item.reviewText}"></span></p>
+            
             <div class="mt-4">
                 <a th:href="@{/mypage}" class="btn btn-custom">戻る</a>
             </div>

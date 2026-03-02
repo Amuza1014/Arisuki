@@ -135,32 +135,25 @@ public class ItemController {
 			return "redirect:/login";
 
 		item.setUser(loginUser);
-		// ===== 既存データ取得（editのときだけ）=====
+
+		// 判定：保存前に ID があるかどうか
+		boolean isEdit = (item.getId() != null);
+
+		// 既存データ取得（editのときだけ）
 		InformationEntity dbItem = null;
-		if (item.getId() != null) {
+		if (isEdit) {
 			dbItem = repository.findById(item.getId()).orElse(null);
 		}
-		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
+
+		// 画像アップロード (Cloudinary版)
 		if (file != null && !file.isEmpty()) {
 			try {
-				// CloudinaryServiceを使用してアップロードし、返ってきたURLを保持
 				String imageUrl = cloudinaryService.uploadImage(file);
 				item.setThumbnailUrl(imageUrl);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-			// ===== ローカル保存版（旧仕様：一応残す）=====
-			// item.setThumbnailUrl("/uploads/images/" + file.getOriginalFilename());
-
 		} else if (item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) {
-
-			// ===== ローカル版の旧分岐（参考用）=====
-			// else if ((item.getThumbnailUrl() == null || item.getThumbnailUrl().isBlank()) && dbItem != null) {
-			//     item.setThumbnailUrl(dbItem.getThumbnailUrl());
-			// }
-
-			// 現在の編集対応処理
 			if (dbItem != null) {
 				item.setThumbnailUrl(dbItem.getThumbnailUrl());
 			}
@@ -172,7 +165,11 @@ public class ItemController {
 		item.setPublisher(cleanComma(item.getPublisher()));
 		item.setSubAttribute(cleanComma(item.getSubAttribute()));
 
+		// DB保存
 		repository.save(item);
+
+		// HTMLに「保存前の判定結果」と「保存後のデータ」を渡す
+		model.addAttribute("isEdit", isEdit);
 		model.addAttribute("item", item);
 
 		return "complete";
