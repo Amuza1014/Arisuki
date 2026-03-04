@@ -20,8 +20,9 @@ import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.UserEntity;
 import com.Arisuki.log.repository.CommentRepository;
 import com.Arisuki.log.repository.ItemRepository;
+import com.Arisuki.log.repository.LikeRepository;    // 追加
 import com.Arisuki.log.repository.UserRepository;
-import com.Arisuki.log.service.CloudinaryService; // 追加
+import com.Arisuki.log.service.CloudinaryService;
 
 @Controller
 public class ItemController {
@@ -31,6 +32,15 @@ public class ItemController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private CommentRepository commentRepository; // 追加
+
+	@Autowired
+	private LikeRepository likeRepository;       // 追加
+
+//	@Autowired
+//	private RatingRepository ratingRepository;
 
 	// --- ルート ---
 	//	@GetMapping("/")
@@ -47,8 +57,6 @@ public class ItemController {
 	@Autowired
 	private CloudinaryService cloudinaryService; // 追加
 
-	@Autowired
-	private CommentRepository commentRepository;
 
 	// --- ログイン関連の処理 ---
 
@@ -140,12 +148,13 @@ public class ItemController {
 		boolean isEdit = (item.getId() != null);
 
 		// 既存データ取得（editのときだけ）
+
 		InformationEntity dbItem = null;
 		if (isEdit) {
 			dbItem = repository.findById(item.getId()).orElse(null);
 		}
 
-		// 画像アップロード (Cloudinary版)
+		// ===== 画像アップロード (Cloudinary版へ差し替え) =====
 		if (file != null && !file.isEmpty()) {
 			try {
 				String imageUrl = cloudinaryService.uploadImage(file);
@@ -165,7 +174,8 @@ public class ItemController {
 		item.setPublisher(cleanComma(item.getPublisher()));
 		item.setSubAttribute(cleanComma(item.getSubAttribute()));
 
-		// DB保存
+
+		// DB保存（ここで新規登録の場合でも ID がセットされる）
 		repository.save(item);
 
 		// HTMLに「保存前の判定結果」と「保存後のデータ」を渡す
@@ -182,6 +192,13 @@ public class ItemController {
 			return "redirect:/login";
 
 		List<InformationEntity> list = repository.findAll();
+
+		// 各アイテムに対して、いいね数とコメント数をカウントしてセットする
+		for (InformationEntity item : list) {
+			item.setLikeCount(likeRepository.countByInformation(item));
+			item.setCommentCount(commentRepository.countByInformation(item));
+		}
+
 		model.addAttribute("sukiList", list);
 		return "timeline";
 	}
@@ -304,7 +321,7 @@ public class ItemController {
 		repository.save(item);
 
 		return "redirect:/timeline";
-		//	    return "redirect:/reratecomplete";
+
 	}
 
 	@PostMapping("/ratesuccess")
@@ -328,6 +345,25 @@ public class ItemController {
 			}
 		}
 		return sb.toString();
+	}
+
+	@GetMapping("/mylikes")
+	public String showMyLikes(HttpSession session, Model model) {
+		// 1. セッションからログインユーザーを取得
+		UserEntity user = (UserEntity) session.getAttribute("user");
+
+		if (user == null) {
+			// ログインしていない場合はログイン画面などへ飛ばす
+			return "redirect:/login";
+		}
+
+		// 2. 本来はここで「ユーザーがいいねしたリスト」をサービス経由で取得します
+		// 現時点では、エラー回避のために空のリストか、全リストを渡しておきましょう
+		// List<InformationEntity> likeList = itemService.getLikesByUser(user);
+		// model.addAttribute("likeList", likeList);
+
+		// 3. 先ほど作ったHTMLファイル名を返す（拡張子.htmlは不要）
+		return "my_likepage";
 	}
 
 }
