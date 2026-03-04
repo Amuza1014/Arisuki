@@ -12,4 +12,5 @@ public interface ItemRepository extends JpaRepository<InformationEntity, Integer
 	
 	List<InformationEntity> findByUserId(Long userId);
     
+	
 }
