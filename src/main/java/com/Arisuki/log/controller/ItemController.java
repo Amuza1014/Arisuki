@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional; // 追加
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Arisuki.log.entity.CommentEntity;
 import com.Arisuki.log.entity.InformationEntity;
+import com.Arisuki.log.entity.LikeEntity; // 追加
 import com.Arisuki.log.entity.UserEntity;
 import com.Arisuki.log.repository.CommentRepository;
 import com.Arisuki.log.repository.ItemRepository;
@@ -205,7 +207,7 @@ public class ItemController {
 		return "timeline";
 	}
 
-	// --- 詳細表示 ---
+	// --- 詳細表示 (isLikedの判定を追加) ---
 	@GetMapping("/view/{id}")
 	public String view(@PathVariable Integer id,
 	                   HttpSession session,
@@ -224,9 +226,41 @@ public class ItemController {
 	                .orElse(null);
 
 	        model.addAttribute("myComment", myComment);
+			UserEntity loginUser = (UserEntity) session.getAttribute("user");
+			boolean isLiked = false;
+			if (loginUser != null) {
+				isLiked = likeRepository.existsByInformationAndUser(item, loginUser);
+			}
+			
+			model.addAttribute("item", item);
+			model.addAttribute("isLiked", isLiked);
 	    }
 
 	    return "view";
+
+	}
+
+	// --- いいね切り替えロジック (リロード方式) ---
+	@Transactional
+	@GetMapping("/like/{id}")
+	public String toggleLike(@PathVariable Integer id, HttpSession session) {
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null) return "redirect:/login";
+
+		InformationEntity item = repository.findById(id).orElseThrow();
+
+		if (likeRepository.existsByInformationAndUser(item, loginUser)) {
+			// すでにいいねがあれば削除
+			likeRepository.deleteByInformationAndUser(item, loginUser);
+		} else {
+			// なければ新規登録
+			LikeEntity like = new LikeEntity();
+			like.setInformation(item);
+			like.setUser(loginUser);
+			likeRepository.save(like);
+		}
+
+		return "redirect:/view/" + id; // 閲覧ページにリロード
 	}
 
 	@GetMapping("/detail/{id}")
@@ -401,23 +435,21 @@ public class ItemController {
 		return sb.toString();
 	}
 
+	// --- マイいいね一覧 ---
 	@GetMapping("/mylikes")
 	public String showMyLikes(HttpSession session, Model model) {
-		// 1. セッションからログインユーザーを取得
-		UserEntity user = (UserEntity) session.getAttribute("user");
+	    UserEntity user = (UserEntity) session.getAttribute("user");
 
-		if (user == null) {
-			// ログインしていない場合はログイン画面などへ飛ばす
-			return "redirect:/login";
-		}
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
 
-		// 2. 本来はここで「ユーザーがいいねしたリスト」をサービス経由で取得します
-		// 現時点では、エラー回避のために空のリストか、全リストを渡しておきましょう
-		// List<InformationEntity> likeList = itemService.getLikesByUser(user);
-		// model.addAttribute("likeList", likeList);
+	    List<InformationEntity> likeList = likeRepository.findAll().stream()
+	            .filter(like -> like.getUser().getId().equals(user.getId()))
+	            .map(LikeEntity::getInformation)
+	            .toList();
 
-		// 3. 先ほど作ったHTMLファイル名を返す（拡張子.htmlは不要）
-		return "my_likepage";
+	    model.addAttribute("likeList", likeList);
+	    return "my_likepage"; 
 	}
-
 }
