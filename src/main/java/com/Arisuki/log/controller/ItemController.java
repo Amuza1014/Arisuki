@@ -191,11 +191,26 @@ public class ItemController {
 
 	// --- 詳細表示 ---
 	@GetMapping("/view/{id}")
-	public String view(@PathVariable Integer id, Model model) {
-		InformationEntity item = repository.findById(id).orElseThrow();
-		model.addAttribute("item", item);
-		model.addAttribute("comments", item.getComments());
-		return "view";
+	public String view(@PathVariable Integer id,
+	                   HttpSession session,
+	                   Model model) {
+
+	    InformationEntity item = repository.findById(id).orElseThrow();
+	    model.addAttribute("item", item);
+	    model.addAttribute("comments", item.getComments());
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+
+	    if (user != null) {
+	        CommentEntity myComment =
+	                commentRepository
+	                .findByInformationAndUser(item, user)
+	                .orElse(null);
+
+	        model.addAttribute("myComment", myComment);
+	    }
+
+	    return "view";
 	}
 
 	@GetMapping("/detail/{id}")
@@ -206,10 +221,16 @@ public class ItemController {
 		InformationEntity item = repository.findById(id).orElse(null);
 		if (item == null)
 			return "redirect:/mypage";
+		
+		List<CommentEntity> comments = commentRepository.findByInformationOrderByCreatedAtDesc(item);
+		
 
 		model.addAttribute("item", item);
+		model.addAttribute("comments", comments);
 		return "detail";
 	}
+	
+	
 	
 	// コメント機能
 	@PostMapping("/view/{id}")
@@ -219,19 +240,51 @@ public class ItemController {
 
 	    UserEntity user = (UserEntity) session.getAttribute("user");
 	    if (user == null) {
-	        return "redirect:/login"; // ログインしていなければログイン画面へ
+	        return "redirect:/login";
 	    }
 
 	    InformationEntity item = repository.findById(id).orElseThrow();
 
-	    CommentEntity newComment = new CommentEntity();
-	    newComment.setContent(comment);
-	    newComment.setUser(user);
-	    newComment.setInformation(item);
+	    // 既存コメントを取得
+	    CommentEntity existingComment =
+	            commentRepository.findByInformationAndUser(item, user)
+	                             .orElse(null);
 
-	    commentRepository.save(newComment);
+	    if (existingComment == null) {
+	        // 新規作成
+	        CommentEntity newComment = new CommentEntity();
+	        newComment.setContent(comment);
+	        newComment.setUser(user);
+	        newComment.setInformation(item);
+	        commentRepository.save(newComment);
+	    } else {
+	        // 編集（更新）
+	        existingComment.setContent(comment);
+	        commentRepository.save(existingComment);
+	    }
 
-	    return "commentsuccess";
+	    return "redirect:/view/" + id;
+	}
+	// コメント削除
+	@PostMapping("/comment/delete/{id}")
+	public String deleteComment(@PathVariable Integer id,
+	                            HttpSession session) {
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
+
+	    CommentEntity comment = commentRepository.findById(id).orElse(null);
+
+	    // 自分のコメントだけ削除できるようにする
+	    if (comment != null && comment.getUser().getId().equals(user.getId())) {
+	        Integer informationId = comment.getInformation().getId();
+	        commentRepository.delete(comment);
+	        return "redirect:/view/" + informationId;
+	    }
+
+	    return "redirect:/timeline";
 	}
 	
 	
