@@ -172,11 +172,11 @@
 
             <input type="text"
                    name="comment"
-                   class="form-control me-2"
+                   class="form-control-sm me-2 flex-grow-1"
                    th:value="${myComment != null ? myComment.content : ''}" />
 
             <button type="submit"
-                    class="btn btn-custom-green"
+                    class="btn btn-custom-green fs-7"
                     th:text="${myComment != null} ? 'コメントを編集' : 'コメント'">
             </button>
         </form>
