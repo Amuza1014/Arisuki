@@ -136,86 +136,99 @@ body {
 </style>
 </head>
 <body>
-<div class="container container-box mt-5 mb-5">
+	<div class="container container-box mt-5 mb-5">
 
-    <div class="card shadow p-3">
+		<div class="card shadow p-3">
 
-        <!-- 作品画像＋いいねボタン -->
-        <a th:href="@{/like/{id}(id=${item.id})}" class="like-button-overlay"
-           th:classappend="${isLiked} ? 'active' : ''">
-            <span th:text="${isLiked} ? '❤️' : '🤍'"></span>
-        </a>
+			<!-- 作品画像＋いいねボタン -->
+			<a th:href="@{/like/{id}(id=${item.id})}" class="like-button-overlay"
+				th:classappend="${isLiked} ? 'active' : ''"> <span
+				th:text="${isLiked} ? '❤️' : '🤍'"></span>
+			</a>
 
-        <img th:if="${item.thumbnailUrl != null}" th:src="${item.thumbnailUrl}" 
-             class="card-img-top mb-3">
-        <div th:unless="${item.thumbnailUrl != null}" 
-             class="card-img-top d-flex align-items-center justify-content-center mb-3"
-             style="background: #252525; height: 200px;">
-            <span class="text-secondary">No Image</span>
-        </div>
+			<!-- 画像表示 -->
+			<img th:if="${item.thumbnailUrl != null}"
+				th:src="${item.thumbnailUrl}" class="card-img-top mb-3">
+			<div th:unless="${item.thumbnailUrl != null}"
+				class="card-img-top d-flex align-items-center justify-content-center mb-3"
+				style="background: #252525; height: 200px;">
+				<span class="text-secondary">No Image</span>
+			</div>
 
-        <!-- タイトル・クリエイター -->
-        <h3 class="text-secondary-muted mb-1" th:text="${item.title}"></h3>
-        <p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
+			<!-- card-body 内にタイトルやクリエイター、評価、レビュー -->
+			<div class="card-body">
 
-        <div class="mb-3">
-            <span class="text-warning fw-bold" th:if="${item.score != null}" 
-                  th:text="'☆' + ${item.score}"></span>
-        </div>
+				<!-- タイトル・クリエイター -->
+				<h3 th:text="${item.title}" class="text-secondary-muted mb-0"></h3>
+				<p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
 
-        <hr>
+				<!-- 評価 -->
+				<div class="mb-2">
+					<span class="text-warning fw-bold" th:if="${item.score != null}"
+						th:text="'☆' + ${item.score}"></span>
+				</div>
 
-        <!-- コメント一覧 -->
-        <div class="mb-3">
-            <h5 class="fw-bold mb-2">💬 コメント</h5>
+				<hr>
 
-            <div th:if="${#lists.isEmpty(comments)}" class="text-color-pink mb-2">
-                <p>まだコメントはありません</p>
-            </div>
+				<!-- レビュー -->
+				<p th:text="${item.reviewText}" class="text-secondary-muted mb-0"></p>
 
-            <div th:each="c : ${comments}" class="mb-2">
-                <p>
-                    <strong th:text="${c.user.username}"
-                            th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'"></strong>
-                </p>
-                <p th:text="${c.content}"
-                   th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
-                <hr>
-            </div>
-        </div>
+				<hr>
 
-        <!-- 自分のコメント投稿 -->
-        <div th:if="${session.user != null}" class="mb-3">
-            <form th:action="@{/view/{id}(id=${item.id})}" method="post" class="d-flex gap-2">
-                <input type="text" name="comment" class="form-control"
-                       th:value="${myComment != null ? myComment.content : ''}" />
-                <button type="submit" class="btn btn-custom-green"
-                        th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
-            </form>
+				<!-- コメント一覧 -->
+				<div th:if="${#lists.isEmpty(comments)}"
+					class="text-color-pink mb-2">
+					<p>まだコメントはありません</p>
+				</div>
+				<div th:each="c : ${comments}" class="mb-2 text-color-pink">
+					<p>
+						<strong th:text="${c.user.username}"
+							th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
+						</strong>
+					</p>
+					<p th:text="${c.content}"
+						th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
+					<hr>
+				</div>
 
-            <form th:if="${myComment != null}" th:action="@{/comment/delete/{id}(id=${myComment.id})}" 
-                  method="post" class="mt-2">
-                <button type="submit" class="btn btn-outline-danger"
-                        onclick="return confirm('本当に削除しますか？');">コメントを削除</button>
-            </form>
-        </div>
+				<!-- 自分のコメント投稿 -->
+<div th:if="${session.user != null}" class="mb-3">
 
-        <hr>
+    <div class="d-flex flex-wrap align-items-center gap-2">
 
-        <!-- ボタン類 -->
-        <div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
-            <a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐 Timelineに戻る</a>
-            <a th:href="@{/mypage}" class="btn btn-outline-light px-4">Collectionsに戻る</a>
-<!--             <th:block th:with="isOwner=${session.user != null && item.user != null && session.user.id == item.user.id}">
-                <a th:href="@{/edit/{id}(id=${item.id})}" class="btn btn-warning px-4"
-                   th:classappend="${!isOwner} ? 'disabled'" th:aria-disabled="${!isOwner}">編集する</a>
-                <form th:action="@{/delete/{id}(id=${item.id})}" method="post" onsubmit="return confirm('本当に削除しますか？')">
-                    <button type="submit" class="btn btn-danger px-4" th:disabled="${!isOwner}">削除する</button>
-                </form> -->
-            </th:block>
-        </div>
+        <!-- コメント入力＆送信 -->
+         <form th:action="@{/view/{id}(id=${item.id})}" 
+              method="post"
+              class="d-flex align-items-center gap-2"
+              style="flex: 1 1 300px; max-width: 500px;">
+            <input type="text" name="comment"
+                   class="form-control"
+                   th:value="${myComment != null ? myComment.content : ''}" />
+            <button type="submit" class="btn btn-custom-green fs-7" style="white-space: nowrap;"
+                    th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
+        </form>
+
+        <!-- 自分のコメント削除ボタン -->
+        <form th:if="${myComment != null}"
+              th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+              method="post">
+            <button type="submit" class="btn btn-outline-danger"
+                    onclick="return confirm('本当に削除しますか？');">コメント削除</button>
+        </form>
 
     </div>
 </div>
+				<hr>
+
+				<!-- ボタン類 -->
+				<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+					<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐
+						Timelineに戻る</a> <a th:href="@{/mypage}"
+						class="btn btn-outline-light px-4">Collectionsに戻る</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </body>
 </html>
