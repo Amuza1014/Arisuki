@@ -126,10 +126,12 @@ public class ItemController {
 
 	// --- 投稿 ---
 	@GetMapping("/form")
-	public String form(HttpSession session) {
-		if (session.getAttribute("user") == null)
-			return "redirect:/login";
-		return "form";
+	public String form(HttpSession session, Model model) {
+	    if (session.getAttribute("user") == null)
+	        return "redirect:/login";
+
+	    model.addAttribute("item", new InformationEntity()); // 空オブジェクトを追加
+	    return "form";
 	}
 
 	@PostMapping("/complete")
@@ -323,6 +325,7 @@ public class ItemController {
 		return "redirect:/timeline";
 
 	}
+	
 
 	@PostMapping("/ratesuccess")
 	public String ratesuccessfull() {

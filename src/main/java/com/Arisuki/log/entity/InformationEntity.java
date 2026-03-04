@@ -39,6 +39,9 @@ public class InformationEntity {
 	//	
 	@Column(nullable = false)
 	private Integer score;//5点満点
+
+
+
 	
 
 	// 【追加】投稿したユーザーとの紐付け
@@ -56,3 +59,7 @@ public class InformationEntity {
 	private List<CommentEntity> comments;
 
 }
+
+  
+    
+
