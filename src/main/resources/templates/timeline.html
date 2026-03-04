@@ -160,16 +160,13 @@ body {
 									 <span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span> 
 									 <span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
 							</div>
-							<div class="mb-2">
-    <span class="text-warning fw-bold"
-          th:if="${item.scoreCount != null and item.scoreCount > 0}"
-          th:text="${#numbers.formatDecimal(item.averageScore, 1, 1)}">
-          / 5
-          (<span th:text="${item.scoreCount}"></span>件)
+		<div class="mb-2">
+    <span class="text-warning fw-bold" th:if="${item.score != null}" 
+          th:text=" '☆' + ${item.score}">
+        <!-- 例: 4 / 5 -->
     </span>
-    
 
-    <span class="text-color" th:if="${item.scoreCount == null or item.scoreCount == 0}">
+    <span class="text-color" th:if="${item.score == null}">
         未評価
     </span>
 </div>

@@ -157,6 +157,13 @@ body {
 							</div>
 
 							<h5 class="card-title fw-bold text-white" th:text="${item.title}">作品名</h5>
+							
+						<div>
+    <span class="text-warning fw-bold" th:if="${item.score != null}" 
+          th:text=" '☆' + ${item.score}">
+        <!-- 例: 4 / 5 -->
+    </span>
+    </div>
 
 							<div class="small mb-2 fw-bold text-secondary-muted">
 								<span th:if="${item.category == '1'}"

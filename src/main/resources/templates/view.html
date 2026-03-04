@@ -118,6 +118,13 @@
 		</div>
             
             <p  class="text-secondary-muted mb-0" th:text="${item.creator}"></p>
+            
+            	<div class="mb-2">
+    <span class="text-warning fw-bold" th:if="${item.score != null}" 
+          th:text=" '☆' + ${item.score}">
+        <!-- 例: 4 / 5 -->
+    </span>
+    </div>
 
             <hr>
 

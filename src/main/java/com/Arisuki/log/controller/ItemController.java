@@ -116,10 +116,12 @@ public class ItemController {
 
 	// --- 投稿 ---
 	@GetMapping("/form")
-	public String form(HttpSession session) {
-		if (session.getAttribute("user") == null)
-			return "redirect:/login";
-		return "form";
+	public String form(HttpSession session, Model model) {
+	    if (session.getAttribute("user") == null)
+	        return "redirect:/login";
+
+	    model.addAttribute("item", new InformationEntity()); // 空オブジェクトを追加
+	    return "form";
 	}
 
 	@PostMapping("/complete")
@@ -254,22 +256,7 @@ public class ItemController {
 		return "redirect:/mypage";
 	}
 
-	// --- 評価（スコア集計） ---
-	@PostMapping("/ratesuccess/{id}")
-	public String ratesuccess(@PathVariable Integer id, @RequestParam("score") Integer score) {
-		InformationEntity item = repository.findById(id).orElseThrow();
-
-		if (item.getScoreSum() == null)
-			item.setScoreSum(0);
-		if (item.getScoreCount() == null)
-			item.setScoreCount(0);
-
-		item.setScoreSum(item.getScoreSum() + score);
-		item.setScoreCount(item.getScoreCount() + 1);
-
-		repository.save(item);
-		return "ratesuccess";
-	}
+	
 
 	@PostMapping("/ratesuccess")
 	public String ratesuccessfull() {
