@@ -47,5 +47,7 @@ public class InformationEntity {
 
 	@Transient
 	private long commentCount;
+	
+	
 
 }
