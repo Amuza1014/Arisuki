@@ -65,7 +65,7 @@ body {
 
 /* カテゴリバッジ */
 .badge-book {
-	background-color: #2c3e50;
+	background-color: rgb(0, 128, 255);
 }
 
 .badge-movie {
@@ -129,7 +129,11 @@ body {
 				<div class="d-flex gap-2">
 					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">タイムライン</a>
 					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">ログアウト</a>
+					
 				</div>
+				<p>
+						username:<span th:text="${session.user.username}"></span>
+					</p>
 			</div>
 		</div>
 
@@ -153,6 +157,14 @@ body {
 							</div>
 
 							<h5 class="card-title fw-bold text-white" th:text="${item.title}">作品名</h5>
+							
+						<div>
+    <span class="fw-bold" 
+          th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
+          th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
+        <!-- 例: 4 / 5 -->
+    </span>
+    </div>
 
 							<div class="small mb-2 fw-bold text-secondary-muted">
 								<span th:if="${item.category == '1'}"

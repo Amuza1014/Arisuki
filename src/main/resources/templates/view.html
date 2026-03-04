@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>閲覧ページ</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <style>
-    body { background-color: #121212;
+body {
+	background-color: #121212;
 	color: #e0e0e0;
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
-	padding-bottom: 80px; }
-	
-    .container-box {
-        max-width: 700px;
-        margin: 50px auto;
-    }
-    
-    .card {
+	padding-bottom: 80px;
+}
+
+.container-box {
+	max-width: 700px;
+	margin: 50px auto;
+}
+
+.card {
 	background-color: #1e1e1e;
 	border-radius: 12px;
 	border: 1px solid #333;
 	transition: all 0.3s ease;
+	position: relative; /* いいねボタンの基準として必須 */
 	overflow: hidden;
 }
 /* .card:hover {
@@ -28,9 +33,8 @@
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 	border-color: #2ecc71;
 } */
-
 .card-img-top {
-	height: 200px;
+	height: 300px;
 	object-fit: cover;
 	filter: brightness(0.8);
 	transition: 0.3s;
@@ -39,7 +43,6 @@
 /* .card:hover .card-img-top {
 	filter: brightness(1.0);
 } */
-
 .card-link {
 	text-decoration: none;
 	color: inherit;
@@ -56,92 +59,189 @@
 }
 
 .btn-custom-green:hover {
-    background-color: #27ae60;  /* 少し濃い緑 */
-    color: #ffffff;
+	background-color: #27ae60; /* 少し濃い緑 */
+	color: #ffffff;
 }
-    
-    .rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+
+.rating {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
 }
 
 .rating input {
-    display: none;
+	display: none;
 }
 
 .rating label {
-    font-size: 2rem;
-    color: #ddd;
-    cursor: pointer;
-    transition: 0.2s;
+	font-size: 2rem;
+	color: #ddd;
+	cursor: pointer;
+	transition: 0.2s;
 }
 
 .rating input:checked ~ label {
-    color: #ffc107;
+	color: #ffc107;
 }
 
-.rating label:hover,
-.rating label:hover ~ label {
-    color: #ffc107;
+.rating label:hover, .rating label:hover ~ label {
+	color: #ffc107;
 }
 
 .text-secondary-muted {
 	/* color: #9e9e9e !important; */
 	color: white;
 }
+
+.text-color-pink {
+	color: pink;
+}
+
+/* --- いいねボタンの基本スタイル --- */
+.like-button-overlay {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	background: rgba(0, 0, 0, 0.5); /* 通常時は暗い半透明 */
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	z-index: 10;
+	text-decoration: none;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.like-button-overlay:hover {
+	transform: scale(1.1);
+	background: rgba(0, 0, 0, 0.7);
+}
+
+/* --- いいね済みの時（絵文字が❤️に切り替わり、背景も強調） --- */
+.like-button-overlay.active {
+	background: #ffffff; /* 背景を白にしてコントラストを最大化 */
+	box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); /* 赤い光の影を追加 */
+	border: none;
+}
+
+.like-button-overlay.active:hover {
+	background: #f8f8f8;
+	transform: scale(1.2);
+}
 </style>
 </head>
 <body>
+	<div class="container container-box mt-5 mb-5">
 
-<div class="container container-box">
+		<div class="card shadow p-3">
 
-    <div class="card shadow">
+			<!-- 作品画像＋いいねボタン -->
+			<a th:href="@{/like/{id}(id=${item.id})}" class="like-button-overlay"
+				th:classappend="${isLiked} ? 'active' : ''"> <span
+				th:text="${isLiked} ? '❤️' : '🤍'"></span>
+			</a>
+			<div class="card shadow">
 
-        <img th:if="${item.thumbnailUrl != null}"
-             th:src="${item.thumbnailUrl}"
-             class="card-img-top">
+				<div class="container mt-5 mb-5">
+					<div class="detail-container">
+						<div class="d-flex justify-content-end align-items-center mb-4">
+							<div>
+								<span th:if="${item.category == '1'}"
+									class="badge bg-primary fs-6"> 📖Book </span> <span
+									th:if="${item.category == '2'}"
+									class="badge bg-warning text-dark fs-6"> 🎬 Movie </span> <span
+									th:if="${item.category == '3'}" class="badge bg-success fs-6">
+									🎮 Game </span>
+							</div>
+						</div>
 
-        <div class="card-body">
+						<!-- 画像表示 -->
+						<img th:if="${item.thumbnailUrl != null}"
+							th:src="${item.thumbnailUrl}" class="card-img-top mb-3">
+						<div th:unless="${item.thumbnailUrl != null}"
+							class="card-img-top d-flex align-items-center justify-content-center mb-3"
+							style="background: #252525; height: 200px;">
+							<span class="text-secondary">No Image</span>
+						</div>
 
-            <h3 th:text="${item.title}"  class="text-secondary-muted mb-0"></h3>
+						<!-- card-body 内にタイトルやクリエイター、評価、レビュー -->
+						<div class="card-body">
 
-            <p  class="text-secondary-muted mb-0" th:text="${item.creator}"></p>
+							<!-- タイトル・クリエイター -->
+							<h3 th:text="${item.title}" class="text-secondary-muted mb-0"></h3>
+							<p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
 
-            <hr>
+							<!-- 評価 -->
+							<div class="mb-2">
+								<span class="text-warning fw-bold" th:if="${item.score != null}"
+									th:text="'☆' + ${item.score}"></span>
+							</div>
 
-            <p th:text="${item.reviewText}"  class="text-secondary-muted mb-0"></p>
+							<hr>
 
-            <a th:href="@{/timeline}"  class="btn btn-custom-green">
-               タイムラインに戻る
-            </a>
-<!--            <form th:action="@{/rate/{id}(id=${item.id})}" method="post" class="mt-4">-->
-             <form th:action="@{/ratesuccess/{id}(id=${item.id})}" method="post" class="mt-4">
+							<!-- レビュー -->
+							<p th:text="${item.reviewText}" class="text-secondary-muted mb-0"></p>
 
-<!--    <label class="form-label fw-bold">評価する</label>-->
-     <label class="text-secondary-muted mb-0">評価する</label>
+							<hr>
 
-    <div class="rating mb-3">
-        <input type="radio" name="score" value="5" id="star5"><label for="star5">★</label>
-        <input type="radio" name="score" value="4" id="star4"><label for="star4">★</label>
-        <input type="radio" name="score" value="3" id="star3"><label for="star3">★</label>
-        <input type="radio" name="score" value="2" id="star2"><label for="star2">★</label>
-        <input type="radio" name="score" value="1" id="star1"><label for="star1">★</label>
-    </div>
+							<!-- コメント一覧 -->
+							<div th:if="${#lists.isEmpty(comments)}"
+								class="text-color-pink mb-2">
+								<p>まだコメントはありません</p>
+							</div>
+							<div th:each="c : ${comments}" class="mb-2 text-color-pink">
+								<p>
+									<strong th:text="${c.user.username}"
+										th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
+									</strong>
+								</p>
+								<p th:text="${c.content}"
+									th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
+								<hr>
+							</div>
 
-	
-    <button  type="submit" class="btn btn-warning">
-        評価を送信
-    </button>
+							<!-- 自分のコメント投稿 -->
+							<div th:if="${session.user != null}" class="mb-3">
 
-</form>
-            
-          
+								<div class="d-flex flex-wrap align-items-center gap-2">
 
-        </div>
-    </div>
+									<!-- コメント入力＆送信 -->
+									<form th:action="@{/view/{id}(id=${item.id})}" method="post"
+										class="d-flex align-items-center gap-2"
+										style="flex: 1 1 300px; max-width: 500px;">
+										<input type="text" name="comment" class="form-control"
+											th:value="${myComment != null ? myComment.content : ''}" />
+										<button type="submit" class="btn btn-custom-green fs-7"
+											style="white-space: nowrap;"
+											th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
+									</form>
 
-</div>
+									<!-- 自分のコメント削除ボタン -->
+									<form th:if="${myComment != null}"
+										th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+										method="post">
+										<button type="submit" class="btn btn-outline-danger"
+											onclick="return confirm('本当に削除しますか？');">コメント削除</button>
+									</form>
 
+								</div>
+							</div>
+							<hr>
+
+							<!-- ボタン類 -->
+							<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+								<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐
+									Timelineに戻る</a> <a th:href="@{/mypage}"
+									class="btn btn-outline-light px-4">Collectionsに戻る</a>
+							</div>
+
+						</div>
+					</div>
+				</div>
 </body>
 </html>
