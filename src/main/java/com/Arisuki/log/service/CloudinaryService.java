@@ -1,4 +1,4 @@
-package com.Arisuki.log.service; // 自身のパッケージ名に合わせてください
+package com.Arisuki.log.service; 
 
 import java.io.IOException;
 import java.util.Map;

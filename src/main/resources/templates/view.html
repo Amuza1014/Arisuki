@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>閲覧ページ</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <style>
-    body { background-color: #121212;
+body {
+	background-color: #121212;
 	color: #e0e0e0;
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
-	padding-bottom: 80px; }
-	
-    .container-box {
-        max-width: 700px;
-        margin: 50px auto;
-    }
-    
-    .card {
+	padding-bottom: 80px;
+}
+
+.container-box {
+	max-width: 700px;
+	margin: 50px auto;
+}
+
+.card {
 	background-color: #1e1e1e;
 	border-radius: 12px;
 	border: 1px solid #333;
 	transition: all 0.3s ease;
+	position: relative; /* いいねボタンの基準として必須 */
 	overflow: hidden;
 }
 /* .card:hover {
@@ -28,9 +33,8 @@
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 	border-color: #2ecc71;
 } */
-
 .card-img-top {
-	height: 200px;
+	height: 300px;
 	object-fit: cover;
 	filter: brightness(0.8);
 	transition: 0.3s;
@@ -39,7 +43,6 @@
 /* .card:hover .card-img-top {
 	filter: brightness(1.0);
 } */
-
 .card-link {
 	text-decoration: none;
 	color: inherit;
@@ -56,34 +59,33 @@
 }
 
 .btn-custom-green:hover {
-    background-color: #27ae60;  /* 少し濃い緑 */
-    color: #ffffff;
+	background-color: #27ae60; /* 少し濃い緑 */
+	color: #ffffff;
 }
-    
-    .rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+
+.rating {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
 }
 
 .rating input {
-    display: none;
+	display: none;
 }
 
 .rating label {
-    font-size: 2rem;
-    color: #ddd;
-    cursor: pointer;
-    transition: 0.2s;
+	font-size: 2rem;
+	color: #ddd;
+	cursor: pointer;
+	transition: 0.2s;
 }
 
 .rating input:checked ~ label {
-    color: #ffc107;
+	color: #ffc107;
 }
 
-.rating label:hover,
-.rating label:hover ~ label {
-    color: #ffc107;
+.rating label:hover, .rating label:hover ~ label {
+	color: #ffc107;
 }
 
 .text-secondary-muted {
@@ -91,142 +93,168 @@
 	color: white;
 }
 
-.text-color-pink{
-	color: pink;}
+.text-color-pink {
+	color: pink;
+}
 
+/* --- いいねボタンの基本スタイル --- */
+.like-button-overlay {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	background: rgba(0, 0, 0, 0.5); /* 通常時は暗い半透明 */
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	z-index: 10;
+	text-decoration: none;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.like-button-overlay:hover {
+	transform: scale(1.1);
+	background: rgba(0, 0, 0, 0.7);
+}
+
+/* --- いいね済みの時（絵文字が❤️に切り替わり、背景も強調） --- */
+.like-button-overlay.active {
+	background: #ffffff; /* 背景を白にしてコントラストを最大化 */
+	box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); /* 赤い光の影を追加 */
+	border: none;
+}
+
+.like-button-overlay.active:hover {
+	background: #f8f8f8;
+	transform: scale(1.2);
+}
 </style>
 </head>
 <body>
 
 
-<div class="container container-box">
+	<div class="container container-box mt-5 mb-5">
 
-    <div class="card shadow">
-    
-    <div class="container mt-5 mb-5">
-		<div class="detail-container">
-			<div class="d-flex justify-content-end align-items-center mb-4">
-				<div>
-					<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">
-					📖Book
-					</span>
-					 <span th:if="${item.category == '2'}"class="badge bg-warning text-dark fs-6">
-					 🎬 Movie
-					 </span> 
-					 <span th:if="${item.category == '3'}" class="badge bg-success fs-6">
-					 🎮 Game
-					 </span>
+		<div class="card shadow p-3">
+
+				
+		
+			
+			<!-- 作品画像＋いいねボタン -->
+			<a th:href="@{/like/{id}(id=${item.id})}" class="like-button-overlay"
+				th:classappend="${isLiked} ? 'active' : ''"> <span
+				th:text="${isLiked} ? '❤️' : '🤍'"></span>
+			</a>
+				
+				<div class="container mt-5 mb-5">
+					<div class="detail-container">
+						<div class="d-flex justify-content-between align-items-center mb-3 mt-2">
+
+				    <!-- タイトル（左） -->
+				    <h3 th:text="${item.title}" 
+				        class="fw-bold text-white mb-0"></h3>
+				
+				    <!-- カテゴリー（右） -->
+				    <div>
+				        <span th:if="${item.category == '1'}"
+				              class="badge bg-primary fs-6">📖 Book</span>
+				
+				        <span th:if="${item.category == '2'}"
+				              class="badge bg-warning text-dark fs-6">🎬 Movie</span>
+				
+				        <span th:if="${item.category == '3'}"
+				              class="badge bg-success fs-6">🎮 Game</span>
+				    </div>
+				
 				</div>
-			</div>
+						
+						<!-- 画像表示 -->
+						<img th:if="${item.thumbnailUrl != null}"
+							th:src="${item.thumbnailUrl}" class="card-img-top mb-3">
+						<div th:unless="${item.thumbnailUrl != null}"
+							class="card-img-top d-flex align-items-center justify-content-center mb-3"
+							style="background: #252525; height: 200px;">
+							<span class="text-secondary">No Image</span>
+						</div>
 
-        <img th:if="${item.thumbnailUrl != null}"
-             th:src="${item.thumbnailUrl}"
-             class="card-img-top">
+						<!-- card-body 内にタイトルやクリエイター、評価、レビュー -->
+						<div class="card-body">
 
-        <div class="card-body">
-        
-        
-        
+							<!-- タイトル・クリエイター -->
+						
+							<p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
 
-            <h3 th:text="${item.title}"  class="text-secondary-muted mb-0"></h3>
-            
+							<!-- 評価 -->
+							<div class="mb-2">
+								<span class="text-warning fw-bold" th:if="${item.score != null}"
+									th:text="'☆' + ${item.score}"></span>
+							</div>
 
-		<div>
-   			<p class="text-color-pink">
-   				posted:<span th:text="${item.user.username}" class="text-color-pink"></span>
-   			</p>
-		</div>
-            
-            <p  class="text-secondary-muted mb-0" th:text="${item.creator}"></p>
-            
-            	<div class="mb-2">
-    <span class="text-warning fw-bold" th:if="${item.score != null}" 
-          th:text=" '☆' + ${item.score}">
-        <!-- 例: 4 / 5 -->
-    </span>
-    </div>
+							<hr>
 
-            <hr>
+							<!-- レビュー -->
+							<p th:text="${item.reviewText}" class="text-secondary-muted mb-0"></p>
 
-            <p th:text="${item.reviewText}"  class="text-secondary-muted mb-0"></p>
+							<hr>
 
-            <a th:href="@{/timeline}"  class="btn btn-custom-green">
-               タイムラインに戻る
-            </a>
+							<!-- コメント一覧 -->
+							<div th:if="${#lists.isEmpty(comments)}"
+								class="text-color-pink mb-2">
+								<p>まだコメントはありません</p>
+							</div>
+							<div th:each="c : ${comments}" class="mb-2 text-color-pink">
+								<p>
+									<strong th:text="${c.user.username}"
+										th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
+									</strong>
+								</p>
+								<p th:text="${c.content}"
+									th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
+								<hr>
+							</div>
 
+							<!-- 自分のコメント投稿 -->
+							<div th:if="${session.user != null}" class="mb-3">
 
-<hr>
+								<div class="d-flex flex-wrap align-items-center gap-2">
 
-<div th:if="${#lists.isEmpty(comments)}" class="text-color-pink">
-    <p>まだコメントはありません</p>
-</div>
+									<!-- コメント入力＆送信 -->
+									<form th:action="@{/view/{id}(id=${item.id})}" method="post"
+										class="d-flex align-items-center gap-2"
+										style="flex: 1 1 300px; max-width: 500px;">
+										<input type="text" name="comment" class="form-control"
+											th:value="${myComment != null ? myComment.content : ''}" />
+										<button type="submit" class="btn btn-custom-green fs-7"
+											style="white-space: nowrap;"
+											th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
+									</form>
 
-<div class="text-color-pink">
-<p>コメント一覧：</p>
-<div th:each="c : ${comments}">
-<p>
-	
-    <strong th:text="${c.user.username}" 
-    		 th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
-    </strong>
-</p>    
-<p>
- 
-    <span th:text="${c.content}"
-   		   th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'" >
-    </span></p>
-    
-  
-    
-    <hr>
-</div>
-</div>
+									<!-- 自分のコメント削除ボタン -->
+									<form th:if="${myComment != null}"
+										th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+										method="post">
+										<button type="submit" class="btn btn-outline-danger"
+											onclick="return confirm('本当に削除しますか？');">コメント削除</button>
+									</form>
 
-<div th:if="${session.user != null}">
+								</div>
+							</div>
+							<hr>
 
-    <div class="d-flex align-items-center">
+							<!-- ボタン類 -->
+							<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+								<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐
+									Timelineに戻る</a> <a th:href="@{/mypage}"
+									class="btn btn-outline-light px-4">Collectionsに戻る</a>
+							</div>
 
-        <form th:action="@{/view/{id}(id=${item.id})}" 
-              method="post"
-              class="flex-grow-1 d-flex">
-
-            <input type="text"
-                   name="comment"
-                   class="form-control-sm me-2 flex-grow-1"
-                   th:value="${myComment != null ? myComment.content : ''}" />
-
-            <button type="submit"
-                    class="btn btn-custom-green fs-7"
-                    th:text="${myComment != null} ? 'コメントを編集' : 'コメント'">
-            </button>
-        </form>
-
-        <!-- 自分のコメントがある場合だけ削除ボタン -->
-        <form th:if="${myComment != null}"
-              th:action="@{/comment/delete/{id}(id=${myComment.id})}"
-              method="post"
-              class="ms-2">
-
-            <button type="submit"
-                    class="btn btn-outline-danger"
-                    onclick="return confirm('本当に削除しますか？');">
-               コメントを削除
-            </button>
-        </form>
-
-    </div>
-
-</div>
-    
-    
-</div>
-            
-          
-
-        </div>
-    </div>
-
-</div>
-</div>
+						</div>
+					</div>
+				</div>
 </body>
 </html>
