@@ -311,10 +311,6 @@ public class ItemController {
 
 	
 
-	@PostMapping("/ratesuccess")
-	public String ratesuccessfull() {
-		return "ratesuccess";
-	}
 	
 
 	// --- 共通メソッド ---

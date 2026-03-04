@@ -98,15 +98,35 @@
 </head>
 <body>
 
+
 <div class="container container-box">
 
     <div class="card shadow">
+    
+    <div class="container mt-5 mb-5">
+		<div class="detail-container">
+			<div class="d-flex justify-content-end align-items-center mb-4">
+				<div>
+					<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">
+					📖Book
+					</span>
+					 <span th:if="${item.category == '2'}"class="badge bg-warning text-dark fs-6">
+					 🎬 Movie
+					 </span> 
+					 <span th:if="${item.category == '3'}" class="badge bg-success fs-6">
+					 🎮 Game
+					 </span>
+				</div>
+			</div>
 
         <img th:if="${item.thumbnailUrl != null}"
              th:src="${item.thumbnailUrl}"
              class="card-img-top">
 
         <div class="card-body">
+        
+        
+        
 
             <h3 th:text="${item.title}"  class="text-secondary-muted mb-0"></h3>
             
@@ -206,6 +226,7 @@
         </div>
     </div>
 
-
+</div>
+</div>
 </body>
 </html>
