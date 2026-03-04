@@ -145,21 +145,60 @@
 <p>コメント一覧：</p>
 <div th:each="c : ${comments}">
 <p>
-	<span>username:</span>
-    <strong th:text="${c.user.username}" class="text-color-pink"></strong>
+	
+    <strong th:text="${c.user.username}" 
+    		 th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
+    </strong>
 </p>    
 <p>
-   <span>Comment:</span>
-    <span th:text="${c.content}"></span></p>
+ 
+    <span th:text="${c.content}"
+   		   th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'" >
+    </span></p>
+    
+  
+    
     <hr>
 </div>
 </div>
 
 <div th:if="${session.user != null}">
-    <form action="#" th:action="@{/view/{id}(id=${item.id})}" method="post">
-        <input type="text" name="comment" />
-        <button type="submit">コメント</button>
-    </form>
+
+    <div class="d-flex align-items-center">
+
+        <form th:action="@{/view/{id}(id=${item.id})}" 
+              method="post"
+              class="flex-grow-1 d-flex">
+
+            <input type="text"
+                   name="comment"
+                   class="form-control me-2"
+                   th:value="${myComment != null ? myComment.content : ''}" />
+
+            <button type="submit"
+                    class="btn btn-custom-green"
+                    th:text="${myComment != null} ? 'コメントを編集' : 'コメント'">
+            </button>
+        </form>
+
+        <!-- 自分のコメントがある場合だけ削除ボタン -->
+        <form th:if="${myComment != null}"
+              th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+              method="post"
+              class="ms-2">
+
+            <button type="submit"
+                    class="btn btn-outline-danger"
+                    onclick="return confirm('本当に削除しますか？');">
+               コメントを削除
+            </button>
+        </form>
+
+    </div>
+
+</div>
+    
+    
 </div>
             
           
@@ -167,7 +206,6 @@
         </div>
     </div>
 
-</div>
 
 </body>
 </html>
