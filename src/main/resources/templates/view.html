@@ -101,7 +101,7 @@ body {
 .like-button-overlay {
 	position: absolute;
 	top: 15px;
-	right: 15px;
+	right: 120px;
 	background: rgba(0, 0, 0, 0.5); /* 通常時は暗い半透明 */
 	width: 50px;
 	height: 50px;
@@ -138,14 +138,14 @@ body {
 <body>
 	<div class="container container-box mt-5 mb-5">
 
-		<div class="card shadow p-3">
-
+<!--		<div class="card shadow p-3">-->
+			<div class="card shadow">
+			
 			<!-- 作品画像＋いいねボタン -->
 			<a th:href="@{/like/{id}(id=${item.id})}" class="like-button-overlay"
 				th:classappend="${isLiked} ? 'active' : ''"> <span
 				th:text="${isLiked} ? '❤️' : '🤍'"></span>
 			</a>
-			<div class="card shadow">
 
 				<div class="container mt-5 mb-5">
 					<div class="detail-container">
