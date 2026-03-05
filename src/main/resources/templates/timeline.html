@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>タイムライン - ArrayList&lt;Suki&gt;</title>
+<title>Timeline - ArrayList&lt;Suki&gt;</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -155,7 +155,7 @@ body {
 
 		<div class="d-flex justify-content-end mb-4 gap-2">
 			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">
-			❤️ My Likes </a> <a th:href="@{/mypage}"
+			❤️ Suki_List </a> <a th:href="@{/mypage}"
 				class="btn btn-outline-light btn-sm px-3">
 				Collectionsに戻る </a>
 		</div>
@@ -190,7 +190,7 @@ body {
 								</div>
 
 								<p class="text-color-pink">
-									投稿者: <span th:text="${item.user.username}"></span>
+									投稿者: <span class="text-white" th:text="${#strings.abbreviate(item.user.username, 20)}"></span>
 							</div>
 
 							<h5 class="fw-bold mb-2" th:text="${item.title}"></h5>
