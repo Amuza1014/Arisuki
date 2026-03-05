@@ -94,50 +94,55 @@ body {
 </head>
 <body>
 	<div class="container mt-5 mb-5">
-
 		<h2 class="fw-bold mb-4">🌐Timeline</h2>
 
 		<div class="d-flex justify-content-end mb-4 gap-2">
 			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">
-				❤️ My Likes </a> <a th:href="@{/mypage}"
-				class="btn btn-outline-light btn-sm px-3"> Collectionsに戻る </a>
+			❤️ My Likes </a> <a th:href="@{/mypage}"
+				class="btn btn-outline-light btn-sm px-3">
+				Collectionsに戻る </a>
 		</div>
 
-		<div class="row">
+		<div class="row row-cols-1 row-cols-md-3 g-4">
 
-			<div class="col-md-4 mb-4" th:each="item : ${sukiList}">
+			<div class="col" th:each="item : ${sukiList}">
 
 				<a
-					th:href="${session.user != null and session.user.id == item.user.id} ? @{/detail/{id}(id=${item.id})} : @{/view/{id}(id=${item.id})}"
+					th:href="${session.user?.id == item.user?.id} 
+                ? @{/detail/{id}(id=${item.id})} 
+                : @{/view/{id}(id=${item.id})}"
 					class="card-link">
-
 					<div class="card h-100">
 
+						<!-- 画像 -->
 						<img th:if="${item.thumbnailUrl != null}"
-							th:src="${item.thumbnailUrl}" class="card-img-top" alt="サムネイル">
-						<div th:unless="${item.thumbnailUrl != null}"
+							th:src="${item.thumbnailUrl}" class="card-img-top">
+
+						<div th:if="${item.thumbnailUrl == null}"
 							class="card-img-top d-flex align-items-center justify-content-center"
-							style="background: #252525;">
+							style="background: #252525; height: 200px;">
 							<span class="text-secondary">No Image</span>
 						</div>
 
 						<div class="card-body">
-						
-							<div class="stats-area mt-2">
-    <span class="me-3">❤️ <span th:text="${item.likeCount}">0</span></span>
-    <span>💬 <span th:text="${item.commentCount}">0</span></span>
-</div>
 
+							<!-- カテゴリ -->
 							<div class="mb-2">
 								<span th:if="${item.category == '1'}" class="badge badge-book">📖
 									Book</span> <span th:if="${item.category == '2'}"
 									class="badge badge-movie">🎬 Movie</span> <span
 									th:if="${item.category == '3'}" class="badge badge-game">🎮
 									Game</span>
+
+								<p class="text-color-pink">
+									posted: <span th:text="${item.user.username}"></span>
+								</p>
 							</div>
 
-							<h5 class="card-title mt-2" th:text="${item.title}"></h5>
+							<!-- タイトル -->
+							<h5 th:text="${item.title}"></h5>
 
+							<!-- クリエイター -->
 							<div class="small mb-2 fw-bold text-secondary">
 								<span th:if="${item.category == '1'}"
 									th:text="'Author: ' + ${item.creator}"></span> <span
@@ -145,20 +150,33 @@ body {
 									th:text="'Director: ' + ${item.creator}"></span> <span
 									th:if="${item.category == '3'}"
 									th:text="'Hardware: ' + ${item.publisher}"></span>
-								
 							</div>
 
-							<p class="card-text" th:text="${item.reviewText}"></p>
+							<!-- ❤️ 💬 -->
+							<div class="mb-2">
+								❤️ <span th:text="${item.likeCount}">0</span> 💬 <span
+									th:text="${item.commentCount}">0</span>
+							</div>
+
+							<!-- 評価 -->
+							<div class="mb-2">
+								<span class="text-warning fw-bold" th:if="${item.score != null}"
+									th:text=" '☆' + ${item.score}"> <!-- 例: 4 / 5 -->
+								</span> <span class="text-color" th:if="${item.score == null}">
+									未評価 </span>
+							</div>
+
+							<!-- レビュー -->
+							<p th:text="${item.reviewText}"></p>
 
 						</div>
-
 					</div>
 				</a>
 			</div>
-
 		</div>
-
 	</div>
-
+<footer style="text-align:center; font-size:0.8em; color:#666; padding:1em 0;">
+    &copy; 2026 Cチーム(仮) All Rights Reserved.
+</footer>
 </body>
 </html>

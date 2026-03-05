@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Arisuki.log.entity.CommentEntity;
 import com.Arisuki.log.entity.InformationEntity;
 import com.Arisuki.log.entity.LikeEntity; // 追加
 import com.Arisuki.log.entity.UserEntity;
-import com.Arisuki.log.repository.CommentRepository; // 追加
+import com.Arisuki.log.repository.CommentRepository;
 import com.Arisuki.log.repository.ItemRepository;
 import com.Arisuki.log.repository.LikeRepository;    // 追加
 import com.Arisuki.log.repository.UserRepository;
@@ -50,6 +51,7 @@ public class ItemController {
 	//	}
 	// --- ルート ---
 	@GetMapping("/")
+
 	public String input() {
 		return "redirect:/login";
 	}
@@ -57,10 +59,12 @@ public class ItemController {
 	@Autowired
 	private CloudinaryService cloudinaryService; // 追加
 
+
 	// --- ログイン関連の処理 ---
 
 	// --- ログイン・ログアウト ---
 	@GetMapping("/login")
+
 	public String loginForm() {
 		return "login";
 	}
@@ -124,15 +128,16 @@ public class ItemController {
 
 	// --- 投稿 ---
 	@GetMapping("/form")
-	public String form(HttpSession session) {
-		if (session.getAttribute("user") == null)
-			return "redirect:/login";
-		return "form";
+	public String form(HttpSession session, Model model) {
+	    if (session.getAttribute("user") == null)
+	        return "redirect:/login";
+
+	    model.addAttribute("item", new InformationEntity()); // 空オブジェクトを追加
+	    return "form";
 	}
 
 	@PostMapping("/complete")
 	public String complete(@ModelAttribute InformationEntity item,
-
 			@RequestParam(value = "thumbnail", required = false) MultipartFile file,
 			HttpSession session,
 			Model model) {
@@ -141,10 +146,13 @@ public class ItemController {
 		if (loginUser == null)
 			return "redirect:/login";
 
-		//  判定：保存前に ID があるかどうかを確認しておく 
+		item.setUser(loginUser);
+
+		// 判定：保存前に ID があるかどうか
 		boolean isEdit = (item.getId() != null);
 
-		// ===== 既存データ取得（editのときだけ）=====
+		// 既存データ取得（editのときだけ）
+
 		InformationEntity dbItem = null;
 		if (isEdit) {
 			dbItem = repository.findById(item.getId()).orElse(null);
@@ -169,6 +177,7 @@ public class ItemController {
 		item.setCategory(cleanComma(item.getCategory()));
 		item.setPublisher(cleanComma(item.getPublisher()));
 		item.setSubAttribute(cleanComma(item.getSubAttribute()));
+
 
 		// DB保存（ここで新規登録の場合でも ID がセットされる）
 		repository.save(item);
@@ -200,19 +209,35 @@ public class ItemController {
 
 	// --- 詳細表示 (isLikedの判定を追加) ---
 	@GetMapping("/view/{id}")
-	public String view(@PathVariable Integer id, HttpSession session, Model model) {
-		InformationEntity item = repository.findById(id).orElseThrow();
-		
-		// ログイン中のユーザーがこのアイテムを「いいね」しているか判定
-		UserEntity loginUser = (UserEntity) session.getAttribute("user");
-		boolean isLiked = false;
-		if (loginUser != null) {
-			isLiked = likeRepository.existsByInformationAndUser(item, loginUser);
-		}
-		
-		model.addAttribute("item", item);
-		model.addAttribute("isLiked", isLiked);
-		return "view";
+	public String view(@PathVariable Integer id,
+	                   HttpSession session,
+	                   Model model) {
+
+	    InformationEntity item = repository.findById(id).orElseThrow();
+	    model.addAttribute("item", item);
+	    model.addAttribute("comments", item.getComments());
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+
+	    if (user != null) {
+	        CommentEntity myComment =
+	                commentRepository
+	                .findByInformationAndUser(item, user)
+	                .orElse(null);
+
+	        model.addAttribute("myComment", myComment);
+			UserEntity loginUser = (UserEntity) session.getAttribute("user");
+			boolean isLiked = false;
+			if (loginUser != null) {
+				isLiked = likeRepository.existsByInformationAndUser(item, loginUser);
+			}
+			
+			model.addAttribute("item", item);
+			model.addAttribute("isLiked", isLiked);
+	    }
+
+	    return "view";
+
 	}
 
 	// --- いいね切り替えロジック (リロード方式) ---
@@ -246,9 +271,68 @@ public class ItemController {
 		InformationEntity item = repository.findById(id).orElse(null);
 		if (item == null)
 			return "redirect:/mypage";
+		
+		List<CommentEntity> comments = commentRepository.findByInformationOrderByCreatedAtDesc(item);
+		
 
 		model.addAttribute("item", item);
+		model.addAttribute("comments", comments);
 		return "detail";
+	}
+
+	// コメント機能
+	@PostMapping("/view/{id}")
+	public String postComment(@PathVariable Integer id,
+	                          @RequestParam String comment,
+	                          HttpSession session) {
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
+
+	    InformationEntity item = repository.findById(id).orElseThrow();
+
+	    // 既存コメントを取得
+	    CommentEntity existingComment =
+	            commentRepository.findByInformationAndUser(item, user)
+	                             .orElse(null);
+
+	    if (existingComment == null) {
+	        // 新規作成
+	        CommentEntity newComment = new CommentEntity();
+	        newComment.setContent(comment);
+	        newComment.setUser(user);
+	        newComment.setInformation(item);
+	        commentRepository.save(newComment);
+	    } else {
+	        // 編集（更新）
+	        existingComment.setContent(comment);
+	        commentRepository.save(existingComment);
+	    }
+
+	    return "redirect:/view/" + id;
+	}
+	// コメント削除
+	@PostMapping("/comment/delete/{id}")
+	public String deleteComment(@PathVariable Integer id,
+	                            HttpSession session) {
+
+	    UserEntity user = (UserEntity) session.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
+
+	    CommentEntity comment = commentRepository.findById(id).orElse(null);
+
+	    // 自分のコメントだけ削除できるようにする
+	    if (comment != null && comment.getUser().getId().equals(user.getId())) {
+	        Integer informationId = comment.getInformation().getId();
+	        commentRepository.delete(comment);
+	        return "redirect:/view/" + informationId;
+	    }
+
+	    return "redirect:/timeline";
 	}
 
 	// --- 編集・削除 ---
@@ -287,45 +371,46 @@ public class ItemController {
 
 		InformationEntity item = repository.findById(id).orElseThrow();
 
-//	    if (item.getScoreSum() == null) item.setScoreSum(0);
-//	    if (item.getScoreCount() == null) item.setScoreCount(0);
-//
-//	    RatingEntity existing =
-//	            ratingRepository.findByUserIdAndItemId(userId, id);
-//
-//	    if (existing == null) {
-//
-//	        // ===== 新規評価 =====
-//	        RatingEntity rating = new RatingEntity();
-//	        rating.setUserId(userId);
-//	        rating.setItemId(id);
-//	        rating.setScore(score);
-//	        ratingRepository.save(rating);
-//
-//	        item.setScoreSum(item.getScoreSum() + score);
-//	        item.setScoreCount(item.getScoreCount() + 1);
-//
-//	    } else {
-//
-//	        // ===== 更新 =====
-//	        int oldScore = existing.getScore();
-//
-//	        // 合計から古い点を引く
-//	        item.setScoreSum(item.getScoreSum() - oldScore);
-//
-//	        // 新しい点を足す
-//	        item.setScoreSum(item.getScoreSum() + score);
-//
-//	        // rating更新
-//	        existing.setScore(score);
-//	        ratingRepository.save(existing);
-//	    }
+		//	    if (item.getScoreSum() == null) item.setScoreSum(0);
+		//	    if (item.getScoreCount() == null) item.setScoreCount(0);
+		//
+		//	    RatingEntity existing =
+		//	            ratingRepository.findByUserIdAndItemId(userId, id);
+		//
+		//	    if (existing == null) {
+		//
+		//	        // ===== 新規評価 =====
+		//	        RatingEntity rating = new RatingEntity();
+		//	        rating.setUserId(userId);
+		//	        rating.setItemId(id);
+		//	        rating.setScore(score);
+		//	        ratingRepository.save(rating);
+		//
+		//	        item.setScoreSum(item.getScoreSum() + score);
+		//	        item.setScoreCount(item.getScoreCount() + 1);
+		//
+		//	    } else {
+		//
+		//	        // ===== 更新 =====
+		//	        int oldScore = existing.getScore();
+		//
+		//	        // 合計から古い点を引く
+		//	        item.setScoreSum(item.getScoreSum() - oldScore);
+		//
+		//	        // 新しい点を足す
+		//	        item.setScoreSum(item.getScoreSum() + score);
+		//
+		//	        // rating更新
+		//	        existing.setScore(score);
+		//	        ratingRepository.save(existing);
+		//	    }
 
 		repository.save(item);
 
 		return "redirect:/timeline";
-//	    return "redirect:/reratecomplete";
+
 	}
+	
 
 	@PostMapping("/ratesuccess")
 	public String ratesuccessfull() {
