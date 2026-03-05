@@ -48,9 +48,7 @@ public class InformationEntity {
     // @OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
     // private Set<LikeEntity> likes;
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }
-
