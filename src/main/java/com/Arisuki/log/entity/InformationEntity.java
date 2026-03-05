@@ -51,7 +51,7 @@ public class InformationEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
 }
-  
-    
+
 
