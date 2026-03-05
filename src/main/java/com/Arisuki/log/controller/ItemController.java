@@ -367,4 +367,26 @@ public class ItemController {
 	    model.addAttribute("likeList", likeList);
 	    return "my_likepage"; 
 	}
+	@PostMapping("/update-username")
+	public String updateUsername(@RequestParam("newUsername") String newUsername, HttpSession session) {
+	    // 1. セッションから現在のユーザー情報を取得
+	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
+	    if (loginUser == null) {
+	        return "redirect:/login";
+	    }
+
+	    // 2. データベースのユーザー名を更新
+	    // ※ ログインID（username）を更新する場合
+	    loginUser.setUsername(newUsername);
+	    // ※ もし表示名（displayName）も変えるなら
+	    loginUser.setDisplayName(newUsername);
+	    
+	    userRepository.save(loginUser);
+
+	    // 3. セッション情報も最新の状態に更新する
+	    session.setAttribute("user", loginUser);
+
+	    // 4. マイページにリダイレクトして戻る
+	    return "redirect:/mypage";
+	}
 }
