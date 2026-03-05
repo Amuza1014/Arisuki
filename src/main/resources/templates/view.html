@@ -24,12 +24,10 @@
 	.card {
 		background-color: #1e1e1e;
 		border-radius: 12px;
-		
 		overflow: hidden;
-		
 	}
 
-	/* --- ヘッダーレイアウト（横並び設定） --- */
+	/* --- ヘッダーレイアウト --- */
 	.card-header-custom {
 		padding: 1.5rem;
 		border-bottom: 1px solid #333;
@@ -55,11 +53,11 @@
 		flex-shrink: 0;
 	}
 
-	/* --- いいねボタン（インライン配置用） --- */
+	/* --- いいねボタン --- */
 	.like-button-inline {
 		width: 45px;
 		height: 45px;
-		background: #ffffff; /* 元のスタイルに合わせ白背景 */
+		background: #ffffff;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -114,7 +112,7 @@
 }
 
 	.text-secondary-muted {
-		color: white; /* 元の指定に合わせwhite */
+		color: white; 
 	}
 
 	.text-color-pink {
@@ -131,6 +129,11 @@
 
 .custom-text {
 	color: white;
+}
+
+/* ★追加：その他バッジ用スタイル */
+.badge-other {
+	background-color: #6c757d;
 }
 </style>
 </head>
@@ -153,6 +156,7 @@
 						<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">📖 Book</span>
 						<span th:if="${item.category == '2'}" class="badge bg-warning text-dark fs-6">🎬 Movie</span>
 						<span th:if="${item.category == '3'}" class="badge bg-success fs-6">🎮 Game</span>
+						<span th:if="${item.category == '99'}" class="badge badge-other fs-6">✨ Other</span>
 					</div>
 				</div>
 			</div>
@@ -167,14 +171,13 @@
 			</div>
 
 			<div class="card-body p-4">
-				<p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
-				
 				<p class="custom-text">
-									posted: <span th:text="${item.user.username}"></span>
-								</p>
+					posted: <span th:text="${item.user.username}"></span>
+				</p>
 				
 				<div class="card custom-card p-4 mb-4 border-0">
 				<h5 class="fw-bold mb-3 border-bottom pb-2 custom-text">📋 基本情報</h5>
+				
 				<div th:if="${item.category == '1'}">
 					<p><span class="label-text">著者：</span><span th:text="${item.creator}" class="custom-text"></span></p>
 					<p><span class="label-text">出版社：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
@@ -190,24 +193,29 @@
 					<p><span class="label-text">ハード：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
 					<p><span class="label-text">ジャンル：</span><span th:text="${item.subAttribute}" class="custom-text"></span></p>
 				</div>
+				<div th:if="${item.category == '99'}">
+					<p><span class="label-text">特徴1：</span><span th:text="${item.subAttribute}" class="custom-text"></span></p>
+					<p><span class="label-text">特徴2：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
+				</div>
+
 				<div>
-				
 					<p>
-				<span class="label-text">評価：</span>
-<span class="fw-bold"
-      th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
-      th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
-</span>
+						<span class="label-text">評価：</span>
+						<span class="fw-bold"
+						      th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
+						      th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
+						</span>
 			     	</p>
+				</div>
 
 				<hr>
 
 				<div class="custom-text">
-				<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
-				<p class="fs-5 p-3 custom-card" style="white-space: pre-wrap;" th:text="${item.reviewText}">
-				レビュー内容がここに入ります。
-				</p>
-			</div>
+					<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
+					<p class="fs-5 p-3 custom-card" style="white-space: pre-wrap;" th:text="${item.reviewText}">
+					レビュー内容がここに入ります。
+					</p>
+				</div>
 
 				<hr>
 
@@ -258,9 +266,9 @@
 		</div>
 	</div>
 	</div>
-	</div>
-		<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-			&copy; 2026 Cチーム(仮) All Rights Reserved.
-		</footer>
+	
+	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved.
+	</footer>
 </body>
 </html>

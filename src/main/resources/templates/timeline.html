@@ -11,7 +11,6 @@ body {
 	background-color: #121212;
 	color: #e0e0e0;
 	font-family: 'Helvetica Neue', Arial, sans-serif;
-	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
 	padding-bottom: 80px;
 }
 
@@ -47,7 +46,7 @@ body {
 }
 
 .card-title {
-	color: #ffffff; /* 視認性向上のため少し明るくしました */
+	color: #ffffff;
 }
 
 .card-body {
@@ -86,6 +85,12 @@ body {
 	padding: 0.4em 0.8em;
 }
 
+/* ★デザイン維持：その他用のバッジ色を追加 */
+.badge-other {
+	background-color: #6c757d;
+	padding: 0.4em 0.8em;
+}
+
 .text-secondary-muted {
 	color: #9e9e9e !important;
 }
@@ -99,7 +104,7 @@ body {
 	font-size: 0.85em;
 	margin-bottom: 0;
 }
-/* 下部固定メニュー：3ボタン完全均等配置用 */
+/* 下部固定メニュー */
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.9) !important;
 	backdrop-filter: blur(10px);
@@ -107,7 +112,7 @@ body {
 }
 
 .nav-item-wrapper {
-	flex: 1; /* 各ボタンを33.3%ずつの幅にする */
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -125,9 +130,8 @@ body {
 	transform: scale(0.9);
 }
 
-/* 中央の＋ボタン用スタイル（3等分のうちの中央要素として扱う） */
 .center-btn-container {
-	flex: 1; /* 左右の要素と同じ幅を確保 */
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	position: relative;
@@ -148,23 +152,9 @@ body {
 	border: 4px solid #121212;
 }
 
-/* プレースホルダーの文字色を調整 */
 ::placeholder {
-    color: #888888 !important; /* ダークモードで見えやすい中間の灰色 */
-    opacity: 1;               /* Firefoxで薄くなるのを防ぐ */
-}
-
-/* 各ブラウザ（Safari, Edge, Chrome等）への対応 */
-::-webkit-input-placeholder {
     color: #888888 !important;
-}
-
-:-ms-input-placeholder {
-    color: #888888 !important;
-}
-
-::-ms-input-placeholder {
-    color: #888888 !important;
+    opacity: 1;
 }
 </style>
 </head>
@@ -183,13 +173,13 @@ body {
 						<option value="1">📖 Book</option>
 						<option value="2">🎬 Movie</option>
 						<option value="3">🎮 Game</option>
+						<option value="99">✨ Other</option>
 					</select>
 				</div>
 				<div class="col-md-7">
 					<input type="text" name="keyword" th:value="${keyword}"
 						class="form-control bg-dark text-white border-secondary"
 						placeholder="キーワードを空欄にすれば、カテゴリだけで絞り込めます。">
-					
 				</div>
 				<div class="col-md-2 d-grid">
 					<button type="submit" class="btn btn-custom-green">検索</button>
@@ -207,8 +197,7 @@ body {
 
 			<div class="col" th:each="item : ${sukiList}">
 
-				<a
-					th:href="${session.user?.id == item.user?.id} 
+				<a th:href="${session.user?.id == item.user?.id} 
                 ? @{/detail/{id}(id=${item.id})} 
                 : @{/view/{id}(id=${item.id})}"
 					class="card-link">
@@ -225,14 +214,12 @@ body {
 
 						<div class="card-body">
 
-							<div
-								class="mb-2 d-flex justify-content-between align-items-center">
+							<div class="mb-2 d-flex justify-content-between align-items-center">
 								<div>
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖
-										Book</span> <span th:if="${item.category == '2'}"
-										class="badge badge-movie">🎬 Movie</span> <span
-										th:if="${item.category == '3'}" class="badge badge-game">🎮
-										Game</span>
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span> 
+									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span> 
+									<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
 								</div>
 
 								<p class="text-color-pink">
@@ -244,12 +231,10 @@ body {
 							<h5 class="fw-bold mb-2" th:text="${item.title}"></h5>
 
 							<div class="small mb-3 fw-bold text-secondary">
-								<span th:if="${item.category == '1'}"
-									th:text="'Author: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '2'}"
-									th:text="'Director: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '3'}"
-									th:text="'Hardware: ' + ${item.publisher}"></span>
+								<span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span> 
+								<span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span> 
+								<span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
+								<span th:if="${item.category == '99'}" th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
 							</div>
 
 							<div class="mb-3 d-flex align-items-center">
@@ -278,35 +263,33 @@ body {
 			</div>
 		</div>
 	</div>
+	
 	<nav class="navbar navbar-mobile fixed-bottom py-0">
 		<div class="container-fluid">
 			<div class="d-flex align-items-center w-100">
-
 				<div class="nav-item-wrapper">
 					<a th:href="@{/mypage}" class="nav-icon-link text-center py-2">
 						<div class="fs-4">📚</div>
 						<div>Collections</div>
 					</a>
 				</div>
-
 				<div class="center-btn-container">
 					<a th:href="@{/form}" class="text-decoration-none">
 						<div class="center-add-btn">＋</div>
 					</a>
 				</div>
-
 				<div class="nav-item-wrapper">
 					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
 						<div class="fs-4">❤️</div>
 						<div>Suki</div>
 					</a>
 				</div>
-
 			</div>
 		</div>
 	</nav>
-	<footer
-		style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
-		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
+	
+	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved. 
+	</footer>
 </body>
 </html>

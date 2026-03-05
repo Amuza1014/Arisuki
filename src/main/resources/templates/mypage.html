@@ -97,6 +97,11 @@ body {
 	background-color: #27ae60;
 }
 
+/* ★デザイン維持：その他用のバッジ色を追加 */
+.badge-other {
+	background-color: #6c757d;
+}
+
 .text-secondary-muted {
 	color: #9e9e9e !important;
 }
@@ -187,7 +192,6 @@ body {
 		</div>
 
 		<div class="profile-edit-box mb-5">
-			<!-- 2 -->
 			<form id="usernameForm" th:action="@{/update-username}" method="post">
 				<div class="col-md-6">
 					<label for="newUsername"
@@ -227,6 +231,7 @@ body {
 										class="badge badge-movie">🎬 Movie</span> <span
 										th:if="${item.category == '3'}" class="badge badge-game">🎮
 										Game</span>
+									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
 								</div>
 
 								<h5 class="card-title fw-bold text-white"
@@ -236,7 +241,6 @@ body {
 									<span class="fw-bold"
 										th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
 										th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
-										<!-- 例: 4 / 5 -->
 									</span>
 								</div>
 
@@ -247,6 +251,8 @@ body {
 										th:text="'Director: ' + ${item.creator}"></span> <span
 										th:if="${item.category == '3'}"
 										th:text="'Hardware: ' + ${item.publisher}"></span>
+									<span th:if="${item.category == '99'}"
+										th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
 								</div>
 
 								<p class="card-text text-secondary-muted small"
@@ -300,7 +306,6 @@ body {
 			&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-		<!-- ユーザー名変更トースト -->
 		<div class="toast-container position-fixed bottom-0 end-0 p-3">
 
 			<div id="usernameToast" class="toast toast-custom border-0"
