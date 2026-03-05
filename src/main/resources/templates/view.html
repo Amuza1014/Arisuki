@@ -2,165 +2,265 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>閲覧ページ</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>View- ArrayList&lt;Suki&gt;</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    body { background-color: #121212;
-	color: #e0e0e0;
-	font-family: 'Helvetica Neue', Arial, sans-serif;
-	/* 下部メニューの高さ分、余白を確保（スマホのみ） */
-	padding-bottom: 80px; }
+	body {
+		background-color: #121212;
+		color: #e0e0e0;
+		font-family: 'Helvetica Neue', Arial, sans-serif;
+		padding-bottom: 80px;
+	}
+
+	.container-box {
+		background-color: #1e1e1e;
+	max-width: 800px;
+	margin: 50px auto;
+	padding: 30px;
+	border-radius: 15px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	}
+
+	.card {
+		background-color: #1e1e1e;
+		border-radius: 12px;
+		
+		overflow: hidden;
+		
+	}
+
+	/* --- ヘッダーレイアウト（横並び設定） --- */
+	.card-header-custom {
+		padding: 1.5rem;
+		border-bottom: 1px solid #333;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 15px;
+	}
+
+	.header-title {
+		font-size: 1.5rem;
+		margin: 0;
+		flex-grow: 1;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-shrink: 0;
+	}
+
+	/* --- いいねボタン（インライン配置用） --- */
+	.like-button-inline {
+		width: 45px;
+		height: 45px;
+		background: #ffffff; /* 元のスタイルに合わせ白背景 */
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.3rem;
+		cursor: pointer;
+		text-decoration: none;
+		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.like-button-inline:hover {
+		transform: scale(1.1);
+		background: #f8f8f8;
+	}
+
+	.like-button-inline.active {
+		background: #ffffff;
+		box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+		border: none;
+	}
+
+	/* --- 画像 --- */
+	.card-img-top {
+		width: 100%;
+		height: 400px;
+		object-fit: cover;
+		filter: brightness(0.8);
+	}
+
+	/* --- カスタムボタン --- */
+	.btn-custom-green {
+		background-color: #2ecc71;
+		color: #fff;
+		border: none;
+		font-weight: bold;
+		padding: 8px 20px;
+		border-radius: 8px;
+		transition: 0.3s;
+	}
+
+	.btn-custom-green:hover {
+		background-color: #27ae60;
+		color: #ffffff;
+	}
 	
-    .container-box {
-        max-width: 700px;
-        margin: 50px auto;
-    }
-    
-    .card {
-	background-color: #1e1e1e;
-	border-radius: 12px;
-	border: 1px solid #333;
-	transition: all 0.3s ease;
-	overflow: hidden;
-}
-/* .card:hover {
-	transform: translateY(-8px);
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-	border-color: #2ecc71;
-} */
-
-.card-img-top {
-	height: 200px;
-	object-fit: cover;
-	filter: brightness(0.8);
-	transition: 0.3s;
-}
-
-/* .card:hover .card-img-top {
-	filter: brightness(1.0);
-} */
-
-.card-link {
-	text-decoration: none;
-	color: inherit;
-}
-
-.btn-custom-green {
-	background-color: #2ecc71;
-	color: #fff;
-	border: none;
+	.label-text {
 	font-weight: bold;
-	padding: 8px 20px;
-	border-radius: 8px;
-	transition: 0.3s;
+	color: #2ecc71;
+	min-width: 100px;
+	display: inline-block;
 }
 
-.btn-custom-green:hover {
-    background-color: #27ae60;  /* 少し濃い緑 */
-    color: #ffffff;
-}
-    
-    .rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+	.text-secondary-muted {
+		color: white; /* 元の指定に合わせwhite */
+	}
+
+	.text-color-pink {
+		color: pink;
+	}
+
+	hr {
+		border-color: #444;
+	}
+	
+	.custom-card {
+	background-color: #121212;
 }
 
-.rating input {
-    display: none;
-}
-
-.rating label {
-    font-size: 2rem;
-    color: #ddd;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.rating input:checked ~ label {
-    color: #ffc107;
-}
-
-.rating label:hover,
-.rating label:hover ~ label {
-    color: #ffc107;
-}
-
-.text-secondary-muted {
-	/* color: #9e9e9e !important; */
+.custom-text {
 	color: white;
 }
-
-.text-color-pink{
-	color: pink;}
-
 </style>
 </head>
 <body>
 
-<div class="container container-box">
+	<div class="container container-box">
+		<div class="card">
+			
+			<div class="card-header-custom">
+				<h2 class="header-title fw-bold text-white" th:text="${item.title}">作品名</h2>
+				
+				<div class="header-actions">
+					<a th:href="@{/like/{id}(id=${item.id})}" 
+					   class="like-button-inline" 
+					   th:classappend="${isLiked} ? 'active' : ''">
+						<span th:text="${isLiked} ? '❤️' : '🤍'"></span>
+					</a>
 
-    <div class="card shadow">
+					<div class="category-badge-area">
+						<span th:if="${item.category == '1'}" class="badge bg-primary fs-6">📖 Book</span>
+						<span th:if="${item.category == '2'}" class="badge bg-warning text-dark fs-6">🎬 Movie</span>
+						<span th:if="${item.category == '3'}" class="badge bg-success fs-6">🎮 Game</span>
+					</div>
+				</div>
+			</div>
 
-        <img th:if="${item.thumbnailUrl != null}"
-             th:src="${item.thumbnailUrl}"
-             class="card-img-top">
+			<div class="image-section">
+				<img th:if="${item.thumbnailUrl != null}" th:src="${item.thumbnailUrl}" class="card-img-top">
+				<div th:unless="${item.thumbnailUrl != null}"
+					 class="card-img-top d-flex align-items-center justify-content-center"
+					 style="background: #252525;">
+					<span class="text-secondary">No Image</span>
+				</div>
+			</div>
 
-        <div class="card-body">
+			<div class="card-body p-4">
+				<p class="text-secondary-muted mb-2" th:text="${item.creator}"></p>
+				
+				<p class="custom-text">
+									posted: <span th:text="${item.user.username}"></span>
+								</p>
+				
+				<div class="card custom-card p-4 mb-4 border-0">
+				<h5 class="fw-bold mb-3 border-bottom pb-2 custom-text">📋 基本情報</h5>
+				<div th:if="${item.category == '1'}">
+					<p><span class="label-text">著者：</span><span th:text="${item.creator}" class="custom-text"></span></p>
+					<p><span class="label-text">出版社：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
+					<p><span class="label-text">ジャンル：</span><span th:text="${item.subAttribute}" class="custom-text"></span></p>
+				</div>
+				<div th:if="${item.category == '2'}">
+					<p><span class="label-text">監督：</span><span th:text="${item.creator}" class="custom-text"></span></p>
+					<p><span class="label-text">タイプ：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
+					<p><span class="label-text">ジャンル：</span><span th:text="${item.subAttribute}" class="custom-text"></span></p>
+				</div>
+				<div th:if="${item.category == '3'}">
+					<p><span class="label-text">メーカー：</span><span th:text="${item.creator}" class="custom-text"></span></p>
+					<p><span class="label-text">ハード：</span><span th:text="${item.publisher}" class="custom-text"></span></p>
+					<p><span class="label-text">ジャンル：</span><span th:text="${item.subAttribute}" class="custom-text"></span></p>
+				</div>
+				<div>
+				
+					<p>
+				<span class="label-text">評価：</span>
+<span class="fw-bold"
+      th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
+      th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
+</span>
+			     	</p>
 
-            <h3 th:text="${item.title}"  class="text-secondary-muted mb-0"></h3>
-            
+				<hr>
 
-		<div>
-   			<p class="text-color-pink">
-   				posted:<span th:text="${item.user.username}" class="text-color-pink"></span>
-   			</p>
+				<div class="custom-text">
+				<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
+				<p class="fs-5 p-3 custom-card" style="white-space: pre-wrap;" th:text="${item.reviewText}">
+				レビュー内容がここに入ります。
+				</p>
+			</div>
+
+				<hr>
+
+				<div th:if="${#lists.isEmpty(comments)}" class="text-color-pink mb-2">
+					<p>まだコメントはありません</p>
+				</div>
+				<div th:each="c : ${comments}" class="mb-2 text-color-pink">
+					<p>
+						<strong th:text="${c.user.username}"
+							th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
+						</strong>
+					</p>
+					<p th:text="${c.content}"
+						th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
+					<hr>
+				</div>
+
+				<div th:if="${session.user != null}" class="mb-3">
+					<div class="d-flex flex-wrap align-items-center gap-2">
+
+						<form th:action="@{/view/{id}(id=${item.id})}" method="post"
+							class="d-flex align-items-center gap-2"
+							style="flex: 1 1 300px; max-width: 500px;">
+							<input type="text" name="comment" class="form-control"
+								th:value="${myComment != null ? myComment.content : ''}" />
+							<button type="submit" class="btn btn-custom-green fs-7"
+								style="white-space: nowrap;"
+								th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
+						</form>
+
+						<form th:if="${myComment != null}"
+							th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+							method="post">
+							<button type="submit" class="btn btn-outline-danger"
+								onclick="return confirm('本当に削除しますか？');">コメント削除</button>
+						</form>
+
+					</div>
+				</div>
+				
+				<hr>
+
+				<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+					<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐 Timelineに戻る</a> 
+					<a th:href="@{/mypage}" class="btn btn-outline-light px-4">Collectionsに戻る</a>
+				</div>
+			</div>
 		</div>
-            
-            <p  class="text-secondary-muted mb-0" th:text="${item.creator}"></p>
-
-            <hr>
-
-            <p th:text="${item.reviewText}"  class="text-secondary-muted mb-0"></p>
-
-            <a th:href="@{/timeline}"  class="btn btn-custom-green">
-               タイムラインに戻る
-            </a>
-
-
-<hr>
-
-<div th:if="${#lists.isEmpty(comments)}" class="text-color-pink">
-    <p>まだコメントはありません</p>
-</div>
-
-<div class="text-color-pink">
-<p>コメント一覧：</p>
-<div th:each="c : ${comments}">
-<p>
-	<span>username:</span>
-    <strong th:text="${c.user.username}" class="text-color-pink"></strong>
-</p>    
-<p>
-   <span>Comment:</span>
-    <span th:text="${c.content}"></span></p>
-    <hr>
-</div>
-</div>
-
-<div th:if="${session.user != null}">
-    <form action="#" th:action="@{/view/{id}(id=${item.id})}" method="post">
-        <input type="text" name="comment" />
-        <button type="submit">コメント</button>
-    </form>
-</div>
-            
-          
-
-        </div>
-    </div>
-
-</div>
-
+	</div>
+	</div>
+	</div>
+		<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+			&copy; 2026 Cチーム(仮) All Rights Reserved.
+		</footer>
 </body>
 </html>

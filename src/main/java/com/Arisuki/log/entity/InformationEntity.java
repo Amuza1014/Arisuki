@@ -1,8 +1,5 @@
 package com.Arisuki.log.entity;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,8 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
 
 import lombok.Data;
 
@@ -39,20 +34,23 @@ public class InformationEntity {
 	//	
 	@Column(nullable = false)
 	private Integer score;//5点満点
-	
 
-	// 【追加】投稿したユーザーとの紐付け
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
-	private UserEntity user;
-	
-	@Transient // DBのカラムには作らないという意味
-	private long likeCount;
+	@Column(nullable = false)
+    private Integer likeCount = 0;
 
-	@Transient
-	private long commentCount;
+    @Column(nullable = false)
+    private Integer commentCount = 0;
 
-	@OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
-	private List<CommentEntity> comments;
+    // --- 削除：循環参照の原因だった以下のフィールドを消します ---
+    // @OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
+    // private Set<CommentEntity> comments;
+    //
+    // @OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
+    // private Set<LikeEntity> likes;
 
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
+
