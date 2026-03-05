@@ -6,7 +6,8 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
 
 <style>
 /* ダークテーマ共通設定 */
@@ -88,6 +89,54 @@ body {
 	backdrop-filter: blur(10px);
 	border-top: 1px solid #333;
 }
+/* 下部固定メニュー：3ボタン完全均等配置用 */
+.navbar-mobile {
+	background-color: rgba(30, 30, 30, 0.9) !important;
+	backdrop-filter: blur(10px);
+	border-top: 1px solid #333;
+}
+
+.nav-item-wrapper {
+	flex: 1; /* 各ボタンを33.3%ずつの幅にする */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.nav-icon-link {
+	text-decoration: none;
+	color: #9e9e9e;
+	font-size: 0.75rem;
+	transition: 0.2s;
+	width: 100%;
+}
+
+.nav-icon-link:active {
+	transform: scale(0.9);
+}
+
+/* 中央の＋ボタン用スタイル（3等分のうちの中央要素として扱う） */
+.center-btn-container {
+	flex: 1; /* 左右の要素と同じ幅を確保 */
+	display: flex;
+	justify-content: center;
+	position: relative;
+}
+
+.center-add-btn {
+	background-color: #2ecc71;
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	color: white;
+	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+	margin-top: -26px;
+	border: 4px solid #121212;
+}
 </style>
 </head>
 <body>
@@ -96,16 +145,16 @@ body {
 		<div class="d-flex justify-content-between align-items-center mb-4">
 			<div>
 				<h2 class="fw-bold mb-0 text-white">
-					<span class="icon-heart"><i class="fas fa-heart"></i></span>My Likes
+					<span class="icon-heart"><i class="fas fa-heart"></i></span>My
+					Likes
 				</h2>
 				<p class="text-secondary-muted mb-0">保存したお気に入り一覧</p>
 			</div>
-			
+
 			<div class="d-flex gap-2">
 				<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">
 					<i class="fas fa-globe me-1"></i> Timeline
-				</a>
-				<a th:href="@{/mypage}" class="btn btn-outline-light btn-sm px-3">
+				</a> <a th:href="@{/mypage}" class="btn btn-outline-light btn-sm px-3">
 					<i class="fas fa-th-large me-1"></i> Collectionsに戻る
 				</a>
 			</div>
@@ -113,32 +162,36 @@ body {
 
 		<hr class="border-secondary mb-5">
 
-		<div class="row row-cols-1 row-cols-md-3 g-4" th:if="${not #lists.isEmpty(likeList)}">
+		<div class="row row-cols-1 row-cols-md-3 g-4"
+			th:if="${not #lists.isEmpty(likeList)}">
 
 			<div class="col" th:each="item : ${likeList}">
 				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
 					<div class="card h-100 shadow-sm">
 
-						<img th:src="${#strings.isEmpty(item.thumbnailUrl) 
+						<img
+							th:src="${#strings.isEmpty(item.thumbnailUrl) 
                 ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' 
                 : item.thumbnailUrl}"
 							class="card-img-top" alt="thumbnail">
 
 						<div class="card-body">
 							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
-								<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
-								<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+								<span th:if="${item.category == '1'}" class="badge badge-book">📖
+									Book</span> <span th:if="${item.category == '2'}"
+									class="badge badge-movie">🎬 Movie</span> <span
+									th:if="${item.category == '3'}" class="badge badge-game">🎮
+									Game</span>
 							</div>
 
 							<h5 class="card-title mt-2" th:text="${item.title}">作品名</h5>
 
 							<div class="small mb-2 fw-bold text-secondary-muted">
 								<span th:if="${item.category == '1'}"
-									th:text="'Author: ' + ${item.creator}"></span> 
-								<span th:if="${item.category == '2'}"
-									th:text="'Director: ' + ${item.creator}"></span> 
-								<span th:if="${item.category == '3'}"
+									th:text="'Author: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'Director: ' + ${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
 									th:text="'Hardware: ' + ${item.publisher}"></span>
 							</div>
 
@@ -159,16 +212,43 @@ body {
 			</div>
 			<p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
 			<div class="mt-4">
-				<a th:href="@{/timeline}" class="btn btn-outline-info">
-					<i class="fas fa-search me-2"></i>タイムラインで探す
+				<a th:href="@{/timeline}" class="btn btn-outline-info"> <i
+					class="fas fa-search me-2"></i>タイムラインで探す
 				</a>
 			</div>
 		</div>
 
 	</div>
-		<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-			&copy; 2026 Cチーム(仮) All Rights Reserved.
-		</footer>
+	<nav class="navbar navbar-mobile fixed-bottom py-0">
+		<div class="container-fluid">
+			<div class="d-flex align-items-center w-100">
+
+				<div class="nav-item-wrapper">
+					<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">🌐</div>
+						<div>Timeline</div>
+					</a>
+				</div>
+
+				<div class="center-btn-container">
+					<a th:href="@{/form}" class="text-decoration-none">
+						<div class="center-add-btn">＋</div>
+					</a>
+				</div>
+
+				<div class="nav-item-wrapper">
+					<a th:href="@{/mypage}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">📚</div>
+						<div>Collections</div>
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</nav>
+	<footer
+		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
