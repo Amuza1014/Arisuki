@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>MyPage - ArrayList&lt;Suki&gt;</title>
+<title>Collections - ArrayList&lt;Suki&gt;</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -172,16 +172,16 @@ body {
 			</div>
 
 			<div class="d-none d-md-flex flex-column gap-2">
-				<a th:href="@{/form}" class="btn btn-custom-green">＋ 新しく登録する</a> <a
+				<a th:href="@{/form}" class="btn btn-custom-green">＋ New </a> <a
 					th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3">❤️
-					保存済み(Suki)</a>
+					Suki_List</a>
 				<div class="d-flex gap-2">
-					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">タイムライン</a>
-					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">ログアウト</a>
-
+					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">Timeline</a>
+					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">Logout</a>
 				</div>
-				<p>
-					username:<span th:text="${session.user.username}"></span>
+				<p class="small text-secondary-muted mb-0">
+					username: <span
+						th:text="${#strings.abbreviate(session.user.username, 20)}"></span>
 				</p>
 			</div>
 		</div>
@@ -208,110 +208,111 @@ body {
 				</div>
 			</form>
 
-		<hr class="border-secondary mb-5">
+			<hr class="border-secondary mb-5">
 
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<div class="col" th:each="item : ${itemList}">
-				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
-					<div class="card h-100 shadow-sm">
-						<img
-							th:src="${#strings.isEmpty(item.thumbnailUrl) 
+			<div class="row row-cols-1 row-cols-md-3 g-4">
+				<div class="col" th:each="item : ${itemList}">
+					<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+						<div class="card h-100 shadow-sm">
+							<img
+								th:src="${#strings.isEmpty(item.thumbnailUrl) 
                 ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' 
                 : item.thumbnailUrl}"
-							class="card-img-top" alt="thumbnail">
-						<div class="card-body">
+								class="card-img-top" alt="thumbnail">
+							<div class="card-body">
 
-							<div class="mb-2">
-								<span th:if="${item.category == '1'}" class="badge badge-book">📖
-									Book</span> <span th:if="${item.category == '2'}"
-									class="badge badge-movie">🎬 Movie</span> <span
-									th:if="${item.category == '3'}" class="badge badge-game">🎮
-									Game</span>
-							</div>
+								<div class="mb-2">
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${item.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${item.category == '3'}" class="badge badge-game">🎮
+										Game</span>
+								</div>
 
-							<h5 class="card-title fw-bold text-white" th:text="${item.title}">作品名</h5>
+								<h5 class="card-title fw-bold text-white"
+									th:text="${item.title}">作品名</h5>
 
-							<div>
-								<span class="fw-bold"
-									th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
-									th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
-									<!-- 例: 4 / 5 -->
-								</span>
-							</div>
+								<div>
+									<span class="fw-bold"
+										th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
+										th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
+										<!-- 例: 4 / 5 -->
+									</span>
+								</div>
 
-							<div class="small mb-2 fw-bold text-secondary-muted">
-								<span th:if="${item.category == '1'}"
-									th:text="'Author: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '2'}"
-									th:text="'Director: ' + ${item.creator}"></span> <span
-									th:if="${item.category == '3'}"
-									th:text="'Hardware: ' + ${item.publisher}"></span>
-							</div>
+								<div class="small mb-2 fw-bold text-secondary-muted">
+									<span th:if="${item.category == '1'}"
+										th:text="'Author: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '2'}"
+										th:text="'Director: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '3'}"
+										th:text="'Hardware: ' + ${item.publisher}"></span>
+								</div>
 
-							<p class="card-text text-secondary-muted small"
-								th:text="${#strings.length(item.reviewText) > 20} 
+								<p class="card-text text-secondary-muted small"
+									th:text="${#strings.length(item.reviewText) > 20} 
 									? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
 									: ${item.reviewText}">
-								レビュー内容</p>
+									レビュー内容</p>
 
+							</div>
 						</div>
+					</a>
+				</div>
+			</div>
+
+			<div th:if="${#lists.isEmpty(itemList)}"
+				class="text-center mt-5 py-5">
+				<p class="text-secondary-muted fs-5">まだ登録された作品はありません。</p>
+			</div>
+
+		</div>
+
+		<nav class="navbar navbar-mobile fixed-bottom py-0">
+			<div class="container-fluid">
+				<div class="d-flex align-items-center w-100">
+
+					<div class="nav-item-wrapper">
+						<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
+							<div class="fs-4">🌐</div>
+							<div>Timeline</div>
+						</a>
 					</div>
-				</a>
-			</div>
-		</div>
 
-		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5 py-5">
-			<p class="text-secondary-muted fs-5">まだ登録された作品はありません。</p>
-		</div>
+					<div class="center-btn-container">
+						<a th:href="@{/form}" class="text-decoration-none">
+							<div class="center-add-btn">＋</div>
+						</a>
+					</div>
 
-	</div>
+					<div class="nav-item-wrapper">
+						<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
+							<div class="fs-4">❤️</div>
+							<div>Suki</div>
+						</a>
+					</div>
 
-	<nav class="navbar navbar-mobile fixed-bottom py-0">
-		<div class="container-fluid">
-			<div class="d-flex align-items-center w-100">
-
-				<div class="nav-item-wrapper">
-					<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
-						<div class="fs-4">🌐</div>
-						<div>Timeline</div>
-					</a>
 				</div>
-
-				<div class="center-btn-container">
-					<a th:href="@{/form}" class="text-decoration-none">
-						<div class="center-add-btn">＋</div>
-					</a>
-				</div>
-
-				<div class="nav-item-wrapper">
-					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
-						<div class="fs-4">❤️</div>
-						<div>Suki</div>
-					</a>
-				</div>
-
 			</div>
-		</div>
-	</nav>
-	<footer
-		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- ユーザー名変更トースト -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		</nav>
+		<footer
+			style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+			&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- ユーザー名変更トースト -->
+		<div class="toast-container position-fixed bottom-0 end-0 p-3">
 
-	<div id="usernameToast" class="toast toast-custom border-0" role="alert">
-		<div class="d-flex">
-			<div class="toast-body">
-				✔ ユーザー名を変更しました
+			<div id="usernameToast" class="toast toast-custom border-0"
+				role="alert">
+				<div class="d-flex">
+					<div class="toast-body">✔ ユーザー名を変更しました</div>
+					<button type="button" class="btn-close btn-close-white me-2 m-auto"
+						data-bs-dismiss="toast"></button>
+				</div>
 			</div>
-			<button type="button" class="btn-close btn-close-white me-2 m-auto"
-				data-bs-dismiss="toast"></button>
-		</div>
-	</div>
 
-</div>
+		</div>
 </body>
 <script>
 document.getElementById("usernameForm").addEventListener("submit", function(e) {

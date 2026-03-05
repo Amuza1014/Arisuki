@@ -72,6 +72,7 @@ body {
 
 /* カテゴリバッジ */
 .badge-book {
+
 	background-color:rgb(0, 128, 255);
 	padding: 0.4em 0.8em;
 }
@@ -191,6 +192,7 @@ body {
 
 								<p class="text-color-pink">
 									投稿者: <span class="text-white" th:text="${#strings.abbreviate(item.user.username, 20)}"></span>
+								</p>
 							</div>
 
 							<h5 class="fw-bold mb-2" th:text="${item.title}"></h5>
