@@ -72,8 +72,7 @@ body {
 
 /* カテゴリバッジ */
 .badge-book {
-
-	background-color:rgb(0, 128, 255);
+	background-color: rgb(0, 128, 255);
 	padding: 0.4em 0.8em;
 }
 
@@ -96,9 +95,9 @@ body {
 }
 
 .text-color-pink {
-    color: #ff79c6;
-    font-size: 0.85em;
-    margin-bottom: 0;
+	color: #ff79c6;
+	font-size: 0.85em;
+	margin-bottom: 0;
 }
 /* 下部固定メニュー：3ボタン完全均等配置用 */
 .navbar-mobile {
@@ -145,40 +144,63 @@ body {
 	font-size: 24px;
 	color: white;
 	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-	margin-top: -26px; 
+	margin-top: -26px;
 	border: 4px solid #121212;
+}
+
+/* プレースホルダーの文字色を調整 */
+::placeholder {
+    color: #888888 !important; /* ダークモードで見えやすい中間の灰色 */
+    opacity: 1;               /* Firefoxで薄くなるのを防ぐ */
+}
+
+/* 各ブラウザ（Safari, Edge, Chrome等）への対応 */
+::-webkit-input-placeholder {
+    color: #888888 !important;
+}
+
+:-ms-input-placeholder {
+    color: #888888 !important;
+}
+
+::-ms-input-placeholder {
+    color: #888888 !important;
 }
 </style>
 </head>
 <body>
 	<div class="container mt-5 mb-5">
 		<h2 class="fw-bold mb-4">🌐Timeline</h2>
-		
-		<div class="card p-3 mb-4" style="background-color: #1e1e1e; border-color: #333;">
-    <form th:action="@{/timeline}" method="get" class="row g-2 align-items-center">
-        <div class="col-md-3">
-            <select name="category" class="form-select bg-dark text-white border-secondary">
-                <option value="">すべてのカテゴリ</option>
-                <option value="1">📖 Book</option>
-                <option value="2">🎬 Movie</option>
-                <option value="3">🎮 Game</option>
-            </select>
-        </div>
-        <div class="col-md-7">
-            <input type="text" name="keyword" class="form-control bg-dark text-white border-secondary" 
-                   placeholder="作品名や著者名で検索...">
-        </div>
-        <div class="col-md-2 d-grid">
-            <button type="submit" class="btn btn-custom-green">検索</button>
-        </div>
-    </form>
-</div>
+
+		<div class="card p-3 mb-4"
+			style="background-color: #1e1e1e; border-color: #333;">
+			<form th:action="@{/timeline}" method="get"
+				class="row g-2 align-items-center">
+				<div class="col-md-3">
+					<select name="category"
+						class="form-select bg-dark text-white border-secondary">
+						<option value="">すべてのカテゴリ</option>
+						<option value="1">📖 Book</option>
+						<option value="2">🎬 Movie</option>
+						<option value="3">🎮 Game</option>
+					</select>
+				</div>
+				<div class="col-md-7">
+					<input type="text" name="keyword" th:value="${keyword}"
+						class="form-control bg-dark text-white border-secondary"
+						placeholder="キーワードを空欄にすれば、カテゴリだけで絞り込めます。">
+					
+				</div>
+				<div class="col-md-2 d-grid">
+					<button type="submit" class="btn btn-custom-green">検索</button>
+				</div>
+			</form>
+		</div>
 
 		<div class="d-flex justify-content-end mb-4 gap-2">
 			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">
-			❤️ Suki_List </a> <a th:href="@{/mypage}"
-				class="btn btn-outline-light btn-sm px-3">
-				Collectionsに戻る </a>
+				❤️ Suki_List </a> <a th:href="@{/mypage}"
+				class="btn btn-outline-light btn-sm px-3"> Collectionsに戻る </a>
 		</div>
 
 		<div class="row row-cols-1 row-cols-md-3 g-4">
@@ -203,15 +225,19 @@ body {
 
 						<div class="card-body">
 
-							<div class="mb-2 d-flex justify-content-between align-items-center">
+							<div
+								class="mb-2 d-flex justify-content-between align-items-center">
 								<div>
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span> 
-									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span> 
-									<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${item.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${item.category == '3'}" class="badge badge-game">🎮
+										Game</span>
 								</div>
 
 								<p class="text-color-pink">
-									投稿者: <span class="text-white" th:text="${#strings.abbreviate(item.user.username, 20)}"></span>
+									投稿者: <span class="text-white"
+										th:text="${#strings.abbreviate(item.user.username, 20)}"></span>
 								</p>
 							</div>
 
@@ -227,25 +253,24 @@ body {
 							</div>
 
 							<div class="mb-3 d-flex align-items-center">
-								<span class="me-3">
-									<span style="color: #ff4757;">❤️</span> 
-									<span th:text="${item.likeCount != null ? item.likeCount : 0}" class="ms-1 fw-bold">0</span>
-								</span>
-								<span>
-									<span style="color: #1e90ff;">💬</span> 
-									<span th:text="${item.commentCount != null ? item.commentCount : 0}" class="ms-1 fw-bold">0</span>
+								<span class="me-3"> <span style="color: #ff4757;">❤️</span>
+									<span th:text="${item.likeCount != null ? item.likeCount : 0}"
+									class="ms-1 fw-bold">0</span>
+								</span> <span> <span style="color: #1e90ff;">💬</span> <span
+									th:text="${item.commentCount != null ? item.commentCount : 0}"
+									class="ms-1 fw-bold">0</span>
 								</span>
 							</div>
 
 							<div class="mb-2">
 								<span class="text-warning fw-bold" th:if="${item.score != null}"
-									th:text=" '★ ' + ${item.score}">
-								</span> 
-								<span class="text-secondary small" th:if="${item.score == null}">
+									th:text=" '★ ' + ${item.score}"> </span> <span
+									class="text-secondary small" th:if="${item.score == null}">
 									未評価 </span>
 							</div>
 
-							<p class="card-text small text-truncate" th:text="${item.reviewText}"></p>
+							<p class="card-text small text-truncate"
+								th:text="${item.reviewText}"></p>
 
 						</div>
 					</div>
@@ -254,34 +279,34 @@ body {
 		</div>
 	</div>
 	<nav class="navbar navbar-mobile fixed-bottom py-0">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center w-100">
-            
-            <div class="nav-item-wrapper">
-    <a th:href="@{/mypage}" class="nav-icon-link text-center py-2">
-        <div class="fs-4">📚</div>
-        <div>Collections</div>
-    </a>
-</div>
+		<div class="container-fluid">
+			<div class="d-flex align-items-center w-100">
 
-            <div class="center-btn-container">
-                <a th:href="@{/form}" class="text-decoration-none">
-                    <div class="center-add-btn">＋</div>
-                </a>
-            </div>
+				<div class="nav-item-wrapper">
+					<a th:href="@{/mypage}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">📚</div>
+						<div>Collections</div>
+					</a>
+				</div>
 
-            <div class="nav-item-wrapper">
-                <a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
-                    <div class="fs-4">❤️</div>
-                    <div>Suki</div>
-                </a>
-            </div>
+				<div class="center-btn-container">
+					<a th:href="@{/form}" class="text-decoration-none">
+						<div class="center-add-btn">＋</div>
+					</a>
+				</div>
 
-        </div>
-    </div>
-</nav>
-<footer style="text-align:center; font-size:0.8em; color:#666; padding:1em 0;">
-    &copy; 2026 Cチーム(仮) All Rights Reserved.
-</footer>
+				<div class="nav-item-wrapper">
+					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">❤️</div>
+						<div>Suki</div>
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</nav>
+	<footer
+		style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
 </body>
 </html>
