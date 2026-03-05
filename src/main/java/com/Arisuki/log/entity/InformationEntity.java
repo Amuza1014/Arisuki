@@ -54,14 +54,9 @@ public class InformationEntity {
 
 	@Transient
 	private long commentCount;
-	
-	
+
 
 	@OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
 	private List<CommentEntity> comments;
 
 }
-
-  
-    
-
