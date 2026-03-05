@@ -54,8 +54,17 @@ public class InformationEntity {
 
 	@Transient
 	private long commentCount;
+	
+	
 
-	@OneToMany(mappedBy = "information", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "information",
+	           cascade = CascadeType.ALL,
+	           orphanRemoval = true)
+	private List<LikeEntity> likes;
+
+	@OneToMany(mappedBy = "information",
+	           cascade = CascadeType.ALL,
+	           orphanRemoval = true)
 	private List<CommentEntity> comments;
 
 }
