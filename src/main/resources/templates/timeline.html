@@ -152,6 +152,26 @@ body {
 <body>
 	<div class="container mt-5 mb-5">
 		<h2 class="fw-bold mb-4">🌐Timeline</h2>
+		
+		<div class="card p-3 mb-4" style="background-color: #1e1e1e; border-color: #333;">
+    <form th:action="@{/timeline}" method="get" class="row g-2 align-items-center">
+        <div class="col-md-3">
+            <select name="category" class="form-select bg-dark text-white border-secondary">
+                <option value="">すべてのカテゴリ</option>
+                <option value="1">📖 Book</option>
+                <option value="2">🎬 Movie</option>
+                <option value="3">🎮 Game</option>
+            </select>
+        </div>
+        <div class="col-md-7">
+            <input type="text" name="keyword" class="form-control bg-dark text-white border-secondary" 
+                   placeholder="作品名や著者名で検索...">
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-custom-green">検索</button>
+        </div>
+    </form>
+</div>
 
 		<div class="d-flex justify-content-end mb-4 gap-2">
 			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">
