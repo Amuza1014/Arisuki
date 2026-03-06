@@ -193,25 +193,47 @@ body {
 
 		<div class="profile-edit-box mb-5">
 			<form id="usernameForm" th:action="@{/update-username}" method="post">
-				<div class="col-md-6">
-					<label for="newUsername"
-						class="form-label small text-secondary-muted"> ユーザー名の変更 </label>
-					<div class="input-group">
-						<span
-							class="input-group-text bg-dark border-secondary text-secondary">@</span>
-						<input type="text" id="newUsername" name="newUsername"
-							th:value="${session.user.username}"
-							class="form-control form-control-dark" placeholder="新しいユーザー名を入力"
-							required>
-					</div>
-					<div class="form-text text-secondary-muted small mt-2">※
-						ここで変更した名前は、投稿の表示名やログインIDとして反映されます。</div>
-				</div>
-				<div class="col-md-auto">
-					<button type="submit" class="btn btn-outline-success px-4">更新保存</button>
-				</div>
-			</form>
+	<div class="row align-items-center">
 
+		<div class="col-md-6">
+			<label for="newUsername"
+				class="form-label small text-secondary-muted">ユーザー名の変更</label>
+
+			<div class="input-group">
+				<span class="input-group-text bg-dark border-secondary text-secondary">@</span>
+				<input type="text" id="newUsername" name="newUsername"
+					th:value="${session.user.username}"
+					class="form-control form-control-dark"
+					placeholder="新しいユーザー名を入力" required>
+			</div>
+
+			<div class="form-text text-secondary-muted small mt-2">
+				※ ここで変更した名前は、投稿の表示名やログインIDとして反映されます。
+			</div>
+		</div>
+
+		<div class="col-md-auto">
+			<button type="submit" class="btn btn-outline-success px-4">
+				更新保存
+			</button>
+		</div>
+
+		<!-- ここにトースト -->
+		<div class="col-md-auto">
+			<div id="usernameToast" class="toast toast-custom border-0">
+				<div class="d-flex">
+					<div class="toast-body">
+						✔ ユーザー名を変更しました
+					</div>
+					<button type="button"
+						class="btn-close btn-close-white me-2 m-auto"
+						data-bs-dismiss="toast"></button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</form>
 			<hr class="border-secondary mb-5">
 
 			<div class="row row-cols-1 row-cols-md-3 g-4">
@@ -306,18 +328,6 @@ body {
 			&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-		<div class="toast-container position-fixed bottom-0 end-0 p-3">
-
-			<div id="usernameToast" class="toast toast-custom border-0"
-				role="alert">
-				<div class="d-flex">
-					<div class="toast-body">✔ ユーザー名を変更しました</div>
-					<button type="button" class="btn-close btn-close-white me-2 m-auto"
-						data-bs-dismiss="toast"></button>
-				</div>
-			</div>
-
-		</div>
 </body>
 <script>
 document.getElementById("usernameForm").addEventListener("submit", function(e) {
