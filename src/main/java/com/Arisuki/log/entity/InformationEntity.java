@@ -1,8 +1,8 @@
 package com.Arisuki.log.entity;
 
-import java.util.List;
+import java.util.List; // 追加
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.CascadeType; // 追加
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,64 +10,49 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
+import jakarta.persistence.OneToMany; // 追加
 
 import lombok.Data;
+import lombok.EqualsAndHashCode; // 追加
+import lombok.ToString; // 追加
 
 @Entity
 @Data
 public class InformationEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	private String title;
+    private String title;
+    private String thumbnailUrl;
+    private String reviewText;
+    private String creator;
+    private String category;
+    private String publisher;
+    private String subAttribute;
 
-	private String thumbnailUrl;
+    @Column(nullable = false)
+    private Integer score;
 
-	private String reviewText;
+    @Column(nullable = false)
+    private Integer likeCount = 0;
 
-	private String creator;
-	private String category;
-	private String publisher;
-	private String subAttribute;
-	//	 // 【追加】投稿したユーザーとの紐付け
-	//	    @ManyToOne
-	//	    @JoinColumn(name = "user_id") // DB内では user_id というカラムになります
-	//	    private InformationEntity user;
-	//	
-	@Column(nullable = false)
-	private Integer score;//5点満点
+    @Column(nullable = false)
+    private Integer commentCount = 0;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
+    // --- ここを追加 ---
+    // mappedBy は LikeEntity 側にある "information" フィールド名を指します
+    @OneToMany(mappedBy = "information", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude // 循環参照（Lombokの無限ループ）を防止
+    @EqualsAndHashCode.Exclude // 循環参照を防止
+    private List<LikeEntity> likes;
 
-	
-
-	// 【追加】投稿したユーザーとの紐付け
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
-	private UserEntity user;
-	
-	@Transient // DBのカラムには作らないという意味
-	private long likeCount;
-
-	@Transient
-	private long commentCount;
-	
-	
-
-	@OneToMany(mappedBy = "information",
-	           cascade = CascadeType.ALL,
-	           orphanRemoval = true)
-	private List<LikeEntity> likes;
-
-	@OneToMany(mappedBy = "information",
-	           cascade = CascadeType.ALL,
-	           orphanRemoval = true)
-	private List<CommentEntity> comments;
-
+    @OneToMany(mappedBy = "information", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude // 循環参照を防止
+    @EqualsAndHashCode.Exclude // 循環参照を防止
+    private List<CommentEntity> comments;
 }
-
-  
-    

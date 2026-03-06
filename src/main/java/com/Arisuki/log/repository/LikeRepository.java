@@ -15,3 +15,4 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Integer> {
 
 	void deleteByInformationAndUser(InformationEntity information, UserEntity user);
 }
+
