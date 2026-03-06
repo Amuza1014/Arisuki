@@ -183,16 +183,35 @@ public class ItemController {
 		return "complete";
 	}
 
+	// --- タイムライン（検索機能付き） ---
 	@GetMapping("/timeline")
-	public String timeline(HttpSession session, Model model) {
+	public String timeline(
+	        @RequestParam(name = "category", required = false) String category,
+	        @RequestParam(name = "keyword", required = false) String keyword,
+	        HttpSession session, 
+	        Model model) {
+	    
 	    if (session.getAttribute("user") == null)
 	        return "redirect:/login";
 
-	    // 方針2：単純な全件取得（カウントはEntity内のカラムを参照するため計算不要）
-	    List<InformationEntity> list = repository.findAllByOrderByIdDesc();
+	    List<InformationEntity> list;
+
+	    // 検索条件（カテゴリまたはキーワード）がある場合
+	    if ((category != null && !category.isEmpty()) || (keyword != null && !keyword.isEmpty())) {
+	        // 後ほどRepositoryに作成する検索メソッドを呼び出す
+	        list = repository.searchItems(category, keyword);
+	    } else {
+	        // 条件がない場合は全件取得
+	        list = repository.findAllByOrderByIdDesc();
+	    }
+
 	    model.addAttribute("sukiList", list);
+	    model.addAttribute("selectedCategory", category); // 検索状態を保持するため
+	    model.addAttribute("keyword", keyword);           // 検索状態を保持するため
+	    
 	    return "timeline";
 	}
+	
 
 	// --- 詳細表示 ---
 	@GetMapping("/view/{id}")
