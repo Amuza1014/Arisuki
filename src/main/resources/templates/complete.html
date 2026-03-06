@@ -100,13 +100,13 @@
             <div class="text-start bg-dark p-3 rounded border border-secondary mb-4">
                 <p class="mb-2">
                     <span class="info-label">Title:</span><br>
-                    <strong class="text-white fs-5" th:text="${item.title}">タイトル</strong>
+                    <strong class="text-white fs-5" th:text="${#strings.abbreviate(item.title,30)}">タイトル</strong>
                 </p>
                 <div class="divider my-2" style="opacity: 0.3;"></div>
                 <p class="mb-0">
                     <span class="info-label">Review:</span><br>
                     <span class="small text-secondary" 
-                          th:text="${#strings.abbreviate(item.reviewText, 100)}">レビュー内容</span>
+                          th:text="${#strings.abbreviate(item.reviewText, 40)}">レビュー内容</span>
                 </p>
             </div>
             
