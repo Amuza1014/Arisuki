@@ -184,29 +184,24 @@ body {
 					</div>
 				</div>
 
-				<div class="mb-4">
-					<label class="form-label fw-bold small">SCORE</label>
-					<div class="rating">
-						<input type="radio" name="score" value="5" id="star5" required><label
-							for="star5">★</label> <input type="radio" name="score" value="4"
-							id="star4"><label for="star4">★</label> <input
-							type="radio" name="score" value="3" id="star3"><label
-							for="star3">★</label> <input type="radio" name="score" value="2"
-							id="star2"><label for="star2">★</label> <input
-							type="radio" name="score" value="1" id="star1"><label
-							for="star1">★</label>
-					</div>
-				</div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold small">SCORE</label>
+                    <div class="rating">
+                        <input type="radio" name="score" value="5" id="star5" required><label for="star5">★</label>
+                        <input type="radio" name="score" value="4" id="star4"><label for="star4">★</label>
+                        <input type="radio" name="score" value="3" id="star3"><label for="star3">★</label>
+                        <input type="radio" name="score" value="2" id="star2"><label for="star2">★</label>
+                        <input type="radio" name="score" value="1" id="star1" checked><label for="star1">★</label>
+                    </div>
+                </div>
 
 				<div class="d-grid gap-3 mt-5">
 					<button type="submit" class="btn btn-custom-green btn-lg">保存して登録</button>
 					<a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">キャンセルして戻る</a>
 				</div>
-
 			</form>
 		</div>
 	</div>
-
 	<footer
 		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
 		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
