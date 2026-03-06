@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edit Item - ArrayList&lt;Suki&gt;</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
-/* ダークテーマ共通設定 */
 body {
     background-color: #121212;
     color: #e0e0e0;
@@ -20,202 +21,267 @@ body {
     background-color: #1e1e1e;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     border: 1px solid #333;
 }
 
-/* 入力フォームのカスタマイズ */
 .form-label {
     color: #2ecc71;
 }
 
-.form-control, .form-select {
-    background-color: #252525;
-    border: 1px solid #444;
-    color: #fff;
+.form-control,.form-select{
+    background-color:#252525;
+    border:1px solid #444;
+    color:#fff;
 }
 
-.form-control:focus, .form-select:focus {
-    background-color: #2a2a2a;
-    border-color: #2ecc71;
-    color: #fff;
-    box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+.form-control:focus,.form-select:focus{
+    background-color:#2a2a2a;
+    border-color:#2ecc71;
+    color:#fff;
+    box-shadow:0 0 0 0.25rem rgba(46,204,113,0.25);
 }
 
-/* ジャンル別の詳細エリア（ダークモード用に調整） */
-.sub-fields {
-    display: none;
-    background-color: #2a2a2a !important;
-    border-left: 4px solid #2ecc71 !important;
+.sub-fields{
+    display:none;
+    background-color:#2a2a2a !important;
+    border-left:4px solid #2ecc71 !important;
 }
 
-/* 緑ボタン */
-.btn-primary {
-    background-color: #2ecc71;
-    border: none;
-    font-weight: bold;
-    padding: 12px;
+.btn-primary{
+    background-color:#2ecc71;
+    border:none;
+    font-weight:bold;
+    padding:12px;
 }
 
-.btn-primary:hover {
-    background-color: #27ae60;
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+.btn-primary:hover{
+    background-color:#27ae60;
 }
 
-/* 評価ボタン */
-.rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    font-size: 2.5rem;
+.rating{
+    display:flex;
+    flex-direction:row-reverse;
+    justify-content:flex-end;
+    font-size:2.5rem;
 }
 
-.rating input { display: none; }
-.rating label {
-    color: #444;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-right: 5px;
+.rating input{display:none;}
+
+.rating label{
+    color:#444;
+    cursor:pointer;
+    transition:0.2s;
+    margin-right:5px;
 }
 
 .rating input:checked ~ label,
 .rating label:hover,
-.rating label:hover ~ label {
-    color: #ffc107;
+.rating label:hover ~ label{
+    color:#ffc107;
 }
 
-/* プレースホルダー */
-::placeholder {
-    color: #888888 !important;
+::placeholder{
+    color:#888 !important;
 }
 </style>
 </head>
+
 <body onload="toggleFields()">
-    <div class="container">
-        <div class="form-container">
-            <h2 class="text-center mb-4 text-white fw-bold">作品の編集</h2>
-            <p class="text-center text-secondary small mb-4">内容を書き換えて保存してください</p>
 
-            <form th:action="@{/complete}" method="post" enctype="multipart/form-data" id="editForm">
-                <input type="hidden" name="id" th:value="${item.id}">
+<div class="container">
+<div class="form-container">
 
-                <div class="mb-4">
-                    <label for="category" class="form-label fw-bold small">CATEGORY</label> 
-                    <select class="form-select" id="category" name="category" onchange="toggleFields()" required>
-                        <option value="1" th:selected="${item.category == '1'}">📖 ブック (Book)</option>
-                        <option value="2" th:selected="${item.category == '2'}">🎬 ムービー (Movie)</option>
-                        <option value="3" th:selected="${item.category == '3'}">🎮 ゲーム (Game)</option>
-                        <option value="99" th:selected="${item.category == '99'}">✨ その他 (Other)</option>
-                    </select>
-                </div>
+<h2 class="text-center mb-4 text-white fw-bold">作品の編集</h2>
+<p class="text-center text-secondary small mb-4">内容を書き換えて保存してください</p>
 
-                <div id="itemFields" class="sub-fields p-3 mb-4 rounded">
-                    <p class="small text-info fw-bold mb-2">本の詳細情報</p>
-                    <input type="text" name="creator" class="form-control mb-2" placeholder="著者名" 
-                           th:value="${item.category == '1' ? item.creator : ''}"> 
-                    <input type="text" name="publisher" class="form-control mb-2" placeholder="出版社" 
-                           th:value="${item.category == '1' ? item.publisher : ''}"> 
-                    <input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（ミステリー等）" 
-                           th:value="${item.category == '1' ? item.subAttribute : ''}">
-                </div>
+<form th:action="@{/complete}" method="post" enctype="multipart/form-data">
 
-                <div id="movieFields" class="sub-fields p-3 mb-4 rounded">
-                    <p class="small text-warning fw-bold mb-2">映画の詳細情報</p>
-                    <input type="text" name="creator" class="form-control mb-2" placeholder="監督名" 
-                           th:value="${item.category == '2' ? item.creator : ''}"> 
-                    <input type="text" name="subAttribute" class="form-control mb-2" placeholder="ジャンル（SF等）" 
-                           th:value="${item.category == '2' ? item.subAttribute : ''}"> 
-                    <select name="publisher" class="form-select">
-                        <option value="" th:selected="${item.category != '2' || item.publisher == null}">選択してください</option>
-                        <option value="邦画" th:selected="${item.category == '2' && item.publisher == '邦画'}">邦画</option>
-                        <option value="洋画" th:selected="${item.category == '2' && item.publisher == '洋画'}">洋画</option>
-                        <option value="その他" th:selected="${item.category == '2' && item.publisher == 'その他'}">その他</option>
-                    </select>
-                </div>
+<input type="hidden" name="id" th:value="${item.id}">
 
-                <div id="gameFields" class="sub-fields p-3 mb-4 rounded">
-                    <p class="small text-success fw-bold mb-2">ゲームの詳細情報</p>
-                    <input type="text" name="creator" class="form-control mb-2" placeholder="メーカー" 
-                           th:value="${item.category == '3' ? item.creator : ''}"> 
-                    <input type="text" name="publisher" class="form-control mb-2" placeholder="ハード" 
-                           th:value="${item.category == '3' ? item.publisher : ''}"> 
-                    <input type="text" name="subAttribute" class="form-control" placeholder="ジャンル（RPG等）" 
-                           th:value="${item.category == '3' ? item.subAttribute : ''}">
-                </div>
+<div class="mb-4">
+<label class="form-label fw-bold small">CATEGORY</label>
 
-                <div id="otherFields" class="sub-fields p-3 mb-4 rounded">
-                    <p class="small text-secondary fw-bold mb-2">その他の詳細情報</p>
-                    <input type="text" name="creator" class="form-control mb-2" placeholder="作者・制作名" 
-                           th:value="${item.category == '99' ? item.creator : ''}"> 
-                    <input type="text" name="subAttribute" class="form-control mb-2" placeholder="特徴1（ジャンル、種類など）" 
-                           th:value="${item.category == '99' ? item.subAttribute : ''}"> 
-                    <input type="text" name="publisher" class="form-control" placeholder="特徴2（場所、ブランドなど）" 
-                           th:value="${item.category == '99' ? item.publisher : ''}">
-                </div>
+<select class="form-select" id="category" name="category" onchange="toggleFields()" required>
 
-                <div class="mb-3">
-                    <label for="title" class="form-label fw-bold small">TITLE</label> 
-                    <input type="text" class="form-control" id="title" name="title" th:value="${item.title}" required>
-                </div>
+<option value="1" th:selected="${item.category=='1'}">📖 ブック</option>
+<option value="2" th:selected="${item.category=='2'}">🎬 ムービー</option>
+<option value="3" th:selected="${item.category=='3'}">🎮 ゲーム</option>
+<option value="99" th:selected="${item.category=='99'}">✨ その他</option>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold small">IMAGE (変更する場合のみ選択)</label> 
-                    <input type="file" name="thumbnail" class="form-control" accept="image/*">
-                </div>
+</select>
+</div>
 
-                <div class="mb-3">
-                    <label for="reviewText" class="form-label fw-bold small">REVIEW</label>
-                    <textarea class="form-control" id="reviewText" name="reviewText" rows="4" th:text="${item.reviewText}" required></textarea>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label fw-bold small">SCORE</label>
-                    <div class="rating">
-                        <input type="radio" name="score" value="5" id="star5" th:checked="${item.score == 5}" required><label for="star5">★</label>
-                        <input type="radio" name="score" value="4" id="star4" th:checked="${item.score == 4}"><label for="star4">★</label>
-                        <input type="radio" name="score" value="3" id="star3" th:checked="${item.score == 3}"><label for="star3">★</label>
-                        <input type="radio" name="score" value="2" id="star2" th:checked="${item.score == 2}"><label for="star2">★</label>
-                        <input type="radio" name="score" value="1" id="star1" th:checked="${item.score == 1}"><label for="star1">★</label>
-                    </div>
-                </div>
 
-                <div class="d-grid gap-3 mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg">変更を保存する</button>
-                    <a th:href="@{/detail/{id}(id=${item.id})}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
-                </div>
-            </form>
-        </div>
-    </div>
+<div id="itemFields" class="sub-fields p-3 mb-4 rounded">
 
-    <footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-        &copy; 2026 Cチーム(仮) All Rights Reserved.
-    </footer>
+<p class="small text-info fw-bold mb-2">本の詳細情報</p>
 
-    <script th:inline="javascript">
-    function toggleFields() {
-        const category = document.getElementById('category').value;
-        const fieldGroups = [
-            { id: 'itemFields', value: '1' },
-            { id: 'movieFields', value: '2' },
-            { id: 'gameFields', value: '3' },
-            { id: 'otherFields', value: '99' } // ★追加
-        ];
+<input type="text" name="creator" class="form-control mb-2"
+placeholder="著者名"
+th:value="${item.category=='1'?item.creator:''}">
 
-        fieldGroups.forEach(group => {
-            const element = document.getElementById(group.id);
-            if (element) {
-                const inputs = element.querySelectorAll('input, select');
-                if (group.value === category) {
-                    element.style.display = 'block';
-                    inputs.forEach(input => input.disabled = false);
-                } else {
-                    element.style.display = 'none';
-                    inputs.forEach(input => input.disabled = true);
-                }
-            }
-        });
-    }
-    document.addEventListener('DOMContentLoaded', toggleFields);
-    </script>
+<input type="text" name="publisher" class="form-control mb-2"
+placeholder="出版社"
+th:value="${item.category=='1'?item.publisher:''}">
+
+<input type="text" name="subAttribute" class="form-control"
+placeholder="ジャンル"
+th:value="${item.category=='1'?item.subAttribute:''}">
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label fw-bold small">TITLE</label>
+
+<input type="text"
+class="form-control"
+name="title"
+th:value="${item.title}"
+required>
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label fw-bold small">IMAGE</label>
+
+<input type="file"
+name="thumbnail"
+class="form-control"
+accept="image/*">
+
+</div>
+
+
+<div class="mb-3">
+
+<label class="form-label fw-bold small">REVIEW</label>
+
+<textarea
+class="form-control"
+id="reviewText"
+name="reviewText"
+rows="4"
+maxlength="255"
+required
+th:text="${item.reviewText}">
+</textarea>
+
+<div class="text-end small text-secondary">
+<span id="charCount">0</span> / 255
+</div>
+
+</div>
+
+
+<div class="mb-4">
+
+<label class="form-label fw-bold small">SCORE</label>
+
+<div class="rating">
+
+<input type="radio" name="score" value="5" id="star5"
+th:checked="${item.score==5}" required><label for="star5">★</label>
+
+<input type="radio" name="score" value="4" id="star4"
+th:checked="${item.score==4}"><label for="star4">★</label>
+
+<input type="radio" name="score" value="3" id="star3"
+th:checked="${item.score==3}"><label for="star3">★</label>
+
+<input type="radio" name="score" value="2" id="star2"
+th:checked="${item.score==2}"><label for="star2">★</label>
+
+<input type="radio" name="score" value="1" id="star1"
+th:checked="${item.score==1}"><label for="star1">★</label>
+
+</div>
+
+</div>
+
+
+<div class="d-grid gap-3 mt-5">
+
+<button type="submit"
+class="btn btn-primary btn-lg">
+
+変更を保存する
+
+</button>
+
+<a th:href="@{/detail/{id}(id=${item.id})}"
+class="btn btn-outline-secondary btn-sm">
+
+キャンセル
+
+</a>
+
+</div>
+
+</form>
+</div>
+</div>
+
+
+<footer style="text-align:center;font-size:0.8em;color:#666;padding:2em 0;">
+&copy; 2026 Cチーム(仮) All Rights Reserved.
+</footer>
+
+
+<script>
+
+function toggleFields(){
+
+const category=document.getElementById('category').value;
+
+const fieldGroups=[
+{ id:'itemFields', value:'1' },
+{ id:'movieFields', value:'2' },
+{ id:'gameFields', value:'3' },
+{ id:'otherFields', value:'99' }
+];
+
+fieldGroups.forEach(group=>{
+
+const element=document.getElementById(group.id);
+
+if(!element)return;
+
+const inputs=element.querySelectorAll('input,select');
+
+if(group.value===category){
+
+element.style.display='block';
+inputs.forEach(i=>i.disabled=false);
+
+}else{
+
+element.style.display='none';
+inputs.forEach(i=>i.disabled=true);
+
+}
+
+});
+
+}
+
+
+const textarea=document.getElementById("reviewText");
+const charCount=document.getElementById("charCount");
+
+function updateCount(){
+charCount.textContent=textarea.value.length;
+}
+
+textarea.addEventListener("input",updateCount);
+
+updateCount();
+
+</script>
+
 </body>
 </html>
