@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Timeline - ArrayList&lt;Suki&gt;</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -14,7 +15,6 @@ body {
 	padding-bottom: 80px;
 }
 
-/* カードスタイル */
 .card {
 	background-color: #1e1e1e;
 	border-radius: 12px;
@@ -46,14 +46,13 @@ body {
 }
 
 .card-title {
-	color: #ffffff;
+	color: #fff;
 }
 
 .card-body {
 	color: #9e9e9e;
 }
 
-/* 緑ボタン */
 .btn-custom-green {
 	background-color: #2ecc71;
 	color: #fff;
@@ -69,7 +68,6 @@ body {
 	color: #fff;
 }
 
-/* カテゴリバッジ */
 .badge-book {
 	background-color: rgb(0, 128, 255);
 	padding: 0.4em 0.8em;
@@ -85,7 +83,6 @@ body {
 	padding: 0.4em 0.8em;
 }
 
-/* ★デザイン維持：その他用のバッジ色を追加 */
 .badge-other {
 	background-color: #6c757d;
 	padding: 0.4em 0.8em;
@@ -104,7 +101,7 @@ body {
 	font-size: 0.85em;
 	margin-bottom: 0;
 }
-/* 下部固定メニュー */
+
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.9) !important;
 	backdrop-filter: blur(10px);
@@ -122,12 +119,8 @@ body {
 	text-decoration: none;
 	color: #9e9e9e;
 	font-size: 0.75rem;
-	transition: 0.2s;
 	width: 100%;
-}
-
-.nav-icon-link:active {
-	transform: scale(0.9);
+	transition: 0.2s;
 }
 
 .center-btn-container {
@@ -147,23 +140,79 @@ body {
 	justify-content: center;
 	font-size: 24px;
 	color: white;
-	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
 	margin-top: -26px;
 	border: 4px solid #121212;
 }
 
 ::placeholder {
-    color: #888888 !important;
-    opacity: 1;
+	color: #888 !important;
+	opacity: 1;
+}
+
+#viewSwitcher {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: #666;
+	color: #ccc;
+	font-size: 0.75rem;
+	padding: 4px 8px;
+	transition: 0.2s;
+}
+
+/* --- PCモード切替用スタイル --- */
+@media ( max-width :768px) {
+	body.pc-mode-active .row-cols-1 {
+		display: flex !important;
+		flex-wrap: wrap !important;
+	}
+	body.pc-mode-active .col {
+		flex: 0 0 33.3333% !important;
+		max-width: 33.3333% !important;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+	body.pc-mode-active .card-img-top {
+		height: 100px !important;
+	}
+	body.pc-mode-active .mobile-hide-on-3col {
+		display: none !important;
+	}
+	body.pc-mode-active .title-full {
+		display: none;
+	}
+	body.pc-mode-active .title-short {
+		display: block;
+		font-size: 0.8rem !important;
+		line-height: 1.2;
+	}
+	body.pc-mode-active .badge {
+		font-size: 0.65rem !important;
+		padding: 0.2em 0.4em !important;
+	}
+	.navbar-mobile {
+		height: 100px !important;
+		padding-bottom: 20px !important;
+	}
+	.center-add-btn {
+		width: 78px !important;
+		height: 78px !important;
+		font-size: 44px !important;
+		margin-top: -48px !important;
+	}
+	body {
+		padding-bottom: 130px !important;
+	}
 }
 </style>
 </head>
 <body>
-	<div class="container mt-5 mb-5">
-		<h2 class="fw-bold mb-4">🌐Timeline</h2>
+	<div class="container mt-4 mb-5">
+	<div class="d-flex align-items-center gap-3 mb-4">
+			<h2 class="fw-bold mb-0 text-white">🌐Timeline</h2>
+			<button id="viewSwitcher" class="btn d-md-none">PC表示</button>
+		</div>
 
-		<div class="card p-3 mb-4"
-			style="background-color: #1e1e1e; border-color: #333;">
+		<!-- 検索フォーム -->
+		<div class="card p-3 mb-4">
 			<form th:action="@{/timeline}" method="get"
 				class="row g-2 align-items-center">
 				<div class="col-md-3">
@@ -179,7 +228,7 @@ body {
 				<div class="col-md-7">
 					<input type="text" name="keyword" th:value="${keyword}"
 						class="form-control bg-dark text-white border-secondary"
-						placeholder="キーワードを空欄にすれば、カテゴリだけで絞り込めます。">
+						placeholder="キーワードで検索">
 				</div>
 				<div class="col-md-2 d-grid">
 					<button type="submit" class="btn btn-custom-green">検索</button>
@@ -187,25 +236,22 @@ body {
 			</form>
 		</div>
 
+		<!-- 上部リンク -->
 		<div class="d-flex justify-content-end mb-4 gap-2">
-			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">
-				❤️ Suki_List </a> <a th:href="@{/mypage}"
-				class="btn btn-outline-light btn-sm px-3"> Collectionsに戻る </a>
+			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">❤️
+				Suki_List</a> <a th:href="@{/mypage}"
+				class="btn btn-outline-light btn-sm px-3">📚 Collections</a>
 		</div>
 
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-
+		<!-- アイテムグリッド -->
+		<div class="row row-cols-1 row-cols-md-3 g-4" id="itemGrid">
 			<div class="col" th:each="item : ${sukiList}">
-
-				<a th:href="${session.user?.id == item.user?.id} 
-                ? @{/detail/{id}(id=${item.id})} 
-                : @{/view/{id}(id=${item.id})}"
+				<a
+					th:href="${session.user?.id == item.user?.id} ? @{/detail/{id}(id=${item.id})} : @{/view/{id}(id=${item.id})}"
 					class="card-link">
-					<div class="card h-100">
-
+					<div class="card h-100 shadow-sm">
 						<img th:if="${item.thumbnailUrl != null}"
 							th:src="${item.thumbnailUrl}" class="card-img-top">
-
 						<div th:if="${item.thumbnailUrl == null}"
 							class="card-img-top d-flex align-items-center justify-content-center"
 							style="background: #252525; height: 200px;">
@@ -213,83 +259,108 @@ body {
 						</div>
 
 						<div class="card-body">
-
-							<div class="mb-2 d-flex justify-content-between align-items-center">
+							<!-- カテゴリ + 投稿者 -->
+							<div
+								class="mb-2 d-flex justify-content-between align-items-center">
 								<div>
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span> 
-									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span> 
-									<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
-									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${item.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${item.category == '3'}" class="badge badge-game">🎮
+										Game</span> <span th:if="${item.category == '99'}"
+										class="badge badge-other">✨ Other</span>
 								</div>
-
-								<p class="text-color-pink">
-									投稿者: <span class="text-white"
-										th:text="${#strings.abbreviate(item.user.username, 20)}"></span>
-								</p>
+								<div class="d-flex align-items-center">
+									<img
+										th:src="${#strings.isEmpty(item.user.iconPath) ? '/images/default-icon.png' : item.user.iconPath}"
+										style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+									<p class="text-color-pink mb-0">
+										投稿者: <span class="text-white"
+											th:text="${#strings.abbreviate(item.user.username,20)}"></span>
+									</p>
+								</div>
 							</div>
 
-							<h5 class="fw-bold mb-2" th:text="${item.title}"></h5>
+							<!-- タイトル -->
+							<h5 class="fw-bold mb-2 card-title">
+								<span class="title-full" th:text="${item.title}">タイトル</span> <span
+									class="title-short d-md-none"
+									th:text="${#strings.length(item.title)>12 ? #strings.substring(item.title,0,12)+'..':item.title}">タイトル</span>
+							</h5>
 
-							<div class="small mb-3 fw-bold text-secondary">
-								<span th:if="${item.category == '1'}" th:text="'Author: ' + ${item.creator}"></span> 
-								<span th:if="${item.category == '2'}" th:text="'Director: ' + ${item.creator}"></span> 
-								<span th:if="${item.category == '3'}" th:text="'Hardware: ' + ${item.publisher}"></span>
-								<span th:if="${item.category == '99'}" th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
+							<!-- 基本情報 -->
+							<div
+								class="small mb-3 fw-bold text-secondary mobile-hide-on-3col">
+								<span th:if="${item.category == '1'}"
+									th:text="'Author: '+${item.creator}"></span> <span
+									th:if="${item.category == '2'}"
+									th:text="'Director: '+${item.creator}"></span> <span
+									th:if="${item.category == '3'}"
+									th:text="'Hardware: '+${item.publisher}"></span> <span
+									th:if="${item.category == '99'}"
+									th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
 							</div>
 
-							<div class="mb-3 d-flex align-items-center">
-								<span class="me-3"> <span style="color: #ff4757;">❤️</span>
-									<span th:text="${item.likeCount != null ? item.likeCount : 0}"
-									class="ms-1 fw-bold">0</span>
-								</span> <span> <span style="color: #1e90ff;">💬</span> <span
-									th:text="${item.commentCount != null ? item.commentCount : 0}"
-									class="ms-1 fw-bold">0</span>
-								</span>
+							<!-- いいね・コメント・評価 -->
+							<div
+								class="mb-3 d-flex align-items-center gap-3 mobile-hide-on-3col">
+								<span><span style="color: #ff4757;">❤️</span> <span
+									th:text="${item.likeCount!=null?item.likeCount:0}"
+									class="ms-1 fw-bold">0</span></span> <span><span
+									style="color: #1e90ff;">💬</span> <span
+									th:text="${item.commentCount!=null?item.commentCount:0}"
+									class="ms-1 fw-bold">0</span></span> <span
+									class="text-warning fw-bold" th:if="${item.score!=null}"
+									th:text="'★ '+${item.score}"></span> <span
+									class="text-secondary small" th:if="${item.score==null}">未評価</span>
 							</div>
 
-							<div class="mb-2">
-								<span class="text-warning fw-bold" th:if="${item.score != null}"
-									th:text=" '★ ' + ${item.score}"> </span> <span
-									class="text-secondary small" th:if="${item.score == null}">
-									未評価 </span>
-							</div>
-
-							<p class="card-text small text-truncate"
+							<!-- レビュー -->
+							<p class="card-text small text-truncate mobile-hide-on-3col"
 								th:text="${item.reviewText}"></p>
-
 						</div>
 					</div>
 				</a>
 			</div>
 		</div>
 	</div>
-	
+
 	<nav class="navbar navbar-mobile fixed-bottom py-0">
 		<div class="container-fluid">
 			<div class="d-flex align-items-center w-100">
 				<div class="nav-item-wrapper">
-					<a th:href="@{/mypage}" class="nav-icon-link text-center py-2">
-						<div class="fs-4">📚</div>
-						<div>Collections</div>
-					</a>
+					<a th:href="@{/mypage}" class="nav-icon-link text-center py-2"><div
+							class="fs-4">📚</div>
+						<div>Collections</div></a>
 				</div>
 				<div class="center-btn-container">
-					<a th:href="@{/form}" class="text-decoration-none">
-						<div class="center-add-btn">＋</div>
-					</a>
+					<a th:href="@{/form}" class="text-decoration-none"><div
+							class="center-add-btn">＋</div></a>
 				</div>
 				<div class="nav-item-wrapper">
-					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
-						<div class="fs-4">❤️</div>
-						<div>Suki</div>
-					</a>
+					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2"><div
+							class="fs-4">❤️</div>
+						<div>Suki</div></a>
 				</div>
 			</div>
 		</div>
 	</nav>
-	
-	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
-		&copy; 2026 Cチーム(仮) All Rights Reserved. 
-	</footer>
+
+	<footer
+		style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">&copy;
+		2026 Cチーム(仮) All Rights Reserved.</footer>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const switcher = document.getElementById('viewSwitcher');
+		if (switcher) {
+			switcher.addEventListener('click', function() {
+				document.body.classList.toggle('pc-mode-active');
+				this.textContent = document.body.classList
+						.contains('pc-mode-active') ? 'スマホ表示' : 'PC表示';
+			});
+		}
+	</script>
 </body>
 </html>

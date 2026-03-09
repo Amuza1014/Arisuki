@@ -183,10 +183,16 @@ hr {
 			</div>
 
 			<div class="card-body p-4">
-				<p class="custom-text">
-					posted: <span th:text="${item.user.username}"></span>
-				</p>
+				<!-- 投稿者情報 -->
+				<div class="d-flex align-items-center gap-2 custom-text">
+					<a th:href="@{/profile/{id}(id=${item.user.id})}"> <img
+						th:src="${#strings.isEmpty(item.user.iconPath) ? '/images/default-icon.png' : item.user.iconPath}"
+						style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+					</a> <span> 投稿者: <span th:text="${item.user.username}"></span>
+					</span>
+				</div>
 
+				<!-- 基本情報カード -->
 				<div class="card custom-card p-4 mb-4 border-0">
 					<h5 class="fw-bold mb-3 border-bottom pb-2 custom-text">📋
 						基本情報</h5>
@@ -244,71 +250,70 @@ hr {
 						</p>
 					</div>
 
-					<div>
-						<p>
-							<span class="label-text">評価：</span> <span class="fw-bold"
-								th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
-								th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
-							</span>
-						</p>
-					</div>
+					<p>
+						<span class="label-text">評価：</span> <span class="fw-bold"
+							th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
+							th:classappend="${item.score != null} ? 'text-warning' : 'text-white'"></span>
+					</p>
+				</div>
 
+				<hr>
+
+				<!-- レビュー -->
+				<div class="custom-text">
+					<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
+					<p class="fs-5 p-3 custom-card break-text"
+						th:text="${item.reviewText}">レビュー内容がここに入ります。</p>
+				</div>
+
+				<hr>
+
+				<!-- コメント -->
+				<div th:if="${#lists.isEmpty(comments)}"
+					class="text-color-pink mb-2">
+					<p>まだコメントはありません</p>
+				</div>
+				<div th:each="c : ${comments}" class="mb-2 text-color-pink">
+					<p>
+						<strong th:text="${c.user.username}"
+							th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'"></strong>
+					</p>
+					<p class="break-text" th:text="${c.content}"
+						th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
 					<hr>
+				</div>
 
-					<div class="custom-text">
-						<h5 class="fw-bold mb-3 border-bottom pb-2">✍️ レビュー</h5>
-						<p class="fs-5 p-3 custom-card break-text"
-							th:text="${item.reviewText}">レビュー内容がここに入ります。</p>
-					</div>
+				<!-- コメント投稿フォーム -->
+				<div th:if="${session.user != null}" class="mb-3">
+					<div class="d-flex flex-wrap align-items-center gap-2">
+						<form th:action="@{/view/{id}(id=${item.id})}" method="post"
+							class="d-flex align-items-center gap-2"
+							style="flex: 1 1 300px; max-width: 500px;">
+							<input type="text" name="comment" class="form-control"
+								th:value="${myComment != null ? myComment.content : ''}" />
+							<button type="submit" class="btn btn-custom-green fs-7"
+								style="white-space: nowrap;"
+								th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
+						</form>
 
-					<hr>
-
-					<div th:if="${#lists.isEmpty(comments)}"
-						class="text-color-pink mb-2">
-						<p>まだコメントはありません</p>
-					</div>
-					<div th:each="c : ${comments}" class="mb-2 text-color-pink">
-						<p>
-							<strong th:text="${c.user.username}"
-								th:classappend="${c.user.id == item.user.id} ? 'text-danger fw-bold' : 'text-white'">
-							</strong>
-						</p>
-						<p class="break-text" th:text="${c.content}"
-							th:classappend="${c.user.id == item.user.id} ? 'text-danger' : 'text-white'"></p>
-						<hr>
-					</div>
-
-					<div th:if="${session.user != null}" class="mb-3">
-						<div class="d-flex flex-wrap align-items-center gap-2">
-
-							<form th:action="@{/view/{id}(id=${item.id})}" method="post"
-								class="d-flex align-items-center gap-2"
-								style="flex: 1 1 300px; max-width: 500px;">
-								<input type="text" name="comment" class="form-control"
-									th:value="${myComment != null ? myComment.content : ''}" />
-								<button type="submit" class="btn btn-custom-green fs-7"
-									style="white-space: nowrap;"
-									th:text="${myComment != null} ? 'コメントを編集' : 'コメント'"></button>
-							</form>
-
-							<form th:if="${myComment != null}"
-								th:action="@{/comment/delete/{id}(id=${myComment.id})}"
-								method="post">
-								<button type="submit" class="btn btn-outline-danger"
-									onclick="return confirm('本当に削除しますか？');">コメント削除</button>
-							</form>
-
-						</div>
-					</div>
-
-					<hr>
-
-					<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
-						<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐
-							Timelineに戻る</a> <a th:href="@{/mypage}"
-							class="btn btn-outline-light px-4">Collectionsに戻る</a>
+						<form th:if="${myComment != null}"
+							th:action="@{/comment/delete/{id}(id=${myComment.id})}"
+							method="post">
+							<button type="submit" class="btn btn-outline-danger"
+								onclick="return confirm('本当に削除しますか？');">コメント削除</button>
+						</form>
 					</div>
 				</div>
+
+				<hr>
+
+				<!-- ナビゲーションボタン -->
+				<div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+					<a th:href="@{/timeline}" class="btn btn-custom-green px-4">🌐
+						Timelineに戻る</a> <a th:href="@{/mypage}"
+						class="btn btn-outline-light px-4">Collectionsに戻る</a>
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -316,5 +321,6 @@ hr {
 	<footer
 		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
 		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
+
 </body>
 </html>
