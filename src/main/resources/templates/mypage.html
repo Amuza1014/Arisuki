@@ -164,6 +164,47 @@ body {
 	color: white;
 	border-radius: 10px;
 }
+/* スマホ（画面幅 768px 以下）向けの調整 */
+@media (max-width: 768px) {
+    /* 下部メニュー全体の高さを少し出す */
+    .navbar-mobile {
+        height: 80px;
+        padding-bottom: env(safe-area-inset-bottom); /* iPhoneのバー対策 */
+    }
+
+    /* アイコンと文字のサイズアップ */
+    .nav-icon-link {
+        font-size: 0.85rem !important; /* 文字を少し大きく */
+        padding-top: 10px !important;
+    }
+
+    .nav-icon-link .fs-4 {
+        font-size: 1.8rem !important; /* 絵文字を大きく */
+        margin-bottom: 2px;
+    }
+
+    /* 中央の＋ボタンをさらに押しやすく */
+    .center-add-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 32px;
+        margin-top: -35px; /* サイズアップに合わせて位置調整 */
+        border-width: 5px;
+    }
+
+    /* カードのホバー効果をスマホでは無効化（誤操作防止） */
+    .card:hover {
+        transform: none;
+    }
+    
+    /* ユーザー名編集エリアのボタンをスマホでは横幅いっぱいに */
+    .profile-edit-box .btn {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+    }
+    }
+
 </style>
 </head>
 
