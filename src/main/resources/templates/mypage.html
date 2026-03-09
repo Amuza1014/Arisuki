@@ -7,7 +7,7 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-　
+
 <style>
 /* ダークテーマ */
 body {
@@ -155,6 +155,7 @@ body {
 	margin-top: -26px;
 	border: 4px solid #121212;
 }
+
 /* トースト通知 */
 .toast-container {
 	z-index: 2000;
@@ -166,125 +167,139 @@ body {
 	border-radius: 10px;
 }
 
+/* PC切り替えボタンの見やすさ改善（共通規格） */
+#viewSwitcher {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #666;
+    color: #ccc;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    transition: 0.2s;
+}
+
+#viewSwitcher:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
 /* スマホ（画面幅 768px 以下）向けの「超」使いやすい調整 */
 @media (max-width: 768px) {
-    /* 1. 下部メニュー全体をもっと高く、指が入りやすく */
     .navbar-mobile {
-        height: 100px !important; /* 95pxからさらに微増 */
+        height: 100px !important;
         padding-bottom: 20px !important; 
     }
-
-    /* 2. 左右のボタンの文字と絵文字を巨大化 */
     .nav-icon-link {
-        font-size: 1rem !important; /* 文字サイズ微増 */
+        font-size: 1rem !important;
         padding: 10px 0 !important;
     }
-
     .nav-icon-link .fs-4 {
-        font-size: 2.3rem !important; /* 絵文字を巨大化 */
+        font-size: 2.3rem !important;
         margin-bottom: 4px !important;
     }
-
-    /* 3. 中央の＋ボタンを押しやすく巨大サイズに */
     .center-add-btn {
         width: 78px !important;
         height: 78px !important;
         font-size: 44px !important;
         margin-top: -48px !important;
         border: 5px solid #121212 !important;
-        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6) !important;
     }
-
-    /* 4. タップした時のフィードバック */
-    .nav-icon-link:active, .center-add-btn:active {
-        background-color: rgba(255,255,255,0.1);
-        transform: scale(0.92);
-    }
-
-    /* 5. ページ下部の余白 */
     body {
         padding-bottom: 130px !important;
     }
-    
-    /* 6. ユーザー名編集エリアもスマホ対応 */
     .profile-edit-box .btn {
         width: 100%;
         margin-top: 15px;
-        padding: 12px;
+    }
+
+    /* 【追加】PCモード切り替え時の強制スタイル */
+    body.pc-mode-active .row-cols-1 {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+    body.pc-mode-active .col {
+        flex: 0 0 33.3333% !important; /* 3列に固定 */
+        max-width: 33.3333% !important;
+    }
+    body.pc-mode-active .card-img-top {
+        height: 120px !important; /* 3列で見やすくするために画像高さを抑える */
+    }
+    body.pc-mode-active .card-title {
+        font-size: 0.9rem !important; /* 文字を少し小さく */
     }
 }
 </style>
 </head>
 
 <body>
-	<div class="container mt-5 mb-5">
+	<div class="container mt-4 mb-5">
 
-		<div class="d-flex justify-content-between align-items-end mb-4">
+		<div class="d-flex justify-content-start align-items-center mb-2">
+			<h2 class="fw-bold mb-0 text-white">Collections</h2>
+			<button id="viewSwitcher" class="btn d-md-none ms-3">PC表示</button>
+		</div>
+
+		<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
 			<div>
-				<h2 class="fw-bold mb-0 text-white">Collections</h2>
 				<p class="text-secondary-muted mb-0">お気に入りのアーカイブ</p>
+				<p class="small text-secondary-muted mb-0 d-md-block">
+					username: <span th:text="${#strings.abbreviate(session.user.username, 20)}"></span>
+				</p>
 			</div>
 
-			<div class="d-none d-md-flex flex-column gap-2">
-				<a th:href="@{/form}" class="btn btn-custom-green">＋ New </a> <a
-					th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3">❤️
-					Suki_List</a>
-				<div class="d-flex gap-2">
-					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">Timeline</a>
-					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">Logout</a>
-				</div>
-				<p class="small text-secondary-muted mb-0">
-					username: <span
-						th:text="${#strings.abbreviate(session.user.username, 20)}"></span>
-				</p>
+			<div class="d-flex flex-wrap gap-2">
+				<a th:href="@{/form}" class="btn btn-custom-green btn-sm px-3 flex-fill">＋ New </a>
+				<a th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3 flex-fill">❤️ Suki_List</a>
+				<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3 flex-fill">🌐 Timeline</a>
+				<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3 flex-fill">Logout</a>
 			</div>
 		</div>
 
 		<div class="profile-edit-box mb-5">
 			<form id="usernameForm" th:action="@{/update-username}" method="post">
-	<div class="row align-items-center">
+				<div class="row align-items-center">
 
-		<div class="col-md-6">
-			<label for="newUsername"
-				class="form-label small text-secondary-muted">ユーザー名の変更</label>
+					<div class="col-md-6">
+						<label for="newUsername"
+							class="form-label small text-secondary-muted">ユーザー名の変更</label>
 
-			<div class="input-group">
-				<span class="input-group-text bg-dark border-secondary text-secondary">@</span>
-				<input type="text" id="newUsername" name="newUsername"
-					th:value="${session.user.username}"
-					class="form-control form-control-dark"
-					placeholder="新しいユーザー名を入力" required>
-			</div>
+						<div class="input-group">
+							<span class="input-group-text bg-dark border-secondary text-secondary">@</span>
+							<input type="text" id="newUsername" name="newUsername"
+								th:value="${session.user.username}"
+								class="form-control form-control-dark"
+								placeholder="新しいユーザー名を入力" required>
+						</div>
 
-			<div class="form-text text-secondary-muted small mt-2">
-				※ ここで変更した名前は、投稿の表示名やログインIDとして反映されます。
-			</div>
-		</div>
-
-		<div class="col-md-auto">
-			<button type="submit" class="btn btn-outline-success px-4">
-				更新保存
-			</button>
-		</div>
-
-		<div class="col-md-auto">
-			<div id="usernameToast" class="toast toast-custom border-0">
-				<div class="d-flex">
-					<div class="toast-body">
-						✔ ユーザー名を変更しました
+						<div class="form-text text-secondary-muted small mt-2">
+							※ ここで変更した名前は、投稿の表示名やログインIDとして反映されます。
+						</div>
 					</div>
-					<button type="button"
-						class="btn-close btn-close-white me-2 m-auto"
-						data-bs-dismiss="toast"></button>
-				</div>
-			</div>
-		</div>
 
-	</div>
-</form>
+					<div class="col-md-auto">
+						<button type="submit" class="btn btn-outline-success px-4">
+							更新保存
+						</button>
+					</div>
+
+					<div class="col-md-auto">
+						<div id="usernameToast" class="toast toast-custom border-0">
+							<div class="d-flex">
+								<div class="toast-body">
+									✔ ユーザー名を変更しました
+								</div>
+								<button type="button"
+									class="btn-close btn-close-white me-2 m-auto"
+									data-bs-dismiss="toast"></button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</form>
+			
 			<hr class="border-secondary mb-5">
 
-			<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div class="row row-cols-1 row-cols-md-3 g-4" id="itemGrid">
 				<div class="col" th:each="item : ${itemList}">
 					<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
 						<div class="card h-100 shadow-sm">
@@ -378,6 +393,19 @@ body {
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <script>
+// 切り替え用JavaScript
+const switcher = document.getElementById('viewSwitcher');
+if(switcher) {
+    switcher.addEventListener('click', function() {
+        document.body.classList.toggle('pc-mode-active');
+        if (document.body.classList.contains('pc-mode-active')) {
+            this.textContent = 'スマホ表示';
+        } else {
+            this.textContent = 'PC表示';
+        }
+    });
+}
+
 document.getElementById("usernameForm").addEventListener("submit", function(e) {
 
 	e.preventDefault();
