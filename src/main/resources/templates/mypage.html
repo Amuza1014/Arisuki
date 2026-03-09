@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collections - ArrayList&lt;Suki&gt;</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -164,47 +165,52 @@ body {
 	color: white;
 	border-radius: 10px;
 }
+
 /* スマホ（画面幅 768px 以下）向けの「超」使いやすい調整 */
 @media (max-width: 768px) {
     /* 1. 下部メニュー全体をもっと高く、指が入りやすく */
     .navbar-mobile {
-        height: 95px !important; /* かなり高めに設定 */
-        padding-bottom: 15px !important; /* 下に余裕を持たせる */
+        height: 100px !important; /* 95pxからさらに微増 */
+        padding-bottom: 20px !important; 
     }
 
     /* 2. 左右のボタンの文字と絵文字を巨大化 */
     .nav-icon-link {
-        font-size: 0.95rem !important; /* 文字サイズUP */
+        font-size: 1rem !important; /* 文字サイズ微増 */
         padding: 10px 0 !important;
-        display: block !important;
     }
 
     .nav-icon-link .fs-4 {
-        font-size: 2.2rem !important; /* 絵文字をかなり大きく */
-        margin-bottom: 5px !important;
-        display: block !important;
+        font-size: 2.3rem !important; /* 絵文字を巨大化 */
+        margin-bottom: 4px !important;
     }
 
-    /* 3. 中央の＋ボタンを「押し間違えない」巨大サイズに */
+    /* 3. 中央の＋ボタンを押しやすく巨大サイズに */
     .center-add-btn {
-        width: 75px !important;
-        height: 75px !important;
-        font-size: 40px !important;
-        margin-top: -45px !important; /* サイズに合わせて浮き上がりを調整 */
+        width: 78px !important;
+        height: 78px !important;
+        font-size: 44px !important;
+        margin-top: -48px !important;
         border: 5px solid #121212 !important;
         box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6) !important;
     }
 
-    /* 4. タップした時の反応を分かりやすく（フィードバック） */
+    /* 4. タップした時のフィードバック */
     .nav-icon-link:active, .center-add-btn:active {
         background-color: rgba(255,255,255,0.1);
-        border-radius: 15px;
-        transform: scale(0.95);
+        transform: scale(0.92);
     }
 
-    /* 5. ページ下部の余白（メニューに隠れないように） */
+    /* 5. ページ下部の余白 */
     body {
-        padding-bottom: 120px !important;
+        padding-bottom: 130px !important;
+    }
+    
+    /* 6. ユーザー名編集エリアもスマホ対応 */
+    .profile-edit-box .btn {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
     }
 }
 </style>
@@ -261,7 +267,6 @@ body {
 			</button>
 		</div>
 
-		<!-- ここにトースト -->
 		<div class="col-md-auto">
 			<div id="usernameToast" class="toast toast-custom border-0">
 				<div class="d-flex">
