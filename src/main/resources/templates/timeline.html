@@ -183,10 +183,10 @@ body {
 						<div class="card-body py-2">
 							<div class="mb-2 d-flex justify-content-between align-items-center">
 								<div>
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖</span> 
-									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬</span> 
-									<span th:if="${item.category == '3'}" class="badge badge-game">🎮</span>
-									<span th:if="${item.category == '99'}" class="badge badge-other">✨</span>
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span> 
+									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span> 
+									<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
+									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
 								</div>
 								<p class="text-color-pink mobile-hide-on-3col d-md-block">
 									投稿者：<span class="text-white" th:text="${#strings.abbreviate(item.user.username, 15)}"></span>
