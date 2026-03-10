@@ -468,4 +468,35 @@ public class ItemController {
 	    return "redirect:/profile/" + loginUser.getId();
 	}
 	
+	@PostMapping("/upload-header")
+	public String uploadHeader(
+	        @RequestParam("headerFile") MultipartFile file,
+	        HttpSession session) {
+
+	    // ログインユーザー取得
+	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
+	    if (loginUser == null) return "redirect:/login";
+
+	    // ファイルが選択されているか確認
+	    if (!file.isEmpty()) {
+	        try {
+	            // Cloudinaryにアップロード
+	            String imageUrl = cloudinaryService.uploadImage(file);
+
+	            // ユーザーのheaderImagePathに保存
+	            loginUser.setHeaderImagePath(imageUrl);
+	            userRepository.save(loginUser);
+
+	            // セッションにも反映
+	            session.setAttribute("user", loginUser);
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    // プロフィールページにリダイレクト
+	    return "redirect:/profile/" + loginUser.getId();
+	}
+	
 }
