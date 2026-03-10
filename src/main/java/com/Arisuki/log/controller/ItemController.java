@@ -425,4 +425,47 @@ public class ItemController {
 	    model.addAttribute("likeList", likeList);
 	    return "my_likepage"; 
 	}
+	
+	// プロフィール画面へ遷移
+	@GetMapping("/profile/{id}")
+	public String profile(@PathVariable Long id, Model model) {
+
+	    UserEntity user = userRepository.findById(id).orElse(null);
+	    List<InformationEntity> likeList = likeRepository.findAll().stream()
+	    		 .filter(like -> like.getUser().getId().equals(user.getId()))
+		            .map(LikeEntity::getInformation)
+		            .toList();
+	    
+	    model.addAttribute("user", user);
+	    model.addAttribute("posts", user.getPosts());
+	    model.addAttribute("likeList", likeList);
+	    return "profile";
+	}
+	
+	@PostMapping("/upload-icon")
+	public String uploadIcon(
+	        @RequestParam("iconFile") MultipartFile file,
+	        HttpSession session) {
+
+	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
+	    if (loginUser == null) return "redirect:/login";
+
+	    if (!file.isEmpty()) {
+	        try {
+
+	            String imageUrl = cloudinaryService.uploadImage(file);
+
+	            loginUser.setIconPath(imageUrl);
+	            userRepository.save(loginUser);
+
+	            session.setAttribute("user", loginUser);
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return "redirect:/profile/" + loginUser.getId();
+	}
+	
 }
