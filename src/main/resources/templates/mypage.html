@@ -18,6 +18,16 @@ body {
 	padding-bottom: 100px;
 }
 
+/* --- ボタンの文字・アイコン位置ズレ修正 --- */
+.btn-sm.flex-fill {
+	display: flex !important;
+	align-items: center !important; /* 上下中央揃え */
+	justify-content: center !important; /* 左右中央揃え */
+	gap: 6px; /* 記号と文字の間の微調整 */
+	line-height: 1; /* 行の高さを固定してズレを防止 */
+	height: 38px; /* 高さを固定することで全てのボタンを均一に */
+}
+
 /* カードデザイン */
 .card {
 	background-color: #1e1e1e;
@@ -81,21 +91,10 @@ body {
 }
 
 /* カテゴリバッジ */
-.badge-book {
-	background-color: rgb(0, 128, 255);
-}
-
-.badge-movie {
-	background-color: #d35400;
-}
-
-.badge-game {
-	background-color: #2ecc71;
-}
-
-.badge-other {
-	background-color: #6c757d;
-}
+.badge-book { background-color: rgb(0, 128, 255); }
+.badge-movie { background-color: #d35400; }
+.badge-game { background-color: #2ecc71; }
+.badge-other { background-color: #6c757d; }
 
 .text-secondary-muted {
 	color: #9e9e9e !important;
@@ -144,11 +143,8 @@ body {
 	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
 }
 
-/* トースト通知 (2つ目のz-indexを反映) */
-.toast-container {
-	z-index: 2000;
-}
-
+/* トースト通知 */
+.toast-container { z-index: 2000; }
 .toast-custom {
 	background-color: #2ecc71;
 	color: white;
@@ -156,7 +152,7 @@ body {
 	min-width: 240px;
 }
 
-/* PCモード切替用スタイル (1つ目の機能を維持) */
+/* PCモード切替用スタイル */
 #viewSwitcher {
 	background-color: rgba(255, 255, 255, 0.1);
 	border-color: #666;
@@ -165,9 +161,7 @@ body {
 	padding: 4px 8px;
 }
 
-.title-short {
-	display: none;
-}
+.title-short { display: none; }
 
 body.pc-mode-active .row-cols-1 {
 	display: flex !important;
@@ -180,18 +174,9 @@ body.pc-mode-active .col {
 	padding: 0 4px;
 }
 
-body.pc-mode-active .card-img-top {
-	height: 100px !important;
-}
-
-body.pc-mode-active .mobile-hide-on-3col {
-	display: none !important;
-}
-
-body.pc-mode-active .title-full {
-	display: none;
-}
-
+body.pc-mode-active .card-img-top { height: 100px !important; }
+body.pc-mode-active .mobile-hide-on-3col { display: none !important; }
+body.pc-mode-active .title-full { display: none; }
 body.pc-mode-active .title-short {
 	display: block;
 	font-size: 0.8rem !important;
@@ -238,7 +223,7 @@ body.pc-mode-active .title-short {
 				</a>
 				
 				<div class="d-flex flex-wrap justify-content-center gap-2 w-100" style="max-width: 500px;">
-					<a th:href="@{/form}" class="btn btn-custom-green btn-sm px-3 flex-fill">＋ New </a>
+					<a th:href="@{/form}" class="btn btn-custom-green btn-sm px-3 flex-fill">＋ New</a>
 					<a th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3 flex-fill">❤️ Suki_List</a>
 					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3 flex-fill">🌐 Timeline</a>
 					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3 flex-fill">Logout</a>
@@ -293,16 +278,14 @@ body.pc-mode-active .title-short {
 							class="card-img-top" alt="thumbnail">
 						<div class="card-body py-2">
 							<div class="mb-2">
-								<span th:if="${item.category=='1'}" class="badge badge-book">📖
-									Book</span> <span th:if="${item.category=='2'}"
-									class="badge badge-movie">🎬 Movie</span> <span
-									th:if="${item.category=='3'}" class="badge badge-game">🎮
-									Game</span> <span th:if="${item.category=='99'}"
-									class="badge badge-other">✨ Other</span>
+								<span th:if="${item.category=='1'}" class="badge badge-book">📖 Book</span>
+								<span th:if="${item.category=='2'}" class="badge badge-movie">🎬 Movie</span>
+								<span th:if="${item.category=='3'}" class="badge badge-game">🎮 Game</span>
+								<span th:if="${item.category=='99'}" class="badge badge-other">✨ Other</span>
 							</div>
 							<h5 class="card-title fw-bold text-white mb-1">
-								<span class="title-full" th:text="${item.title}"></span> <span
-									class="title-short"
+								<span class="title-full" th:text="${item.title}"></span>
+								<span class="title-short"
 									th:text="${#strings.length(item.title)>12 ? #strings.substring(item.title,0,12)+'..':item.title}"></span>
 							</h5>
 							<div class="mobile-hide-on-3col d-md-block">
@@ -312,14 +295,10 @@ body.pc-mode-active .title-short {
 										th:classappend="${item.score!=null}? 'text-warning':'text-white'"></span>
 								</div>
 								<div class="small mb-2 fw-bold text-secondary-muted">
-									<span th:if="${item.category=='1'}"
-										th:text="'Author: '+${item.creator}"></span> <span
-										th:if="${item.category=='2'}"
-										th:text="'Director: '+${item.creator}"></span> <span
-										th:if="${item.category=='3'}"
-										th:text="'Hardware: '+${item.publisher}"></span> <span
-										th:if="${item.category=='99'}"
-										th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
+									<span th:if="${item.category=='1'}" th:text="'Author: '+${item.creator}"></span>
+									<span th:if="${item.category=='2'}" th:text="'Director: '+${item.creator}"></span>
+									<span th:if="${item.category=='3'}" th:text="'Hardware: '+${item.publisher}"></span>
+									<span th:if="${item.category=='99'}" th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
 								</div>
 								<p class="card-text text-secondary-muted small"
 									th:text="${#strings.length(item.reviewText)>20? #strings.substring(item.reviewText,0,20)+'…':item.reviewText}"></p>
@@ -345,8 +324,7 @@ body.pc-mode-active .title-short {
 					</a>
 				</div>
 				<div class="center-btn-container">
-					<a th:href="@{/form}" class="text-decoration-none"><div
-							class="center-add-btn">＋</div></a>
+					<a th:href="@{/form}" class="text-decoration-none"><div class="center-add-btn">＋</div></a>
 				</div>
 				<div class="nav-item-wrapper">
 					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
@@ -358,13 +336,11 @@ body.pc-mode-active .title-short {
 		</div>
 	</nav>
 
-	<footer
-		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
-	</div>
+	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved.
+	</footer>
 
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
 	// PCモード切替
 	const switcher = document.getElementById('viewSwitcher');
@@ -375,13 +351,13 @@ body.pc-mode-active .title-short {
 		});
 	}
 
-	// ユーザー名更新 (2つ目の安定した処理を採用)
+	// ユーザー名更新
 	document.getElementById("usernameForm").addEventListener("submit",function(e){
 		e.preventDefault();
 		const form = this;
 		const formData = new FormData(form);
 		fetch(form.action,{method:"POST",body:formData})
-		.then(response => response.text()) // 2つ目のコードの工夫を合流
+		.then(response => response.text())
 		.then(()=>{ 
 			const toastElement = document.getElementById("usernameToast");
 			const toast = new bootstrap.Toast(toastElement,{delay:3000}); 
