@@ -434,16 +434,30 @@ th:if="${item.score == null}">
 </div>
 
 		<div class="empty-container" th:if="${#lists.isEmpty(likeList)}">
-			<div class="fs-1 mb-3 text-secondary" style="opacity: 0.5;">
-				<i class="far fa-heart"></i>
-			</div>
-			<p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
-			<div class="mt-4">
-				<a th:href="@{/timeline}" class="btn btn-outline-info"> 
-                    <i class="fas fa-search me-2"></i>タイムラインで探す
-				</a>
-			</div>
-		</div>
+
+    <div class="fs-1 mb-3 text-secondary" style="opacity: 0.5;">
+        <i class="far fa-heart"></i>
+    </div>
+
+    <!-- 本人 -->
+    <div th:if="${session.user != null and session.user.id == user.id}">
+        <p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
+
+        <div class="mt-4">
+            <a th:href="@{/timeline}" class="btn btn-outline-info">
+                <i class="fas fa-search me-2"></i>タイムラインで探す
+            </a>
+        </div>
+    </div>
+
+    <!-- 他人 -->
+    <div th:if="${session.user == null or session.user.id != user.id}">
+        <p class="text-secondary fs-5">
+            <span th:text="${user.username}"></span>さんはまだいいねしたものがありません。
+        </p>
+    </div>
+
+</div>
 
 
 
