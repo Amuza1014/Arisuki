@@ -182,7 +182,7 @@ body {
         ? '/images/default-icon.png'
         : session.user.iconPath}"
      class="rounded-circle"
-     style="width:40px;height:40px;">
+     style="width:30px;height:30px;">
 </a>
 
 			<div class="d-none d-md-flex flex-column gap-2">
@@ -247,6 +247,7 @@ body {
 
 			<div class="row row-cols-1 row-cols-md-3 g-4">
 				<div class="col" th:each="item : ${itemList}">
+				
 					<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
 						<div class="card h-100 shadow-sm">
 							<img
