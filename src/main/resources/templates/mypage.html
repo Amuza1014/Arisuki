@@ -213,6 +213,7 @@ body.pc-mode-active .badge {
 	}
 }
 </style>
+
 </head>
 
 <body>
@@ -283,6 +284,7 @@ body.pc-mode-active .badge {
 
 			<div class="row row-cols-1 row-cols-md-3 g-4" id="itemGrid">
 				<div class="col" th:each="item : ${itemList}">
+				
 					<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
 						<div class="card h-100 shadow-sm">
 							<img
