@@ -132,6 +132,20 @@ color:#9e9e9e;
 	color: #9e9e9e !important;
 }
 
+.profile-header{
+width:100%;
+height:220px;
+overflow:hidden;
+border-radius:12px;
+margin-bottom:60px;
+}
+
+.profile-header-img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
 </style>
 </head>
 
@@ -142,13 +156,31 @@ color:#9e9e9e;
 <!-- ヘッダー -->
 <div class="d-flex justify-content-between align-items-center mb-4">
 
-<div>
-<h2 class="fw-bold text-white mb-0">Profile</h2>
-<p class="text-secondary-muted mb-0">ユーザープロフィール</p>
+<div class="profile-header">
+
+    <!-- ファイルアップロードフォーム（隠す） -->
+    <form th:if="${session.user != null and session.user.id == user.id}" 
+          th:action="@{/upload-header}" method="post" enctype="multipart/form-data" id="headerForm">
+        <input type="file" name="headerFile" id="headerFile" style="display:none" accept="image/*" onchange="this.form.submit()">
+    </form>
+
+    <!-- 画像表示 -->
+    <img th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}" 
+         class="profile-header-img"
+         th:if="${session.user == null or session.user.id != user.id}" 
+         alt="Header Image">
+
+    <!-- 本人用クリック可能画像 -->
+    <img th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}" 
+         class="profile-header-img" 
+         th:if="${session.user != null and session.user.id == user.id}"
+         style="cursor:pointer;"
+         onclick="document.getElementById('headerFile').click()"
+         alt="Header Image">
 </div>
 
-</div>
 
+</div>
 
 <!-- プロフィール -->
 <div class="profile-box mb-5 text-center">
@@ -161,7 +193,7 @@ style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
 <h3 class="mt-3" th:text="${user.displayName}"></h3>
 
 <!-- 自分だけアイコン変更 -->
-<div th:if="${session.user.id == user.id}" class="mt-3">
+<div th:if="${session.user != null and session.user.id == user.id}" class="mt-3">
 
 <form th:action="@{/upload-icon}" method="post" enctype="multipart/form-data">
 
@@ -402,16 +434,30 @@ th:if="${item.score == null}">
 </div>
 
 		<div class="empty-container" th:if="${#lists.isEmpty(likeList)}">
-			<div class="fs-1 mb-3 text-secondary" style="opacity: 0.5;">
-				<i class="far fa-heart"></i>
-			</div>
-			<p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
-			<div class="mt-4">
-				<a th:href="@{/timeline}" class="btn btn-outline-info"> 
-                    <i class="fas fa-search me-2"></i>タイムラインで探す
-				</a>
-			</div>
-		</div>
+
+    <div class="fs-1 mb-3 text-secondary" style="opacity: 0.5;">
+        <i class="far fa-heart"></i>
+    </div>
+
+    <!-- 本人 -->
+    <div th:if="${session.user != null and session.user.id == user.id}">
+        <p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
+
+        <div class="mt-4">
+            <a th:href="@{/timeline}" class="btn btn-outline-info">
+                <i class="fas fa-search me-2"></i>タイムラインで探す
+            </a>
+        </div>
+    </div>
+
+    <!-- 他人 -->
+    <div th:if="${session.user == null or session.user.id != user.id}">
+        <p class="text-secondary fs-5">
+            <span th:text="${user.username}"></span>さんはまだいいねしたものがありません。
+        </p>
+    </div>
+
+</div>
 
 
 
@@ -419,14 +465,14 @@ th:if="${item.score == null}">
 <div class="text-center mt-5">
 
 <!-- 本人 -->
-<a th:if="${session.user.id == user.id}"
+<a th:if="${session.user != null and session.user.id == user.id}"
 th:href="@{/mypage}"
 class="btn btn-custom-green px-4">
 Collectionsに戻る
 </a>
 
 <!-- 他人 -->
-<a th:if="${session.user.id != user.id}"
+<a th:if="${session.user == null or session.user.id != user.id}"
 th:href="@{/timeline}"
 class="btn btn-outline-light px-4">
 Timelineに戻る

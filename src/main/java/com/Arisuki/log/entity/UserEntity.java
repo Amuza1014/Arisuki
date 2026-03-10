@@ -35,6 +35,9 @@ public class UserEntity {
     
     // アイコン画像
     private String iconPath;
+    
+    // ヘッダー画像
+    private String headerImagePath;
 
     // 権限（一般ユーザー：ROLE_USER, 管理者：ROLE_ADMINなど）
     private String role;
