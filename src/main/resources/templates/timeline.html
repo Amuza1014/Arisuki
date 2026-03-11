@@ -75,10 +75,21 @@ body {
 	font-weight: bold;
 }
 
-.badge-book { background-color: rgb(0, 128, 255); }
-.badge-movie { background-color: #d35400; }
-.badge-game { background-color: #2ecc71; }
-.badge-other { background-color: #6c757d; }
+.badge-book {
+	background-color: rgb(0, 128, 255);
+}
+
+.badge-movie {
+	background-color: #d35400;
+}
+
+.badge-game {
+	background-color: #2ecc71;
+}
+
+.badge-other {
+	background-color: #6c757d;
+}
 
 .text-color-pink {
 	color: #ff79c6;
@@ -120,6 +131,12 @@ body {
 	border: 4px solid #121212;
 }
 
+/* 検索ボックスのプレースホルダ（ヒント文字）を薄グレーに */
+.form-control::placeholder {
+    color: #b0b0b0 !important;
+    opacity: 1; /* Firefox対策 */
+}
+
 #viewSwitcher {
 	background-color: rgba(255, 255, 255, 0.1);
 	border-color: #666;
@@ -130,7 +147,7 @@ body {
 }
 
 /* --- スマホ時の3列表示（PC表示モード）の制御 --- */
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
 	body.pc-mode-active .row-cols-1 {
 		display: flex !important;
 		flex-wrap: wrap !important;
@@ -143,12 +160,11 @@ body {
 	body.pc-mode-active .card-img-top {
 		height: 100px !important;
 	}
-	
+
 	/* サムネイル・タイトル・バッジ以外を非表示にするクラス */
 	body.pc-mode-active .mobile-hide-on-3col {
 		display: none !important;
 	}
-	
 	body.pc-mode-active .card-title {
 		font-size: 0.75rem !important;
 		line-height: 1.2;
@@ -158,12 +174,10 @@ body {
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-
 	body.pc-mode-active .badge {
 		font-size: 0.6rem !important;
 		padding: 0.2em 0.4em !important;
 	}
-
 	.navbar-mobile {
 		height: 100px !important;
 		padding-bottom: 20px !important;
@@ -188,9 +202,11 @@ body {
 		</div>
 
 		<div class="card p-3 mb-4">
-			<form th:action="@{/timeline}" method="get" class="row g-2 align-items-center">
+			<form th:action="@{/timeline}" method="get"
+				class="row g-2 align-items-center">
 				<div class="col-md-3">
-					<select name="category" class="form-select bg-dark text-white border-secondary">
+					<select name="category"
+						class="form-select bg-dark text-white border-secondary">
 						<option value="">すべてのカテゴリ</option>
 						<option value="1">📖 Book</option>
 						<option value="2">🎬 Movie</option>
@@ -200,7 +216,8 @@ body {
 				</div>
 				<div class="col-md-7">
 					<input type="text" name="keyword" th:value="${keyword}"
-						class="form-control bg-dark text-white border-secondary" placeholder="キーワードで検索">
+						class="form-control bg-dark text-white border-secondary"
+						placeholder="キーワードで検索">
 				</div>
 				<div class="col-md-2 d-grid">
 					<button type="submit" class="btn btn-custom-green">検索</button>
@@ -209,31 +226,39 @@ body {
 		</div>
 
 		<div class="d-flex justify-content-end mb-4 gap-2">
-			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">❤️ Suki_List</a>
-			<a th:href="@{/mypage}" class="btn btn-outline-light btn-sm px-3">📚 Collections</a>
+			<a th:href="@{/mylikes}" class="btn btn-outline-danger btn-sm px-3">❤️
+				Suki_List</a> <a th:href="@{/mypage}"
+				class="btn btn-outline-light btn-sm px-3">📚 Collections</a>
 		</div>
 
 		<div class="row row-cols-1 row-cols-md-3 g-4" id="itemGrid">
 			<div class="col" th:each="item : ${sukiList}">
-				<a th:href="${session.user?.id == item.user?.id} ? @{/detail/{id}(id=${item.id})} : @{/view/{id}(id=${item.id})}"
+				<a
+					th:href="${session.user?.id == item.user?.id} ? @{/detail/{id}(id=${item.id})} : @{/view/{id}(id=${item.id})}"
 					class="card-link">
 					<div class="card h-100 shadow-sm">
-						<img th:src="${#strings.isEmpty(item.thumbnailUrl) ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' : item.thumbnailUrl}"
+						<img
+							th:src="${#strings.isEmpty(item.thumbnailUrl) ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' : item.thumbnailUrl}"
 							class="card-img-top">
 
 						<div class="card-body py-2">
-							<div class="mb-2 d-flex justify-content-between align-items-center">
+							<div
+								class="mb-2 d-flex justify-content-between align-items-center">
 								<div>
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
-									<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
-									<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
-									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
+									<span th:if="${item.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${item.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${item.category == '3'}" class="badge badge-game">🎮
+										Game</span> <span th:if="${item.category == '99'}"
+										class="badge badge-other">✨ Other</span>
 								</div>
 								<div class="d-flex align-items-center mobile-hide-on-3col">
-									<img th:src="${#strings.isEmpty(item.user.iconPath) ? '/images/default-icon.png' : item.user.iconPath}"
+									<img
+										th:src="${#strings.isEmpty(item.user.iconPath) ? '/images/default-icon.png' : item.user.iconPath}"
 										style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
 									<p class="text-color-pink mb-0 small">
-										<span class="text-white" th:text="${#strings.abbreviate(item.user.username,10)}"></span>
+										<span class="text-white"
+											th:text="${#strings.abbreviate(item.user.username,10)}"></span>
 									</p>
 								</div>
 							</div>
@@ -242,21 +267,28 @@ body {
 
 							<div class="mobile-hide-on-3col">
 								<div class="small mb-2 fw-bold text-secondary">
-									<span th:if="${item.category == '1'}" th:text="'Author: '+${item.creator}"></span>
-									<span th:if="${item.category == '2'}" th:text="'Director: '+${item.creator}"></span>
-									<span th:if="${item.category == '3'}" th:text="'Hardware: '+${item.publisher}"></span>
-									<span th:if="${item.category == '99'}" th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
+									<span th:if="${item.category == '1'}"
+										th:text="'Author: '+${item.creator}"></span> <span
+										th:if="${item.category == '2'}"
+										th:text="'Director: '+${item.creator}"></span> <span
+										th:if="${item.category == '3'}"
+										th:text="'Hardware: '+${item.publisher}"></span> <span
+										th:if="${item.category == '99'}"
+										th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
 								</div>
 
 								<div class="mb-2 d-flex align-items-center gap-3">
-									<span><span style="color: #ff4757;">❤️</span> <span
-										th:text="${item.likeCount!=null?item.likeCount:0}" class="ms-1 fw-bold">0</span></span>
-									<span><span style="color: #1e90ff;">💬</span> <span
-										th:text="${item.commentCount!=null?item.commentCount:0}" class="ms-1 fw-bold">0</span></span>
-									<span class="text-warning fw-bold small" th:if="${item.score!=null}" th:text="'★ '+${item.score}"></span>
+									<span> <span style="color: #ff4757;">❤️</span> <span
+										th:text="${item.likeCount!=null?item.likeCount:0}"
+										class="ms-1 fw-bold text-white">0</span>
+									</span> <span> <span style="color: #1e90ff;">💬</span> <span
+										th:text="${item.commentCount!=null?item.commentCount:0}"
+										class="ms-1 fw-bold text-white">0</span>
+									</span> <span class="text-warning fw-bold small"
+										th:if="${item.score!=null}" th:text="'★ '+${item.score}"></span>
 								</div>
 
-								<p class="card-text small text-secondary-muted text-truncate" th:text="${item.reviewText}"></p>
+								<p class="card-text small text-white-50 text-truncate" th:text="${item.reviewText}"></p>
 							</div>
 						</div>
 					</div>
@@ -289,17 +321,19 @@ body {
 		</div>
 	</nav>
 
-	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
-		&copy; 2026 Cチーム(仮) All Rights Reserved.
-	</footer>
+	<footer
+		style="text-align: center; font-size: 0.8em; color: #666; padding: 1em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
 		const switcher = document.getElementById('viewSwitcher');
 		if (switcher) {
 			switcher.addEventListener('click', function() {
 				document.body.classList.toggle('pc-mode-active');
-				this.textContent = document.body.classList.contains('pc-mode-active') ? '通常表示' : 'PC表示';
+				this.textContent = document.body.classList
+						.contains('pc-mode-active') ? '通常表示' : 'PC表示';
 			});
 		}
 	</script>
