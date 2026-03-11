@@ -257,10 +257,14 @@ body {
 										th:text="${post.subAttribute} + ' / ' + ${post.publisher}"></span>
 								</div>
 								<div class="mb-2 d-flex align-items-center">
-									<span class="me-3 small">❤️ <span
-										th:text="${post.likeCount ?: 0}" class="ms-1"></span></span> <span
-										class="small">💬 <span
-										th:text="${post.commentCount ?: 0}" class="ms-1"></span></span>
+									<div class="mb-2 d-flex align-items-center">
+										<span class="me-3 small">❤️ <span
+											th:text="${post.likeCount ?: 0}"
+											class="ms-1 text-white fw-bold"></span></span> <span class="small">💬
+											<span th:text="${post.commentCount ?: 0}"
+											class="ms-1 text-white fw-bold"></span>
+										</span>
+									</div>
 								</div>
 								<div class="mb-2">
 									<span class="text-warning fw-bold small"
