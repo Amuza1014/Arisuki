@@ -110,7 +110,7 @@ body {
 			<p class="text-center text-secondary small">お気に入りの作品を記録しよう</p>
 
 			<form th:action="@{/complete}" method="post"
-				enctype="multipart/form-data">
+				enctype="multipart/form-data" id="sukiForm">
 
 				<div class="mb-4">
 					<label for="category" class="form-label fw-bold small">CATEGORY</label>
@@ -240,6 +240,34 @@ body {
     }
     // ページ読み込み時にも実行
     document.addEventListener("DOMContentLoaded", toggleFields);
+
+    // 空白のみの入力を防ぐバリデーションを追加
+    document.getElementById("sukiForm").addEventListener("submit", function(event) {
+        const title = document.getElementById("title").value.trim();
+        const review = document.getElementById("reviewText").value.trim();
+        const category = document.getElementById("category").value;
+
+        // カテゴリ未選択チェック（念のため）
+        if (!category) {
+            alert("カテゴリーを選択してください。");
+            event.preventDefault();
+            return;
+        }
+
+        // タイトルの空白チェック
+        if (title.length === 0) {
+            alert("タイトルを入力してください（スペースのみは不可です）。");
+            event.preventDefault();
+            return;
+        }
+
+        // レビューの空白チェック
+        if (review.length === 0) {
+            alert("レビュー内容を入力してください（スペースのみは不可です）。");
+            event.preventDefault();
+            return;
+        }
+    });
     </script>
 </body>
 </html>
