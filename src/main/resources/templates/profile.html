@@ -2,81 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - ArrayList&lt;Suki&gt;</title>
 
 <link
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-rel="stylesheet">
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
 
 <style>
-
-body{
-background:#121212;
-color:#e0e0e0;
-font-family:'Helvetica Neue',Arial,sans-serif;
-padding-bottom:100px;
+body {
+	background: #121212;
+	color: #e0e0e0;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	padding-bottom: 100px;
 }
 
-.profile-box{
-background:#1e1e1e;
-border:1px solid #333;
-border-radius:12px;
-padding:30px;
-}
-
-.card{
-background:#1e1e1e;
-border:1px solid #333;
-border-radius:12px;
-}
-
-.card-img-top{
-height:200px;
-object-fit:cover;
-}
-
-.btn-custom-green{
-background:#2ecc71;
-color:white;
-border:none;
-font-weight:bold;
-}
-
-.btn-custom-green:hover{
-background:#27ae60;
-}
-
-.text-secondary-muted{
-color:#9e9e9e;
-}
-
-.card-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-.card-link:hover {
-    text-decoration: none;
-    color: inherit;
-}
-
-.badge {
-	padding: 5px 12px;
-	border-radius: 20px;
-	font-size: 0.75rem;
-	font-weight: bold;
-}
-
-.badge-book { background-color: rgb(0, 128, 255); }
-.badge-movie { background-color: #d35400; }
-.badge-game { background-color: #27ae60; }
-/* ★追加：その他バッジ */
-.badge-other { background-color: #7f8c8d; }
-
-.text-secondary-muted {
-	color: #9e9e9e !important;
+.profile-box {
+	background: #1e1e1e;
+	border: 1px solid #333;
+	border-radius: 12px;
+	padding: 30px;
 }
 
 .card {
@@ -104,9 +51,52 @@ color:#9e9e9e;
 	filter: brightness(1.0);
 }
 
+.btn-custom-green {
+	background: #2ecc71;
+	color: white;
+	border: none;
+	font-weight: bold;
+}
+
+.btn-custom-green:hover {
+	background: #27ae60;
+}
+
 .card-link {
 	text-decoration: none;
 	color: inherit;
+}
+
+.card-link:hover {
+	text-decoration: none;
+	color: inherit;
+}
+
+.badge {
+	padding: 5px 12px;
+	border-radius: 20px;
+	font-size: 0.75rem;
+	font-weight: bold;
+}
+
+.badge-book {
+	background-color: rgb(0, 128, 255);
+}
+
+.badge-movie {
+	background-color: #d35400;
+}
+
+.badge-game {
+	background-color: #27ae60;
+}
+
+.badge-other {
+	background-color: #6c757d;
+}
+
+.text-secondary-muted {
+	color: #9e9e9e !important;
 }
 
 .card-title {
@@ -114,358 +104,259 @@ color:#9e9e9e;
 	font-weight: bold;
 }
 
-.card-text{
-	color: white;
-}
-
 .text-suki {
-    color: #ff4757; 
-    text-shadow: 0 5px 5px rgba(255, 121, 198, 0.3);
+	color: #ff4757;
+	text-shadow: 0 5px 5px rgba(255, 121, 198, 0.3);
 }
 
-.badge-other {
-	background-color: #6c757d;
-	padding: 0.4em 0.8em;
+.profile-header {
+	width: 100%;
+	height: 220px;
+	overflow: hidden;
+	border-radius: 12px;
+	margin-bottom: 60px;
 }
 
-.text-secondary-muted {
-	color: #9e9e9e !important;
+.profile-header-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
-.profile-header{
-width:100%;
-height:220px;
-overflow:hidden;
-border-radius:12px;
-margin-bottom:60px;
+/* ★Collections画面から移植したボタンデザイン */
+#viewSwitcher {
+	background-color: rgba(255, 255, 255, 0.1);
+	border: 1px solid #666;
+	color: #ccc;
+	font-size: 0.75rem;
+	padding: 4px 12px;
+	border-radius: 20px;
 }
 
-.profile-header-img{
-width:100%;
-height:100%;
-object-fit:cover;
+/* ★PCモード（3列）時の制御スタイル */
+@media ( max-width : 767px) {
+	body.pc-mode-active .row-cols-1 {
+		display: flex !important;
+		flex-wrap: wrap !important;
+	}
+	body.pc-mode-active .col {
+		flex: 0 0 33.3333% !important;
+		max-width: 33.3333% !important;
+		padding: 0 4px !important;
+	}
+	body.pc-mode-active .card-img-top {
+		height: 90px !important;
+	}
+	body.pc-mode-active .card-title {
+		font-size: 0.7rem !important;
+		line-height: 1.2;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	body.pc-mode-active .mobile-hide-on-3col {
+		display: none !important;
+	}
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="container mt-5 mb-5">
-
-<!-- ヘッダー -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-
-<div class="profile-header">
-
-    <!-- ファイルアップロードフォーム（隠す） -->
-    <form th:if="${session.user != null and session.user.id == user.id}" 
-          th:action="@{/upload-header}" method="post" enctype="multipart/form-data" id="headerForm">
-        <input type="file" name="headerFile" id="headerFile" style="display:none" accept="image/*" onchange="this.form.submit()">
-    </form>
-
-    <!-- 画像表示 -->
-    <img th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}" 
-         class="profile-header-img"
-         th:if="${session.user == null or session.user.id != user.id}" 
-         alt="Header Image">
-
-    <!-- 本人用クリック可能画像 -->
-    <img th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}" 
-         class="profile-header-img" 
-         th:if="${session.user != null and session.user.id == user.id}"
-         style="cursor:pointer;"
-         onclick="document.getElementById('headerFile').click()"
-         alt="Header Image">
-</div>
-
-
-</div>
-
-<!-- プロフィール -->
-<div class="profile-box mb-5 text-center">
-
-<img th:src="${#strings.isEmpty(user.iconPath) 
-? '/images/default-icon.png'
-: user.iconPath}"
-style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-
-<h3 class="mt-3" th:text="${user.displayName}"></h3>
-
-<!-- 自分だけアイコン変更 -->
-<div th:if="${session.user != null and session.user.id == user.id}" class="mt-3">
-
-<form th:action="@{/upload-icon}" method="post" enctype="multipart/form-data">
-
-<input type="file"
-id="iconFile"
-name="iconFile"
-accept="image/*"
-style="display:none"
-onchange="this.form.submit()">
-
-<button type="button"
-class="btn btn-outline-light"
-onclick="document.getElementById('iconFile').click()">
-アイコン変更
-</button>
-
-</form>
-
-</div>
-
-</div>
-
-
-<!-- 投稿一覧 -->
-<h4 class="fw-bold mb-3">Posts</h4>
-
-<div class="row row-cols-1 row-cols-md-3 g-4">
-
-<div class="col" th:each="post : ${posts}">
-
-  <a th:href="${session.user != null and session.user.id == post.user.id}
- ? @{/detail/{id}(id=${post.id})}
- : @{/view/{id}(id=${post.id})}"
- class="card-link">
-
-
-<div class="card h-100">
-
-    <!-- サムネ -->
-<img th:if="${post.thumbnailUrl != null}"
-     th:src="${post.thumbnailUrl}"
-     class="card-img-top">
-
-<div th:if="${post.thumbnailUrl == null}"
-     class="card-img-top d-flex align-items-center justify-content-center"
-     style="background:#252525;height:200px;">
-    <span class="text-secondary">No Image</span>
-</div>
-
-<div class="card-body">
-
-<!-- カテゴリ -->
-<div class="mb-2 d-flex justify-content-between align-items-center">
-
-<div>
-<span th:if="${post.category == '1'}" class="badge badge-book">📖 Book</span>
-<span th:if="${post.category == '2'}" class="badge badge-movie">🎬 Movie</span>
-<span th:if="${post.category == '3'}" class="badge badge-game">🎮 Game</span>
-<span th:if="${post.category == '99'}" class="badge badge-other">✨ Other</span>
-</div>
-
-<div class="d-flex align-items-center">
-
-<img th:src="${#strings.isEmpty(post.user.iconPath) 
-? '/images/default-icon.png' 
-: post.user.iconPath}"
-style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:6px;">
-
-<p class="mb-0 small text-secondary">
-<span th:text="${#strings.abbreviate(post.user.username,20)}"></span>
-</p>
-
-</div>
-
-</div>
-
-<!-- タイトル -->
-<h5 class="card-title fw-bold mb-2" th:text="${post.title}"></h5>
-
-<!-- 作者 -->
-<div class="small mb-3 fw-bold text-secondary">
-
-<span th:if="${post.category == '1'}"
-th:text="'Author: ' + ${post.creator}"></span>
-
-<span th:if="${post.category == '2'}"
-th:text="'Director: ' + ${post.creator}"></span>
-
-<span th:if="${post.category == '3'}"
-th:text="'Hardware: ' + ${post.publisher}"></span>
-
-<span th:if="${post.category == '99'}"
-th:text="${post.subAttribute} + ' / ' + ${post.publisher}"></span>
-
-</div>
-
-<!-- いいね コメント -->
-<div class="mb-3 d-flex align-items-center">
-
-<span class="me-3">
-<span style="color:#ff4757;">❤️</span>
-<span th:text="${post.likeCount ?: 0}" class="ms-1 fw-bold text-secondary-muted"></span>
-</span>
-
-<span>
-<span style="color:#1e90ff;">💬</span>
-<span th:text="${post.commentCount ?: 0}" class="ms-1 fw-bold text-secondary-muted" ></span>
-</span>
-
-</div>
-
-<!-- スコア -->
-<div class="mb-2">
-
-<span class="text-warning fw-bold"
-th:if="${post.score != null}"
-th:text="'★ ' + ${post.score}"></span>
-
-<span class="text-secondary small"
-th:if="${post.score == null}">
-未評価
-</span>
-
-</div>
-
-<p class="card-text text-secondary-muted small text-truncate"
-   th:text="${post.reviewText}">
-</p>
-
-</div>
-
-</div>
-</a>
-
-</div>
-
-</div>
-
-		
-
-<hr class="border-secondary mb-5">
-
-<h2 class="fw-bold mb-0 text-white">
-                    <span class="icon-heart"><i class="fas fa-heart"></i></span>
-                    <span class="text-suki">Suki</span>_List
-                </h2>
-				<p class="text-secondary-muted mb-0">保存したお気に入り一覧</p>
-			
-
-		<div class="row row-cols-1 row-cols-md-3 g-4" th:if="${not #lists.isEmpty(likeList)}">
-
-<div class="col" th:each="item : ${likeList}">
-
-<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
-
-<div class="card h-100">
-
-<img th:if="${item.thumbnailUrl != null}"
-     th:src="${item.thumbnailUrl}"
-     class="card-img-top">
-
-<div th:if="${item.thumbnailUrl == null}"
-     class="card-img-top d-flex align-items-center justify-content-center"
-     style="background:#252525;height:200px;">
-    <span class="text-secondary">No Image</span>
-</div>
-
-<div class="card-body">
-
-<div class="mb-2">
-<span th:if="${item.category == '1'}" class="badge badge-book">📖 Book</span>
-<span th:if="${item.category == '2'}" class="badge badge-movie">🎬 Movie</span>
-<span th:if="${item.category == '3'}" class="badge badge-game">🎮 Game</span>
-<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
-</div>
-
-<h5 class="card-title fw-bold mb-2" th:text="${item.title}"></h5>
-
-<div class="small mb-3 fw-bold text-secondary-muted">
-
-<span th:if="${item.category == '1'}"
-th:text="'Author: ' + ${item.creator}"></span>
-
-<span th:if="${item.category == '2'}"
-th:text="'Director: ' + ${item.creator}"></span>
-
-<span th:if="${item.category == '3'}"
-th:text="'Hardware: ' + ${item.publisher}"></span>
-
-<span th:if="${item.category == '99'}"
-th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
-
-</div>
-
-<p class="card-text small text-truncate"
-th:text="${item.reviewText}">
-</p>
-
-<!-- いいね コメント -->
-<div class="mb-3 d-flex align-items-center">
-
-<span class="me-3">
-<span style="color:#ff4757;">❤️</span>
-<span th:text="${item.likeCount ?: 0}" class="ms-1 fw-bold text-secondary-muted"></span>
-</span>
-
-<span>
-<span style="color:#1e90ff;">💬</span>
-<span th:text="${item.commentCount ?: 0}" class="ms-1 fw-bold text-secondary-muted"></span>
-</span>
-
-</div>
-
-<!-- スコア -->
-<div class="mb-2">
-
-<span class="text-warning fw-bold"
-th:if="${item.score != null}"
-th:text="'★ ' + ${item.score}"></span>
-
-<span class="text-secondary small"
-th:if="${item.score == null}">
-未評価
-</span>
-
-</div>
-
-<p class="card-text text-secondary-muted small text-truncate"
-   th:text="${item.reviewText}">
-</p>
-
-</div>
-</div>
-
-</a>
-
-</div>
-</div>
-
-		<div class="empty-container" th:if="${#lists.isEmpty(likeList)}">
-			<div class="fs-1 mb-3 text-secondary" style="opacity: 0.5;">
-				<i class="far fa-heart"></i>
+	<div class="container mt-5 mb-5">
+
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<div class="profile-header">
+				<form th:if="${session.user != null and session.user.id == user.id}"
+					th:action="@{/upload-header}" method="post"
+					enctype="multipart/form-data" id="headerForm">
+					<input type="file" name="headerFile" id="headerFile"
+						style="display: none" accept="image/*"
+						onchange="this.form.submit()">
+				</form>
+				<img
+					th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}"
+					class="profile-header-img"
+					th:if="${session.user == null or session.user.id != user.id}"
+					alt="Header Image"> <img
+					th:src="${#strings.isEmpty(user.headerImagePath) ? '/images/noimage-head.png' : user.headerImagePath}"
+					class="profile-header-img"
+					th:if="${session.user != null and session.user.id == user.id}"
+					style="cursor: pointer;"
+					onclick="document.getElementById('headerFile').click()"
+					alt="Header Image">
 			</div>
-			<p class="text-secondary fs-5">まだ「いいね」した作品がありません。</p>
-			<div class="mt-4">
-				<a th:href="@{/timeline}" class="btn btn-outline-info"> 
-                    <i class="fas fa-search me-2"></i>タイムラインで探す
+		</div>
+
+		<div class="profile-box mb-5 text-center">
+			<img
+				th:src="${#strings.isEmpty(user.iconPath) ? '/images/default-icon.png' : user.iconPath}"
+				style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+			<h3 class="mt-3" th:text="${user.displayName}"></h3>
+			<div th:if="${session.user != null and session.user.id == user.id}"
+				class="mt-3">
+				<form th:action="@{/upload-icon}" method="post"
+					enctype="multipart/form-data">
+					<input type="file" id="iconFile" name="iconFile" accept="image/*"
+						style="display: none" onchange="this.form.submit()">
+					<button type="button" class="btn btn-outline-light"
+						onclick="document.getElementById('iconFile').click()">アイコン変更</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-start align-items-center mb-3">
+			<h4 class="fw-bold mb-0">Posts</h4>
+			<button id="viewSwitcher" class="btn d-md-none ms-3">PC表示</button>
+		</div>
+
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div class="col" th:each="post : ${posts}">
+				<a
+					th:href="${session.user != null and session.user.id == post.user.id} ? @{/detail/{id}(id=${post.id})} : @{/view/{id}(id=${post.id})}"
+					class="card-link">
+					<div class="card h-100">
+						<img th:if="${post.thumbnailUrl != null}"
+							th:src="${post.thumbnailUrl}" class="card-img-top">
+						<div th:if="${post.thumbnailUrl == null}"
+							class="card-img-top d-flex align-items-center justify-content-center"
+							style="background: #252525; height: 200px;">
+							<span class="text-secondary">No Image</span>
+						</div>
+
+						<div class="card-body py-2">
+							<div
+								class="mb-2 d-flex justify-content-between align-items-center">
+								<div>
+									<span th:if="${post.category == '1'}" class="badge badge-book">📖
+										Book</span> <span th:if="${post.category == '2'}"
+										class="badge badge-movie">🎬 Movie</span> <span
+										th:if="${post.category == '3'}" class="badge badge-game">🎮
+										Game</span> <span th:if="${post.category == '99'}"
+										class="badge badge-other">✨ Other</span>
+								</div>
+								<div class="d-flex align-items-center mobile-hide-on-3col">
+									<img
+										th:src="${#strings.isEmpty(post.user.iconPath) ? '/images/default-icon.png' : post.user.iconPath}"
+										style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+								</div>
+							</div>
+
+							<h5 class="card-title fw-bold" th:text="${post.title}"></h5>
+
+							<div class="mobile-hide-on-3col">
+								<div class="small mb-2 fw-bold text-secondary">
+									<span th:if="${post.category == '1'}"
+										th:text="'Author: ' + ${post.creator}"></span> <span
+										th:if="${post.category == '2'}"
+										th:text="'Director: ' + ${post.creator}"></span> <span
+										th:if="${post.category == '3'}"
+										th:text="'Hardware: ' + ${post.publisher}"></span> <span
+										th:if="${post.category == '99'}"
+										th:text="${post.subAttribute} + ' / ' + ${post.publisher}"></span>
+								</div>
+								<div class="mb-2 d-flex align-items-center">
+									<div class="mb-2 d-flex align-items-center">
+										<span class="me-3 small">❤️ <span
+											th:text="${post.likeCount ?: 0}"
+											class="ms-1 text-white fw-bold"></span></span> <span class="small">💬
+											<span th:text="${post.commentCount ?: 0}"
+											class="ms-1 text-white fw-bold"></span>
+										</span>
+									</div>
+								</div>
+								<div class="mb-2">
+									<span class="text-warning fw-bold small"
+										th:if="${post.score != null}" th:text="'★ ' + ${post.score}"></span>
+								</div>
+								<p class="card-text text-secondary-muted small text-truncate"
+									th:text="${post.reviewText}"></p>
+							</div>
+						</div>
+					</div>
 				</a>
 			</div>
 		</div>
 
+		<hr class="border-secondary mb-5">
 
+		<h2 class="fw-bold mb-0 text-white">
+			<span class="icon-heart"><i class="fas fa-heart"></i></span> <span
+				class="text-suki">Suki</span>_List
+		</h2>
+		<p class="text-secondary-muted mb-4 small">保存したお気に入り一覧</p>
 
-<!-- 戻るボタン -->
-<div class="text-center mt-5">
+		<div class="row row-cols-1 row-cols-md-3 g-4"
+			th:if="${not #lists.isEmpty(likeList)}">
+			<div class="col" th:each="item : ${likeList}">
+				<a th:href="@{/view/{id}(id=${item.id})}" class="card-link">
+					<div class="card h-100">
+						<img th:if="${item.thumbnailUrl != null}"
+							th:src="${item.thumbnailUrl}" class="card-img-top">
+						<div th:if="${item.thumbnailUrl == null}"
+							class="card-img-top d-flex align-items-center justify-content-center"
+							style="background: #252525; height: 200px;">
+							<span class="text-secondary">No Image</span>
+						</div>
 
-<!-- 本人 -->
-<a th:if="${session.user != null and session.user.id == user.id}"
-th:href="@{/mypage}"
-class="btn btn-custom-green px-4">
-Collectionsに戻る
-</a>
+						<div class="card-body py-2">
+							<div class="mb-2">
+								<span th:if="${item.category == '1'}" class="badge badge-book">📖
+									Book</span> <span th:if="${item.category == '2'}"
+									class="badge badge-movie">🎬 Movie</span> <span
+									th:if="${item.category == '3'}" class="badge badge-game">🎮
+									Game</span> <span th:if="${item.category == '99'}"
+									class="badge badge-other">✨ Other</span>
+							</div>
 
-<!-- 他人 -->
-<a th:if="${session.user == null or session.user.id != user.id}"
-th:href="@{/timeline}"
-class="btn btn-outline-light px-4">
-Timelineに戻る
-</a>
+							<h5 class="card-title fw-bold" th:text="${item.title}"></h5>
 
-</div>
-</div>
+							<div class="mobile-hide-on-3col">
+								<div class="small mb-2 fw-bold text-secondary-muted">
+									<span th:if="${item.category == '1'}"
+										th:text="'Author: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '2'}"
+										th:text="'Director: ' + ${item.creator}"></span> <span
+										th:if="${item.category == '3'}"
+										th:text="'Hardware: ' + ${item.publisher}"></span> <span
+										th:if="${item.category == '99'}"
+										th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
+								</div>
+								<div class="mb-2">
+									<span class="text-warning fw-bold small"
+										th:if="${item.score != null}" th:text="'★ ' + ${item.score}"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
 
+		<div class="text-center mt-5">
+			<a th:if="${session.user != null and session.user.id == user.id}"
+				th:href="@{/mypage}" class="btn btn-custom-green px-4">Collectionsに戻る</a>
+			<a th:if="${session.user == null or session.user.id != user.id}"
+				th:href="@{/timeline}" class="btn btn-outline-light px-4">Timelineに戻る</a>
+		</div>
+	</div>
+
+	<footer
+		style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const switcher = document.getElementById('viewSwitcher');
+		if (switcher) {
+			switcher.addEventListener('click', function() {
+				document.body.classList.toggle('pc-mode-active');
+				this.textContent = document.body.classList
+						.contains('pc-mode-active') ? '通常表示' : 'PC表示';
+			});
+		}
+	</script>
 </body>
 </html>

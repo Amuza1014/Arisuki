@@ -90,7 +90,7 @@ body {
 }
 
 .rating input:checked ~ label, .rating label:hover, .rating label:hover 
-	~ label {
+	 ~ label {
 	color: #ffc107;
 	text-shadow: 0 0 10px rgba(255, 193, 7, 0.4);
 }
@@ -110,7 +110,7 @@ body {
 			<p class="text-center text-secondary small">お気に入りの作品を記録しよう</p>
 
 			<form th:action="@{/complete}" method="post"
-				enctype="multipart/form-data">
+				enctype="multipart/form-data" id="sukiForm">
 
 				<div class="mb-4">
 					<label for="category" class="form-label fw-bold small">CATEGORY</label>
@@ -132,15 +132,13 @@ body {
 						type="text" name="subAttribute" class="form-control"
 						placeholder="ジャンル（ミステリー等）">
 				</div>
-
 				<div id="movieFields" class="sub-fields p-3 mb-4 rounded">
 					<p class="small text-warning fw-bold mb-2">映画の詳細情報</p>
 					<input type="text" name="creator" class="form-control mb-2"
 						placeholder="監督名"> <input type="text" name="subAttribute"
 						class="form-control mb-2" placeholder="ジャンル（SF等）"> <select
 						name="publisher" class="form-select">
-						<option value="" selected>邦画 / 洋画 / その他</option>
-						<option value="邦画">邦画</option>
+						<option value="邦画" selected>邦画</option>
 						<option value="洋画">洋画</option>
 						<option value="その他">その他</option>
 					</select>
@@ -184,16 +182,19 @@ body {
 					</div>
 				</div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-bold small">SCORE</label>
-                    <div class="rating">
-                        <input type="radio" name="score" value="5" id="star5" required><label for="star5">★</label>
-                        <input type="radio" name="score" value="4" id="star4"><label for="star4">★</label>
-                        <input type="radio" name="score" value="3" id="star3"><label for="star3">★</label>
-                        <input type="radio" name="score" value="2" id="star2"><label for="star2">★</label>
-                        <input type="radio" name="score" value="1" id="star1" checked><label for="star1">★</label>
-                    </div>
-                </div>
+				<div class="mb-4">
+					<label class="form-label fw-bold small">SCORE</label>
+					<div class="rating">
+						<input type="radio" name="score" value="5" id="star5" required><label
+							for="star5">★</label> <input type="radio" name="score" value="4"
+							id="star4"><label for="star4">★</label> <input
+							type="radio" name="score" value="3" id="star3"><label
+							for="star3">★</label> <input type="radio" name="score" value="2"
+							id="star2"><label for="star2">★</label> <input
+							type="radio" name="score" value="1" id="star1" checked><label
+							for="star1">★</label>
+					</div>
+				</div>
 
 				<div class="d-grid gap-3 mt-5">
 					<button type="submit" class="btn btn-custom-green btn-lg">保存して登録</button>
@@ -239,6 +240,34 @@ body {
     }
     // ページ読み込み時にも実行
     document.addEventListener("DOMContentLoaded", toggleFields);
+
+    // 空白のみの入力を防ぐバリデーションを追加
+    document.getElementById("sukiForm").addEventListener("submit", function(event) {
+        const title = document.getElementById("title").value.trim();
+        const review = document.getElementById("reviewText").value.trim();
+        const category = document.getElementById("category").value;
+
+        // カテゴリ未選択チェック（念のため）
+        if (!category) {
+            alert("カテゴリーを選択してください。");
+            event.preventDefault();
+            return;
+        }
+
+        // タイトルの空白チェック
+        if (title.length === 0) {
+            alert("タイトルを入力してください（スペースのみは不可です）。");
+            event.preventDefault();
+            return;
+        }
+
+        // レビューの空白チェック
+        if (review.length === 0) {
+            alert("レビュー内容を入力してください（スペースのみは不可です）。");
+            event.preventDefault();
+            return;
+        }
+    });
     </script>
 </body>
 </html>
