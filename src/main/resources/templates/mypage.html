@@ -2,21 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collections - ArrayList&lt;Suki&gt;</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
 
 <style>
-/* ダークテーマ */
 body {
 	background-color: #121212;
 	color: #e0e0e0;
 	font-family: 'Helvetica Neue', Arial, sans-serif;
-	padding-bottom: 100px; /* メニューと被らないよう少し広めに */
+	padding-bottom: 100px;
 }
 
-/* カード */
+/* --- ボタンの文字・アイコン位置ズレ修正 --- */
+.btn-sm.flex-fill {
+	display: flex !important;
+	align-items: center !important; /* 上下中央揃え */
+	justify-content: center !important; /* 左右中央揃え */
+	gap: 6px; /* 記号と文字の間の微調整 */
+	line-height: 1; /* 行の高さを固定してズレを防止 */
+	height: 38px; /* 高さを固定することで全てのボタンを均一に */
+}
+
+/* カードデザイン */
 .card {
 	background-color: #1e1e1e;
 	border-radius: 12px;
@@ -47,7 +59,6 @@ body {
 	color: inherit;
 }
 
-/* 緑ボタン */
 .btn-custom-green {
 	background-color: #2ecc71;
 	color: #fff;
@@ -58,12 +69,7 @@ body {
 	transition: 0.3s;
 }
 
-.btn-custom-green:hover {
-	background-color: #27ae60;
-	color: #fff;
-}
-
-/* ユーザー名編集エリアのスタイル */
+/* ユーザー名編集エリア */
 .profile-edit-box {
 	background-color: #1e1e1e;
 	border-radius: 12px;
@@ -78,35 +84,23 @@ body {
 }
 
 .form-control-dark:focus {
-	background-color: #121212;
-	border-color: #2ecc71;
+	background-color: #1a1a1a;
 	color: white;
-	box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+	border-color: #2ecc71;
+	box-shadow: none;
 }
 
 /* カテゴリバッジ */
-.badge-book {
-	background-color: rgb(0, 128, 255);
-}
-
-.badge-movie {
-	background-color: #d35400;
-}
-
-.badge-game {
-	background-color: #27ae60;
-}
-
-/* ★デザイン維持：その他用のバッジ色を追加 */
-.badge-other {
-	background-color: #6c757d;
-}
+.badge-book { background-color: rgb(0, 128, 255); }
+.badge-movie { background-color: #d35400; }
+.badge-game { background-color: #2ecc71; }
+.badge-other { background-color: #6c757d; }
 
 .text-secondary-muted {
 	color: #9e9e9e !important;
 }
 
-/* 下部固定メニュー：3ボタン完全均等配置用 */
+/* 下部ナビゲーション */
 .navbar-mobile {
 	background-color: rgba(30, 30, 30, 0.9) !important;
 	backdrop-filter: blur(10px);
@@ -114,7 +108,7 @@ body {
 }
 
 .nav-item-wrapper {
-	flex: 1; /* 各ボタンを33.3%ずつの幅にする */
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -124,17 +118,11 @@ body {
 	text-decoration: none;
 	color: #9e9e9e;
 	font-size: 0.75rem;
-	transition: 0.2s;
 	width: 100%;
 }
 
-.nav-icon-link:active {
-	transform: scale(0.9);
-}
-
-/* 中央の＋ボタン用スタイル（3等分のうちの中央要素として扱う） */
 .center-btn-container {
-	flex: 1; /* 左右の要素と同じ幅を確保 */
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	position: relative;
@@ -150,221 +138,233 @@ body {
 	justify-content: center;
 	font-size: 24px;
 	color: white;
-	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
 	margin-top: -26px;
 	border: 4px solid #121212;
-}
-/* トースト通知 */
-.toast-container {
-	z-index: 2000;
+	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
 }
 
+/* トースト通知 */
+.toast-container { z-index: 2000; }
 .toast-custom {
 	background-color: #2ecc71;
 	color: white;
 	border-radius: 10px;
+	min-width: 240px;
+}
+
+/* PCモード切替用スタイル */
+#viewSwitcher {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: #666;
+	color: #ccc;
+	font-size: 0.75rem;
+	padding: 4px 8px;
+}
+
+.title-short { display: none; }
+
+body.pc-mode-active .row-cols-1 {
+	display: flex !important;
+	flex-wrap: wrap !important;
+}
+
+body.pc-mode-active .col {
+	flex: 0 0 33.3333% !important;
+	max-width: 33.3333%;
+	padding: 0 4px;
+}
+
+body.pc-mode-active .card-img-top { height: 100px !important; }
+body.pc-mode-active .mobile-hide-on-3col { display: none !important; }
+body.pc-mode-active .title-full { display: none; }
+body.pc-mode-active .title-short {
+	display: block;
+	font-size: 0.8rem !important;
+	line-height: 1.2;
+}
+
+@media ( max-width :768px) {
+	.navbar-mobile {
+		height: 100px !important;
+		padding-bottom: 20px !important;
+	}
+	.center-add-btn {
+		width: 78px !important;
+		height: 78px !important;
+		font-size: 44px !important;
+		margin-top: -48px !important;
+	}
+	body {
+		padding-bottom: 130px !important;
+	}
 }
 </style>
-
 </head>
 
 <body>
-	<div class="container mt-5 mb-5">
+	<div class="container mt-4 mb-5">
+		<div class="d-flex justify-content-start align-items-center mb-2">
+			<h2 class="fw-bold mb-0 text-white">Collections</h2>
+			<button id="viewSwitcher" class="btn d-md-none ms-3">PC表示</button>
+		</div>
 
-		<div class="d-flex justify-content-between align-items-end mb-4">
-			<div>
-				<h2 class="fw-bold mb-0 text-white">Collections</h2>
+		<div class="mb-4">
+			<div class="text-start mb-3">
 				<p class="text-secondary-muted mb-0">お気に入りのアーカイブ</p>
-			</div>
-			
-	<a th:href="@{/profile/{id}(id=${session.user.id})}">
-   <img th:src="${#strings.isEmpty(session.user.iconPath) 
-        ? '/images/default-icon.png'
-        : session.user.iconPath}"
-     class="rounded-circle"
-     style="width:40px;height:40px;">
-</a>
-
-			<div class="d-none d-md-flex flex-column gap-2">
-				<a th:href="@{/form}" class="btn btn-custom-green">＋ New </a> <a
-					th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3">❤️
-					Suki_List</a>
-				<div class="d-flex gap-2">
-					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3">Timeline</a>
-					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3">Logout</a>
-				</div>
 				<p class="small text-secondary-muted mb-0">
-					username: <span
-						th:text="${#strings.abbreviate(session.user.username, 20)}"></span>
+					username: <span th:text="${#strings.abbreviate(session.user.username, 20)}"></span>
 				</p>
 			</div>
-		</div>
 
-		<div class="profile-edit-box mb-5">
-			<form id="usernameForm" th:action="@{/update-username}" method="post">
-	<div class="row align-items-center">
-
-		<div class="col-md-6">
-			<label for="newUsername"
-				class="form-label small text-secondary-muted">ユーザー名の変更</label>
-
-			<div class="input-group">
-				<span class="input-group-text bg-dark border-secondary text-secondary">@</span>
-				<input type="text" id="newUsername" name="newUsername"
-					th:value="${session.user.username}"
-					class="form-control form-control-dark"
-					placeholder="新しいユーザー名を入力" required>
-			</div>
-
-			<div class="form-text text-secondary-muted small mt-2">
-				※ ここで変更した名前は、投稿の表示名やログインIDとして反映されます。
-			</div>
-		</div>
-
-		<div class="col-md-auto">
-			<button type="submit" class="btn btn-outline-success px-4">
-				更新保存
-			</button>
-		</div>
-
-		<!-- ここにトースト -->
-		<div class="col-md-auto">
-			<div id="usernameToast" class="toast toast-custom border-0">
-				<div class="d-flex">
-					<div class="toast-body">
-						✔ ユーザー名を変更しました
-					</div>
-					<button type="button"
-						class="btn-close btn-close-white me-2 m-auto"
-						data-bs-dismiss="toast"></button>
+			<div class="d-flex flex-column align-items-center gap-3">
+				<a th:href="@{/profile/{id}(id=${session.user.id})}" class="d-block">
+					<img th:src="${#strings.isEmpty(session.user.iconPath) ? '/images/default-icon.png' : session.user.iconPath}"
+						class="rounded-circle" style="width: 60px; height: 60px; border: 2px solid #2ecc71; object-fit: cover;">
+				</a>
+				
+				<div class="d-flex flex-wrap justify-content-center gap-2 w-100" style="max-width: 500px;">
+					<a th:href="@{/form}" class="btn btn-custom-green btn-sm px-3 flex-fill">＋ New</a>
+					<a th:href="@{/mylikes}" class="btn btn-outline-light btn-sm px-3 flex-fill">❤️ Suki_List</a>
+					<a th:href="@{/timeline}" class="btn btn-outline-light btn-sm px-3 flex-fill">🌐 Timeline</a>
+					<a th:href="@{/login}" class="btn btn-outline-danger btn-sm px-3 flex-fill">Logout</a>
 				</div>
 			</div>
 		</div>
-
 	</div>
-</form>
-			<hr class="border-secondary mb-5">
 
-			<div class="row row-cols-1 row-cols-md-3 g-4">
-				<div class="col" th:each="item : ${itemList}">
-				
-					<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
-						<div class="card h-100 shadow-sm">
-							<img
-								th:src="${#strings.isEmpty(item.thumbnailUrl) 
-                ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' 
-                : item.thumbnailUrl}"
-								class="card-img-top" alt="thumbnail">
-							<div class="card-body">
+	<div class="profile-edit-box mb-5">
+		<form id="usernameForm" th:action="@{/update-username}" method="post">
+			<div class="row g-3 align-items-end">
+				<div class="col-md-6">
+					<label for="newUsername"
+						class="form-label small text-secondary-muted mb-2">ユーザー名の変更</label>
+					<div class="input-group">
+						<span
+							class="input-group-text bg-dark border-secondary text-secondary">@</span>
+						<input type="text" id="newUsername" name="newUsername"
+							th:value="${session.user.username}"
+							class="form-control form-control-dark" required>
+					</div>
+					<div class="form-text text-secondary-muted small mt-2">※
+						ここで変更した名前は、投稿の表示名やログインIDとして反映されます。</div>
+				</div>
+				<div class="col-md-auto mb-md-4">
+					<button type="submit" class="btn btn-outline-success px-4 fw-bold">更新保存</button>
+				</div>
+				<div class="col-md-auto mb-md-4">
+					<div id="usernameToast" class="toast toast-custom border-0"
+						role="alert">
+						<div class="d-flex">
+							<div class="toast-body py-2">
+								<i class="fas fa-check-circle me-1"></i> ユーザー名を変更しました
+							</div>
+							<button type="button"
+								class="btn-close btn-close-white me-2 m-auto"
+								data-bs-dismiss="toast"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
 
-								<div class="mb-2">
-									<span th:if="${item.category == '1'}" class="badge badge-book">📖
-										Book</span> <span th:if="${item.category == '2'}"
-										class="badge badge-movie">🎬 Movie</span> <span
-										th:if="${item.category == '3'}" class="badge badge-game">🎮
-										Game</span>
-									<span th:if="${item.category == '99'}" class="badge badge-other">✨ Other</span>
+		<hr class="border-secondary my-5">
+
+		<div class="row row-cols-1 row-cols-md-3 g-4" id="itemGrid">
+			<div class="col" th:each="item : ${itemList}">
+				<a th:href="@{/detail/{id}(id=${item.id})}" class="card-link">
+					<div class="card h-100 shadow-sm">
+						<img
+							th:src="${#strings.isEmpty(item.thumbnailUrl) ? 'https://placehold.jp/242424/ffffff/400x300.png?text=No%20Image' : item.thumbnailUrl}"
+							class="card-img-top" alt="thumbnail">
+						<div class="card-body py-2">
+							<div class="mb-2">
+								<span th:if="${item.category=='1'}" class="badge badge-book">📖 Book</span>
+								<span th:if="${item.category=='2'}" class="badge badge-movie">🎬 Movie</span>
+								<span th:if="${item.category=='3'}" class="badge badge-game">🎮 Game</span>
+								<span th:if="${item.category=='99'}" class="badge badge-other">✨ Other</span>
+							</div>
+							<h5 class="card-title fw-bold text-white mb-1">
+								<span class="title-full" th:text="${item.title}"></span>
+								<span class="title-short"
+									th:text="${#strings.length(item.title)>12 ? #strings.substring(item.title,0,12)+'..':item.title}"></span>
+							</h5>
+							<div class="mobile-hide-on-3col d-md-block">
+								<div class="mb-1">
+									<span class="fw-bold small"
+										th:text="${item.score!=null}? '★'+${item.score}:'未評価'"
+										th:classappend="${item.score!=null}? 'text-warning':'text-white'"></span>
 								</div>
-
-								<h5 class="card-title fw-bold text-white"
-									th:text="${item.title}">作品名</h5>
-
-								<div>
-									<span class="fw-bold"
-										th:text="${item.score != null} ? '☆' + ${item.score} : '未評価'"
-										th:classappend="${item.score != null} ? 'text-warning' : 'text-white'">
-									</span>
-								</div>
-
 								<div class="small mb-2 fw-bold text-secondary-muted">
-									<span th:if="${item.category == '1'}"
-										th:text="'Author: ' + ${item.creator}"></span> <span
-										th:if="${item.category == '2'}"
-										th:text="'Director: ' + ${item.creator}"></span> <span
-										th:if="${item.category == '3'}"
-										th:text="'Hardware: ' + ${item.publisher}"></span>
-									<span th:if="${item.category == '99'}"
-										th:text="${item.subAttribute} + ' / ' + ${item.publisher}"></span>
+									<span th:if="${item.category=='1'}" th:text="'Author: '+${item.creator}"></span>
+									<span th:if="${item.category=='2'}" th:text="'Director: '+${item.creator}"></span>
+									<span th:if="${item.category=='3'}" th:text="'Hardware: '+${item.publisher}"></span>
+									<span th:if="${item.category=='99'}" th:text="${item.subAttribute}+' / '+${item.publisher}"></span>
 								</div>
-
 								<p class="card-text text-secondary-muted small"
-									th:text="${#strings.length(item.reviewText) > 20} 
-									? ${#strings.substring(item.reviewText, 0, 20)} + '…' 
-									: ${item.reviewText}">
-									レビュー内容</p>
-
+									th:text="${#strings.length(item.reviewText)>20? #strings.substring(item.reviewText,0,20)+'…':item.reviewText}"></p>
 							</div>
 						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+
+		<div th:if="${#lists.isEmpty(itemList)}" class="text-center mt-5 py-5">
+			<p class="text-secondary-muted fs-5">まだ登録された作品はありません。</p>
+		</div>
+	</div>
+
+	<nav class="navbar navbar-mobile fixed-bottom py-0">
+		<div class="container-fluid">
+			<div class="d-flex align-items-center w-100">
+				<div class="nav-item-wrapper">
+					<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">🌐</div>
+						<div>Timeline</div>
+					</a>
+				</div>
+				<div class="center-btn-container">
+					<a th:href="@{/form}" class="text-decoration-none"><div class="center-add-btn">＋</div></a>
+				</div>
+				<div class="nav-item-wrapper">
+					<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
+						<div class="fs-4">❤️</div>
+						<div>Suki</div>
 					</a>
 				</div>
 			</div>
-
-			<div th:if="${#lists.isEmpty(itemList)}"
-				class="text-center mt-5 py-5">
-				<p class="text-secondary-muted fs-5">まだ登録された作品はありません。</p>
-			</div>
-
 		</div>
+	</nav>
 
-		<nav class="navbar navbar-mobile fixed-bottom py-0">
-			<div class="container-fluid">
-				<div class="d-flex align-items-center w-100">
+	<footer style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
+		&copy; 2026 Cチーム(仮) All Rights Reserved.
+	</footer>
 
-					<div class="nav-item-wrapper">
-						<a th:href="@{/timeline}" class="nav-icon-link text-center py-2">
-							<div class="fs-4">🌐</div>
-							<div>Timeline</div>
-						</a>
-					</div>
-
-					<div class="center-btn-container">
-						<a th:href="@{/form}" class="text-decoration-none">
-							<div class="center-add-btn">＋</div>
-						</a>
-					</div>
-
-					<div class="nav-item-wrapper">
-						<a th:href="@{/mylikes}" class="nav-icon-link text-center py-2">
-							<div class="fs-4">❤️</div>
-							<div>Suki</div>
-						</a>
-					</div>
-
-				</div>
-			</div>
-		</nav>
-		<footer
-			style="text-align: center; font-size: 0.8em; color: #666; padding: 2em 0;">
-			&copy; 2026 Cチーム(仮) All Rights Reserved. </footer>
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<script>
-document.getElementById("usernameForm").addEventListener("submit", function(e) {
-
-	e.preventDefault();
-
-	const form = this;
-	const formData = new FormData(form);
-
-	fetch(form.action, {
-		method: "POST",
-		body: formData
-	})
-	.then(response => response.text())
-	.then(() => {
-
-		const toastElement = document.getElementById("usernameToast");
-		const toast = new bootstrap.Toast(toastElement, {
-			delay: 3000
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	// PCモード切替
+	const switcher = document.getElementById('viewSwitcher');
+	if(switcher){
+		switcher.addEventListener('click',function(){
+			document.body.classList.toggle('pc-mode-active');
+			this.textContent = document.body.classList.contains('pc-mode-active')?'通常表示':'PC表示';
 		});
+	}
 
-		toast.show();
-
-	})
-	.catch(() => {
-		alert("更新に失敗しました");
+	// ユーザー名更新
+	document.getElementById("usernameForm").addEventListener("submit",function(e){
+		e.preventDefault();
+		const form = this;
+		const formData = new FormData(form);
+		fetch(form.action,{method:"POST",body:formData})
+		.then(response => response.text())
+		.then(()=>{ 
+			const toastElement = document.getElementById("usernameToast");
+			const toast = new bootstrap.Toast(toastElement,{delay:3000}); 
+			toast.show(); 
+		})
+		.catch(()=>{ alert("更新に失敗しました。"); });
 	});
-});
-</script>
+	</script>
+</body>
 </html>
