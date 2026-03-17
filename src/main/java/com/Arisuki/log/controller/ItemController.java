@@ -44,6 +44,9 @@ public class ItemController {
 	@Autowired
 	private CloudinaryService cloudinaryService;
 
+	// バリデーション用正規表現: 英数字、ひらがな、カタカナ、漢字、ハイフンのみ許可
+	private static final String VALID_NAME_REGEX = "^[a-zA-Z0-9ぁ-んァ-ヶー一-龠\\-]+$";
+
 	// --- ルート ---
 	@GetMapping("/")
 	public String input() {
@@ -90,7 +93,13 @@ public class ItemController {
 	}
 
 	@PostMapping("/signup")
-	public String signup(@RequestParam String username, @RequestParam String password) {
+	public String signup(@RequestParam String username, @RequestParam String password, Model model) {
+		// セキュリティ強化: 不可視文字排除、ハイフン許可のバリデーション
+		if (username == null || !username.matches(VALID_NAME_REGEX)) {
+			model.addAttribute("error", "ユーザー名に使用できない文字が含まれています。");
+			return "signup";
+		}
+
 		UserEntity newUser = new UserEntity();
 		newUser.setUsername(username);
 		newUser.setPassword(password);
@@ -115,10 +124,16 @@ public class ItemController {
 
 	// --- ユーザー名更新処理 ---
 	@PostMapping("/update-username")
-	public String updateUsername(@RequestParam("newUsername") String newUsername, HttpSession session) {
+	public String updateUsername(@RequestParam("newUsername") String newUsername, HttpSession session, Model model) {
 		UserEntity loginUser = (UserEntity) session.getAttribute("user");
 		if (loginUser == null) {
 			return "redirect:/login";
+		}
+
+		// セキュリティ強化: 更新時も不可視文字排除
+		if (newUsername == null || !newUsername.matches(VALID_NAME_REGEX)) {
+			// エラー時は何もしないか、フラグを立ててリダイレクト
+			return "redirect:/mypage?error=invalid";
 		}
 
 		loginUser.setUsername(newUsername);
@@ -132,11 +147,11 @@ public class ItemController {
 	// --- 投稿 ---
 	@GetMapping("/form")
 	public String form(HttpSession session, Model model) {
-	    if (session.getAttribute("user") == null)
-	        return "redirect:/login";
+		if (session.getAttribute("user") == null)
+			return "redirect:/login";
 
-	    model.addAttribute("item", new InformationEntity());
-	    return "form";
+		model.addAttribute("item", new InformationEntity());
+		return "form";
 	}
 
 	@PostMapping("/complete")
@@ -186,60 +201,56 @@ public class ItemController {
 	// --- タイムライン（検索機能付き） ---
 	@GetMapping("/timeline")
 	public String timeline(
-	        @RequestParam(name = "category", required = false) String category,
-	        @RequestParam(name = "keyword", required = false) String keyword,
-	        HttpSession session, 
-	        Model model) {
-	    
-	    if (session.getAttribute("user") == null)
-	        return "redirect:/login";
+			@RequestParam(name = "category", required = false) String category,
+			@RequestParam(name = "keyword", required = false) String keyword,
+			HttpSession session, 
+			Model model) {
+		
+		if (session.getAttribute("user") == null)
+			return "redirect:/login";
 
-	    List<InformationEntity> list;
+		List<InformationEntity> list;
 
-	    // 検索条件（カテゴリまたはキーワード）がある場合
-	    if ((category != null && !category.isEmpty()) || (keyword != null && !keyword.isEmpty())) {
-	        // 後ほどRepositoryに作成する検索メソッドを呼び出す
-	        list = repository.searchItems(category, keyword);
-	    } else {
-	        // 条件がない場合は全件取得
-	        list = repository.findAllByOrderByIdDesc();
-	    }
+		if ((category != null && !category.isEmpty()) || (keyword != null && !keyword.isEmpty())) {
+			list = repository.searchItems(category, keyword);
+		} else {
+			list = repository.findAllByOrderByIdDesc();
+		}
 
-	    model.addAttribute("sukiList", list);
-	    model.addAttribute("selectedCategory", category); // 検索状態を保持するため
-	    model.addAttribute("keyword", keyword);           // 検索状態を保持するため
-	    
-	    return "timeline";
+		model.addAttribute("sukiList", list);
+		model.addAttribute("selectedCategory", category); 
+		model.addAttribute("keyword", keyword);           
+		
+		return "timeline";
 	}
 	
 
 	// --- 詳細表示 ---
 	@GetMapping("/view/{id}")
 	public String view(@PathVariable Integer id,
-	                   HttpSession session,
-	                   Model model) {
+					   HttpSession session,
+					   Model model) {
 
-	    InformationEntity item = repository.findById(id).orElseThrow();
-	    model.addAttribute("item", item);
-	    
-	    // 循環参照を避けるため、Repositoryから直接コメントリストを取得
-	    List<CommentEntity> comments = commentRepository.findByInformationOrderByCreatedAtDesc(item);
-	    model.addAttribute("comments", comments);
+		InformationEntity item = repository.findById(id).orElseThrow();
+		model.addAttribute("item", item);
+		
+		List<CommentEntity> comments = commentRepository.findByInformationOrderByCreatedAtDesc(item);
+		model.addAttribute("comments", comments);
 
-	    UserEntity user = (UserEntity) session.getAttribute("user");
+		UserEntity user = (UserEntity) session.getAttribute("user");
 
-	    if (user != null) {
-	        CommentEntity myComment =
-	                commentRepository
-	                .findByInformationAndUser(item, user)
-	                .orElse(null);
+		if (user != null) {
+			CommentEntity myComment =
+					commentRepository
+					.findByInformationAndUser(item, user)
+					.orElse(null);
 
-	        model.addAttribute("myComment", myComment);
+			model.addAttribute("myComment", myComment);
 			boolean isLiked = likeRepository.existsByInformationAndUser(item, user);
 			model.addAttribute("isLiked", isLiked);
-	    }
+		}
 
-	    return "view";
+		return "view";
 	}
 
 	// --- いいね切り替えロジック (カウント更新版) ---
@@ -251,22 +262,19 @@ public class ItemController {
 
 		InformationEntity item = repository.findById(id).orElseThrow();
 
-		// 安全策：nullチェックと初期化
 		if (item.getLikeCount() == null) item.setLikeCount(0);
 
 		if (likeRepository.existsByInformationAndUser(item, loginUser)) {
 			likeRepository.deleteByInformationAndUser(item, loginUser);
-			// カウントを減らす
 			item.setLikeCount(Math.max(0, item.getLikeCount() - 1));
 		} else {
 			LikeEntity like = new LikeEntity();
 			like.setInformation(item);
 			like.setUser(loginUser);
 			likeRepository.save(like);
-			// カウントを増やす
 			item.setLikeCount(item.getLikeCount() + 1);
 		}
-		repository.save(item); // 数値を保存
+		repository.save(item);
 
 		return "redirect:/view/" + id;
 	}
@@ -291,65 +299,66 @@ public class ItemController {
 	@Transactional
 	@PostMapping("/view/{id}")
 	public String postComment(@PathVariable Integer id,
-	                          @RequestParam String comment,
-	                          HttpSession session) {
+							  @RequestParam String comment,
+							  HttpSession session) {
 
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) return "redirect:/login";
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		if (user == null) return "redirect:/login";
 
-	    InformationEntity item = repository.findById(id).orElseThrow();
+		// セキュリティ強化: 空白文字（不可視文字含む）のみのコメントを拒否
+		if (comment == null || comment.isBlank()) {
+			return "redirect:/view/" + id;
+		}
+
+		InformationEntity item = repository.findById(id).orElseThrow();
 		if (item.getCommentCount() == null) item.setCommentCount(0);
 
-	    CommentEntity existingComment =
-	            commentRepository.findByInformationAndUser(item, user)
-	                             .orElse(null);
+		CommentEntity existingComment =
+				commentRepository.findByInformationAndUser(item, user)
+								 .orElse(null);
 
-	    if (existingComment == null) {
-	        // 新規作成
-	        CommentEntity newComment = new CommentEntity();
-	        newComment.setContent(comment);
-	        newComment.setUser(user);
-	        newComment.setInformation(item);
-	        commentRepository.save(newComment);
-	        
-	        // カウントを増やす
-	        item.setCommentCount(item.getCommentCount() + 1);
-	        repository.save(item);
-	    } else {
-	        // 編集（更新）
-	        existingComment.setContent(comment);
-	        commentRepository.save(existingComment);
-	    }
+		if (existingComment == null) {
+			CommentEntity newComment = new CommentEntity();
+			newComment.setContent(comment);
+			newComment.setUser(user);
+			newComment.setInformation(item);
+			commentRepository.save(newComment);
+			
+			item.setCommentCount(item.getCommentCount() + 1);
+			repository.save(item);
+		} else {
+			existingComment.setContent(comment);
+			commentRepository.save(existingComment);
+		}
 
-	    return "redirect:/view/" + id;
+		return "redirect:/view/" + id;
 	}
 
 	// コメント削除 (カウント更新版)
 	@Transactional
 	@PostMapping("/comment/delete/{id}")
 	public String deleteComment(@PathVariable Integer id,
-	                            HttpSession session) {
+								HttpSession session) {
 
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) return "redirect:/login";
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		if (user == null) return "redirect:/login";
 
-	    CommentEntity comment = commentRepository.findById(id).orElse(null);
+		CommentEntity comment = commentRepository.findById(id).orElse(null);
 
-	    if (comment != null && comment.getUser().getId().equals(user.getId())) {
-	        InformationEntity item = comment.getInformation();
-	        Integer informationId = item.getId();
-	        
-	        commentRepository.delete(comment);
-	        
-	        // カウントを減らす
+		if (comment != null && comment.getUser().getId().equals(user.getId())) {
+			InformationEntity item = comment.getInformation();
+			Integer informationId = item.getId();
+			
+			commentRepository.delete(comment);
+			
 			if (item.getCommentCount() == null) item.setCommentCount(1);
-	        item.setCommentCount(Math.max(0, item.getCommentCount() - 1));
-	        repository.save(item);
-	        
-	        return "redirect:/view/" + informationId;
-	    }
+			item.setCommentCount(Math.max(0, item.getCommentCount() - 1));
+			repository.save(item);
+			
+			return "redirect:/view/" + informationId;
+		}
 
-	    return "redirect:/timeline";
+		return "redirect:/timeline";
 	}
 
 	// --- 編集・削除 ---
@@ -414,89 +423,77 @@ public class ItemController {
 	// --- マイいいね一覧 ---
 	@GetMapping("/mylikes")
 	public String showMyLikes(HttpSession session, Model model) {
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) return "redirect:/login";
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		if (user == null) return "redirect:/login";
 
-	    List<InformationEntity> likeList = likeRepository.findAll().stream()
-	            .filter(like -> like.getUser().getId().equals(user.getId()))
-	            .map(LikeEntity::getInformation)
-	            .toList();
+		List<InformationEntity> likeList = likeRepository.findAll().stream()
+				.filter(like -> like.getUser().getId().equals(user.getId()))
+				.map(LikeEntity::getInformation)
+				.toList();
 
-	    model.addAttribute("likeList", likeList);
-	    return "my_likepage"; 
+		model.addAttribute("likeList", likeList);
+		return "my_likepage"; 
 	}
 	
 	// プロフィール画面へ遷移
 	@GetMapping("/profile/{id}")
 	public String profile(@PathVariable Long id, Model model) {
 
-	    UserEntity user = userRepository.findById(id).orElse(null);
-	    List<InformationEntity> likeList = likeRepository.findAll().stream()
-	    		 .filter(like -> like.getUser().getId().equals(user.getId()))
-		            .map(LikeEntity::getInformation)
-		            .toList();
-	    
-	    model.addAttribute("user", user);
-	    model.addAttribute("posts", user.getPosts());
-	    model.addAttribute("likeList", likeList);
-	    return "profile";
+		UserEntity user = userRepository.findById(id).orElse(null);
+		if (user == null) return "redirect:/timeline";
+
+		List<InformationEntity> likeList = likeRepository.findAll().stream()
+				 .filter(like -> like.getUser().getId().equals(user.getId()))
+					.map(LikeEntity::getInformation)
+					.toList();
+		
+		model.addAttribute("user", user);
+		model.addAttribute("posts", user.getPosts());
+		model.addAttribute("likeList", likeList);
+		return "profile";
 	}
 	
 	@PostMapping("/upload-icon")
 	public String uploadIcon(
-	        @RequestParam("iconFile") MultipartFile file,
-	        HttpSession session) {
+			@RequestParam("iconFile") MultipartFile file,
+			HttpSession session) {
 
-	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
-	    if (loginUser == null) return "redirect:/login";
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null) return "redirect:/login";
 
-	    if (!file.isEmpty()) {
-	        try {
+		if (!file.isEmpty()) {
+			try {
+				String imageUrl = cloudinaryService.uploadImage(file);
+				loginUser.setIconPath(imageUrl);
+				userRepository.save(loginUser);
+				session.setAttribute("user", loginUser);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-	            String imageUrl = cloudinaryService.uploadImage(file);
-
-	            loginUser.setIconPath(imageUrl);
-	            userRepository.save(loginUser);
-
-	            session.setAttribute("user", loginUser);
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    return "redirect:/profile/" + loginUser.getId();
+		return "redirect:/profile/" + loginUser.getId();
 	}
 	
 	@PostMapping("/upload-header")
 	public String uploadHeader(
-	        @RequestParam("headerFile") MultipartFile file,
-	        HttpSession session) {
+			@RequestParam("headerFile") MultipartFile file,
+			HttpSession session) {
 
-	    // ログインユーザー取得
-	    UserEntity loginUser = (UserEntity) session.getAttribute("user");
-	    if (loginUser == null) return "redirect:/login";
+		UserEntity loginUser = (UserEntity) session.getAttribute("user");
+		if (loginUser == null) return "redirect:/login";
 
-	    // ファイルが選択されているか確認
-	    if (!file.isEmpty()) {
-	        try {
-	            // Cloudinaryにアップロード
-	            String imageUrl = cloudinaryService.uploadImage(file);
+		if (!file.isEmpty()) {
+			try {
+				String imageUrl = cloudinaryService.uploadImage(file);
+				loginUser.setHeaderImagePath(imageUrl);
+				userRepository.save(loginUser);
+				session.setAttribute("user", loginUser);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-	            // ユーザーのheaderImagePathに保存
-	            loginUser.setHeaderImagePath(imageUrl);
-	            userRepository.save(loginUser);
-
-	            // セッションにも反映
-	            session.setAttribute("user", loginUser);
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    // プロフィールページにリダイレクト
-	    return "redirect:/profile/" + loginUser.getId();
+		return "redirect:/profile/" + loginUser.getId();
 	}
-	
 }
